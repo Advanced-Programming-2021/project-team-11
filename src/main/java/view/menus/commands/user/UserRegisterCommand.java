@@ -12,11 +12,6 @@ public class UserRegisterCommand extends UserCommands {
     @Parameter(names = {"--nickname", "-n"}, required = true)
     private String nickname;
 
-    @Override
-    public String removePrefix(String command) throws InvalidCommandException {
-        return CommandUtils.removePrefixFromCommand(super.removePrefix(command), "create");
-    }
-
     public String getPassword() {
         return password;
     }
@@ -27,5 +22,15 @@ public class UserRegisterCommand extends UserCommands {
 
     public String getNickname() {
         return nickname;
+    }
+
+    @Override
+    public String removePrefix(String command) throws InvalidCommandException {
+        return CommandUtils.removePrefixFromCommand(super.removePrefix(command), "create");
+    }
+
+    @Override
+    public boolean isValid() {
+        return true;
     }
 }

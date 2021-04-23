@@ -23,6 +23,14 @@ public class User {
         return this.nickname;
     }
 
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public boolean checkPassword(String password) {
         return this.password.equals(password);
     }

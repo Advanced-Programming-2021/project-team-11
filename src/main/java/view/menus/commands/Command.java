@@ -11,4 +11,11 @@ public interface Command {
      * @throws InvalidCommandException If the command is invalid, throws this exception
      */
     String removePrefix(String command) throws InvalidCommandException;
+
+    /**
+     * Checks if these parameters provided are valid or not
+     *
+     * @return True if they are valid, otherwise false
+     */
+    boolean isValid();
 }

@@ -15,6 +15,11 @@ public class UserLoginCommand extends UserCommands {
         return CommandUtils.removePrefixFromCommand(super.removePrefix(command), "login");
     }
 
+    @Override
+    public boolean isValid() {
+        return true;
+    }
+
     public String getPassword() {
         return password;
     }

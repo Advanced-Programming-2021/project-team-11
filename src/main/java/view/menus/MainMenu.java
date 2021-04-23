@@ -43,7 +43,8 @@ public class MainMenu extends Menu {
                 new ScoreboardMenu();
                 break;
             case PROFILE:
-                // TODO
+                new ProfileMenu(loggedInUser);
+                break;
         }
     }
 
