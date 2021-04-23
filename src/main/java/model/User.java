@@ -6,6 +6,7 @@ public class User {
     private final static ArrayList<User> users = new ArrayList<>();
     private final String username;
     private String password, nickname;
+    private int score = 0, money = 0;
 
     public User(String username, String password, String nickname) {
         this.username = username;
@@ -26,6 +27,10 @@ public class User {
         return this.password.equals(password);
     }
 
+    public int getScore() {
+        return score;
+    }
+
     public static User getUserByUsername(String username) {
         for (User user : users)
             if (user.getUsername().equals(username))
@@ -38,5 +43,9 @@ public class User {
             if (user.getNickname().equals(nickname))
                 return user;
         return null;
+    }
+
+    public static ArrayList<User> getUsers() {
+        return users;
     }
 }

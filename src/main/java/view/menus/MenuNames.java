@@ -3,6 +3,12 @@ package view.menus;
 public enum MenuNames {
     LOGIN,
     MAIN,
+    DUEL,
+    DECK,
+    SCOREBOARD,
+    PROFILE,
+    SHOP,
+    IMPORT_EXPORT,
     INVALID;
 
     /**
@@ -17,6 +23,18 @@ public enum MenuNames {
                 return LOGIN;
             case "Main":
                 return MAIN;
+            case "Duel":
+                return DUEL;
+            case "Deck":
+                return DECK;
+            case "Scoreboard":
+                return SCOREBOARD;
+            case "Profile":
+                return PROFILE;
+            case "Shop":
+                return SHOP;
+            case "Import/Export":
+                return IMPORT_EXPORT;
             default:
                 return INVALID;
         }

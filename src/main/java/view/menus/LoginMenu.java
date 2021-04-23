@@ -35,7 +35,7 @@ public class LoginMenu extends Menu {
                         .build()
                         .parse(userLoginCommand.removePrefix(command).split(" "));
                 User user = LoginMenuController.login(userLoginCommand.getUsername(), userLoginCommand.getPassword());
-                // TODO: login user
+                new MainMenu(user);
                 continue;
             } catch (InvalidCommandException | ParameterException ignored) {
             } catch (InvalidCredentialException ex) {
@@ -68,7 +68,10 @@ public class LoginMenu extends Menu {
      */
     @Override
     public void enterMenu(MenuNames menu) {
-        System.out.println("please login first");
+        if (menu == MenuNames.LOGIN)
+            System.out.println(MenuUtils.MENU_NAV_FAILED);
+        else
+            System.out.println("please login first");
     }
 
     @Override
