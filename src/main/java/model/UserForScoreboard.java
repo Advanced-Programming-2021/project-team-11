@@ -27,6 +27,6 @@ public class UserForScoreboard implements Comparable<UserForScoreboard> {
         int scoreDiff = this.score - u.score;
         if (scoreDiff == 0)
             return this.nickname.compareTo(u.nickname);
-        return scoreDiff;
+        return -scoreDiff;
     }
 }

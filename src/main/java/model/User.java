@@ -39,6 +39,10 @@ public class User {
         return score;
     }
 
+    public void increaseScore(int delta) {
+        this.score += delta;
+    }
+
     public static User getUserByUsername(String username) {
         for (User user : users)
             if (user.getUsername().equals(username))
