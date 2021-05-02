@@ -1,8 +1,10 @@
 package model.cards;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 
-public abstract class Card {
+public abstract class Card implements Comparable<Card> {
     private final String name, description;
     private final int price;
     private final CardType cardType;
@@ -14,19 +16,19 @@ public abstract class Card {
         this.price = price;
     }
 
-    public CardType getCardType() {
+    public final CardType getCardType() {
         return cardType;
     }
 
-    public int getPrice() {
+    public final int getPrice() {
         return price;
     }
 
-    public String getDescription() {
+    public final String getDescription() {
         return description;
     }
 
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
@@ -45,5 +47,22 @@ public abstract class Card {
             if (card.getName().equals(name))
                 return card;
         return null;
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        return this.name.equals(((Card) o).name);
+    }
+
+    @Override
+    public final int hashCode() {
+        return name.hashCode();
+    }
+
+    @Override
+    public final int compareTo(@NotNull Card o) {
+        return getName().compareTo(o.getName());
     }
 }

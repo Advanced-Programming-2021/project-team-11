@@ -54,7 +54,7 @@ public class ProfileMenu extends Menu {
 
     @Override
     void enterMenu(MenuNames menu) {
-
+        System.out.println(MenuUtils.MENU_NAV_FAILED);
     }
 
     @Override

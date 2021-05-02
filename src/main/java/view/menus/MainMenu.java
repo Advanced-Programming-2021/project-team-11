@@ -44,6 +44,8 @@ public class MainMenu extends Menu {
                 break;
             case PROFILE:
                 new ProfileMenu(loggedInUser);
+            case DECK:
+                new DeckMenu(loggedInUser);
                 break;
         }
     }

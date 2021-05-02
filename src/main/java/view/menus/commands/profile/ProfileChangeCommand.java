@@ -6,6 +6,7 @@ import view.menus.commands.Command;
 import view.menus.commands.CommandUtils;
 
 public class ProfileChangeCommand implements Command {
+    // Nothing is required here. See isValid to check for validation
     @Parameter(names = {"--nickname", "-n"})
     private String nickname;
     @Parameter(names = {"--password", "-p"})

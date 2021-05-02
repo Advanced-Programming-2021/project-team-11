@@ -1,10 +1,19 @@
 package model;
 
+import model.cards.Card;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class User {
     private final static ArrayList<User> users = new ArrayList<>();
     private final String username;
+    private final HashMap<String, Deck> decks = new HashMap<>();
+    private final ArrayList<Card> availableCards = new ArrayList<>();
+    /**
+     * The name of active deck
+     */
+    private String activeDeck = null;
     private String password, nickname;
     private int score = 0, money = 0;
 
@@ -36,7 +45,51 @@ public class User {
     }
 
     public int getScore() {
-        return score;
+        return this.score;
+    }
+
+    public int getMoney() {
+        return this.money;
+    }
+
+    public void addDeck(String deckName) {
+        decks.put(deckName, new Deck());
+    }
+
+    public void deleteDeck(String deckName) {
+        decks.remove(deckName);
+    }
+
+    public HashMap<String, Deck> getDecks() {
+        return decks;
+    }
+
+    public String getActiveDeckName() {
+        return this.activeDeck;
+    }
+
+    public Deck getActiveDeck() {
+        return getDeckByName(getActiveDeckName());
+    }
+
+    public void setActiveDeck(String deckName) {
+        this.activeDeck = deckName;
+    }
+
+    public Deck getDeckByName(String deckName) {
+        return decks.get(deckName);
+    }
+
+    public ArrayList<Card> getAvailableCards() {
+        return availableCards;
+    }
+
+    public void removeCardFromPlayer(Card card) {
+        availableCards.remove(card);
+    }
+
+    public void addCardToPlayer(Card card) {
+        availableCards.add(card);
     }
 
     public void increaseScore(int delta) {
