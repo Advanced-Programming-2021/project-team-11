@@ -37,7 +37,6 @@ public class ScoreboardMenu extends Menu {
     }
 
     private void showScoreboard() {
-        for (String line : ScoreboardMenuController.getScoreboardLines())
-            System.out.println(line);
+        ScoreboardMenuController.getScoreboardLines().forEach(System.out::println);
     }
 }

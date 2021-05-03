@@ -15,7 +15,7 @@ public class User {
      */
     private String activeDeck = null;
     private String password, nickname;
-    private int score = 0, money = 0;
+    private int score = 0, money = 100000;
 
     public User(String username, String password, String nickname) {
         this.username = username;

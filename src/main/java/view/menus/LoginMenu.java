@@ -27,38 +27,46 @@ public class LoginMenu extends Menu {
                 continue;
             } catch (InvalidCommandException ignored) {
             }
-            // Try to login
-            try {
-                UserLoginCommand userLoginCommand = new UserLoginCommand();
-                JCommander.newBuilder()
-                        .addObject(userLoginCommand)
-                        .build()
-                        .parse(userLoginCommand.removePrefix(command).split(" "));
-                User user = LoginMenuController.login(userLoginCommand.getUsername(), userLoginCommand.getPassword());
-                System.out.println("user logged in successfully!");
-                new MainMenu(user);
+            if (login(command) || register(command))
                 continue;
-            } catch (InvalidCommandException | ParameterException ignored) {
-            } catch (InvalidCredentialException ex) {
-                System.out.println(ex.getMessage());
-                continue;
-            }
-            // Create user
-            try {
-                UserRegisterCommand userRegisterCommand = new UserRegisterCommand();
-                JCommander.newBuilder()
-                        .addObject(userRegisterCommand)
-                        .build()
-                        .parse(userRegisterCommand.removePrefix(command).split(" "));
-                LoginMenuController.register(userRegisterCommand.getUsername(), userRegisterCommand.getPassword(), userRegisterCommand.getNickname());
-                System.out.println("user created successfully!");
-                continue;
-            } catch (InvalidCommandException | ParameterException ignored) {
-            } catch (UsernameExistsException | NicknameExistsException ex) {
-                System.out.println(ex.getMessage());
-                continue;
-            }
             System.out.println(MenuUtils.INVALID_COMMAND);
+        }
+    }
+
+    private boolean login(String command) {
+        try {
+            UserLoginCommand userLoginCommand = new UserLoginCommand();
+            JCommander.newBuilder()
+                    .addObject(userLoginCommand)
+                    .build()
+                    .parse(userLoginCommand.removePrefix(command).split(" "));
+            User user = LoginMenuController.login(userLoginCommand.getUsername(), userLoginCommand.getPassword());
+            System.out.println("user logged in successfully!");
+            new MainMenu(user);
+            return true;
+        } catch (InvalidCommandException | ParameterException ignored) {
+            return false;
+        } catch (InvalidCredentialException ex) {
+            System.out.println(ex.getMessage());
+            return true;
+        }
+    }
+
+    private boolean register(String command) {
+        try {
+            UserRegisterCommand userRegisterCommand = new UserRegisterCommand();
+            JCommander.newBuilder()
+                    .addObject(userRegisterCommand)
+                    .build()
+                    .parse(userRegisterCommand.removePrefix(command).split(" "));
+            LoginMenuController.register(userRegisterCommand.getUsername(), userRegisterCommand.getPassword(), userRegisterCommand.getNickname());
+            System.out.println("user created successfully!");
+            return true;
+        } catch (InvalidCommandException | ParameterException ignored) {
+            return false;
+        } catch (UsernameExistsException | NicknameExistsException ex) {
+            System.out.println(ex.getMessage());
+            return true;
         }
     }
 

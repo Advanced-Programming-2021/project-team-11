@@ -25,30 +25,36 @@ public class ProfileMenu extends Menu {
                 continue;
             } catch (InvalidCommandException ignored) {
             }
-            try {
-                ProfileChangeCommand profileChangeCommand = new ProfileChangeCommand();
-                JCommander.newBuilder()
-                        .addObject(profileChangeCommand)
-                        .build()
-                        .parse(profileChangeCommand.removePrefix(command).split(" "));
-                if (!profileChangeCommand.isValid())
-                    throw new InvalidCommandException();
-                if (profileChangeCommand.isNicknameChange()) {
-                    ProfileMenuController.changeNickname(loggedInUser, profileChangeCommand.getNickname());
-                    System.out.println("nickname changed successfully!");
-                } else if (profileChangeCommand.isPasswordChange()) {
-                    ProfileMenuController.changePassword(loggedInUser, profileChangeCommand.getPassword(), profileChangeCommand.getNewPassword());
-                    System.out.println("password changed successfully!");
-                } else {
-                    throw new BooAnException("profile not change password, not change nickname and not invalid!");
-                }
+            if (processCommand(command))
                 continue;
-            } catch (InvalidCommandException | ParameterException ignored) {
-            } catch (NicknameExistsException | CurrentPasswordInvalidException | SameNewPasswordException ex) {
-                System.out.println(ex.getMessage());
-                continue;
-            }
             System.out.println(MenuUtils.INVALID_COMMAND);
+        }
+    }
+
+    private boolean processCommand(String command) {
+        try {
+            ProfileChangeCommand profileChangeCommand = new ProfileChangeCommand();
+            JCommander.newBuilder()
+                    .addObject(profileChangeCommand)
+                    .build()
+                    .parse(profileChangeCommand.removePrefix(command).split(" "));
+            if (!profileChangeCommand.isValid())
+                throw new InvalidCommandException();
+            if (profileChangeCommand.isNicknameChange()) {
+                ProfileMenuController.changeNickname(loggedInUser, profileChangeCommand.getNickname());
+                System.out.println("nickname changed successfully!");
+            } else if (profileChangeCommand.isPasswordChange()) {
+                ProfileMenuController.changePassword(loggedInUser, profileChangeCommand.getPassword(), profileChangeCommand.getNewPassword());
+                System.out.println("password changed successfully!");
+            } else {
+                throw new BooAnException("profile not change password, not change nickname and not invalid!");
+            }
+            return true;
+        } catch (InvalidCommandException | ParameterException ignored) {
+            return false;
+        } catch (NicknameExistsException | CurrentPasswordInvalidException | SameNewPasswordException ex) {
+            System.out.println(ex.getMessage());
+            return true;
         }
     }
 

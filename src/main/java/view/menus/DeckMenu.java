@@ -1,6 +1,7 @@
 package view.menus;
 
 import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
 import controller.menucontrollers.DeckMenuController;
 import model.User;
 import model.cards.Card;
@@ -96,7 +97,7 @@ public class DeckMenu extends Menu {
         } catch (CardNotExistsException | DeckDoesNotExistsException | DeckSideOrMainFullException | DeckHaveThreeCardsException e) {
             System.out.println(e.getMessage());
             return true;
-        } catch (InvalidCommandException e) {
+        } catch (InvalidCommandException | ParameterException e) {
             return false;
         }
     }
@@ -114,7 +115,7 @@ public class DeckMenu extends Menu {
         } catch (DeckCardNotExistsException | DeckDoesNotExistsException e) {
             System.out.println(e.getMessage());
             return true;
-        } catch (InvalidCommandException e) {
+        } catch (InvalidCommandException | ParameterException e) {
             return false;
         }
     }
@@ -150,7 +151,7 @@ public class DeckMenu extends Menu {
         } catch (DeckDoesNotExistsException e) {
             System.out.println(e.getMessage());
             return true;
-        } catch (InvalidCommandException e) {
+        } catch (InvalidCommandException | ParameterException e) {
             return false;
         }
     }
