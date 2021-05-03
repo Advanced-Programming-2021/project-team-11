@@ -35,6 +35,7 @@ public class LoginMenu extends Menu {
                         .build()
                         .parse(userLoginCommand.removePrefix(command).split(" "));
                 User user = LoginMenuController.login(userLoginCommand.getUsername(), userLoginCommand.getPassword());
+                System.out.println("user logged in successfully!");
                 new MainMenu(user);
                 continue;
             } catch (InvalidCommandException | ParameterException ignored) {

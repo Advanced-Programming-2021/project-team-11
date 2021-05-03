@@ -52,6 +52,14 @@ public class User {
         return this.money;
     }
 
+    public void decreaseMoney(int delta) {
+        this.money -= delta;
+    }
+
+    public void increaseMoney(int delta) {
+        this.money += delta;
+    }
+
     public void addDeck(String deckName) {
         decks.put(deckName, new Deck());
     }

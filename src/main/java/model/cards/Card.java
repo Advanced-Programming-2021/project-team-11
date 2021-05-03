@@ -3,6 +3,7 @@ package model.cards;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public abstract class Card implements Comparable<Card> {
     private final String name, description;
@@ -43,10 +44,8 @@ public abstract class Card implements Comparable<Card> {
     }
 
     public static Card getCardByName(String name) {
-        for (Card card : getAllCards())
-            if (card.getName().equals(name))
-                return card;
-        return null;
+        Optional<Card> card = getAllCards().stream().filter(x -> x.getName().equals(name)).findFirst();
+        return card.orElse(null);
     }
 
     @Override
