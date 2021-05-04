@@ -1,6 +1,7 @@
 package model;
 
 import model.cards.Card;
+import model.enums.CardPlaceType;
 import model.exceptions.BooAnException;
 
 import java.util.ArrayList;
@@ -10,8 +11,8 @@ public class PlayerBoard {
     private final Player player;
     private final PlayableCard[] spellCard = new PlayableCard[5];
     private final PlayableCard[] monsterCard = new PlayableCard[5];
-    private final ArrayList<Card> graveyard = new ArrayList<>();
-    private final Card[] hand = new Card[6];
+    private final ArrayList<PlayableCard> graveyard = new ArrayList<>();
+    private final PlayableCard[] hand = new PlayableCard[6];
     private final ArrayList<Card> deck;
 
     public PlayerBoard(Player player, ArrayList<Card> cards) {
@@ -27,18 +28,18 @@ public class PlayerBoard {
         Collections.shuffle(deck);
     }
 
-    public ArrayList<Card> getGraveyard() {
+    public ArrayList<PlayableCard> getGraveyard() {
         return graveyard;
     }
 
-    public Card[] getHand() {
+    public PlayableCard[] getHand() {
         return hand;
     }
 
     public void drawCard() {
         for (int i = 0; i < hand.length; i++)
             if (hand[i] == null) {
-                hand[i] = deck.get(0);
+                hand[i] = new PlayableCard(deck.get(0), CardPlaceType.HAND);
                 deck.remove(0);
                 return;
             }
