@@ -10,7 +10,7 @@ import view.menus.commands.profile.ProfileChangeCommand;
 public class ProfileMenu extends Menu {
     private final User loggedInUser;
 
-    public ProfileMenu(User loggedInUser) {
+    ProfileMenu(User loggedInUser) {
         this.loggedInUser = loggedInUser;
         openMenu();
     }

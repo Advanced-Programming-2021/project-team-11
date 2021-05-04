@@ -18,7 +18,7 @@ public class LoginMenu extends Menu {
     }
 
     @Override
-    public void openMenu() {
+    void openMenu() {
         while (true) {
             String command = MenuUtils.readLine();
             try {
@@ -76,7 +76,7 @@ public class LoginMenu extends Menu {
      * @param menu Have no effect
      */
     @Override
-    public void enterMenu(MenuNames menu) {
+    void enterMenu(MenuNames menu) {
         if (menu == MenuNames.LOGIN)
             System.out.println(MenuUtils.MENU_NAV_FAILED);
         else

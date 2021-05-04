@@ -6,7 +6,7 @@ import model.exceptions.InvalidCommandException;
 public class MainMenu extends Menu {
     private final User loggedInUser;
 
-    public MainMenu(User loggedInUser) {
+    MainMenu(User loggedInUser) {
         this.loggedInUser = loggedInUser;
         openMenu();
     }
@@ -37,7 +37,7 @@ public class MainMenu extends Menu {
                 System.out.println("please use logout command");
                 break;
             case DUEL:
-                System.out.println("please use the duel command");
+                new DuelStartMenu(loggedInUser);
                 break;
             case SCOREBOARD:
                 new ScoreboardMenu();

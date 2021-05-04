@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class DeckMenu extends Menu {
     private final User loggedInUser;
 
-    public DeckMenu(User loggedInUser) {
+    DeckMenu(User loggedInUser) {
         this.loggedInUser = loggedInUser;
         openMenu();
     }

@@ -1,6 +1,8 @@
 package model;
 
 import model.cards.Card;
+import model.exceptions.UserDeckIsInvalidException;
+import model.exceptions.UserHaveNoActiveDeckException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,6 +79,8 @@ public class User {
     }
 
     public Deck getActiveDeck() {
+        if (getActiveDeckName() == null)
+            return null;
         return getDeckByName(getActiveDeckName());
     }
 
@@ -102,6 +106,14 @@ public class User {
 
     public void increaseScore(int delta) {
         this.score += delta;
+    }
+
+    public void validateUserActiveDeck() throws UserHaveNoActiveDeckException, UserDeckIsInvalidException {
+        Deck deck = getActiveDeck();
+        if (deck == null)
+            throw new UserHaveNoActiveDeckException(this);
+        if (!deck.isValid())
+            throw new UserDeckIsInvalidException(this);
     }
 
     public static User getUserByUsername(String username) {

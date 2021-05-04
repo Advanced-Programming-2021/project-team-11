@@ -4,7 +4,7 @@ import controller.menucontrollers.ScoreboardMenuController;
 import model.exceptions.InvalidCommandException;
 
 public class ScoreboardMenu extends Menu {
-    public ScoreboardMenu() {
+    ScoreboardMenu() {
         openMenu();
     }
 
