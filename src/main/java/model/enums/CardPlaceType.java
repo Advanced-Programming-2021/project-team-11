@@ -5,4 +5,5 @@ public enum CardPlaceType {
     MONSTER,
     GRAVEYARD,
     HAND,
+    FIELD,
 }
