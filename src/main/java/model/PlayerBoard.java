@@ -24,7 +24,7 @@ public class PlayerBoard {
         return player;
     }
 
-    public void reshuffleDeck() {
+    public void shuffleDeck() {
         Collections.shuffle(deck);
     }
 
