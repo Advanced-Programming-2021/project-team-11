@@ -17,14 +17,19 @@ public class GameRoundController {
         BATTLE_PHASE,
         MAIN2,
         END_PHASE,
-    };
+    }
+
+    ;
+
     private static enum GameStatus {
         ONGOING,
         PLAYER1_SURRENDER,
         PlAYER2_SURRENDER,
         PLAYER1_WON,
         PLAYER2_WON,
-    };
+    }
+
+    ;
 
     private final PlayerBoard player1Board;
     private final PlayerBoard player2Board;
@@ -56,7 +61,7 @@ public class GameRoundController {
                 selectedCard = getPlayerBoard().getGraveyard().get(index - 1);
                 break;
             case HAND:
-                selectedCard = getPlayerBoard().getHand()[index - 1];
+                selectedCard = getPlayerBoard().getHand().get(index - 1);
                 break;
             default:
                 throw new BooAnException("Card place not found!");
@@ -87,7 +92,8 @@ public class GameRoundController {
 
         int attacked = selectedCard.getAttackDelta();
         getRivalBoard().getPlayer().decreaseHealth(attacked);
-        selectedCard.setHasAttacked(true); endTurn();
+        selectedCard.setHasAttacked(true);
+        endTurn();
         return attacked;
     }
 
@@ -101,9 +107,7 @@ public class GameRoundController {
             getPlayerBoard().addMonsterCard(selectedCard);
         else
             getPlayerBoard().addSpellCard(selectedCard);
-        for (int i = 0; i < 6; i++)
-            if (getPlayerBoard().getHand()[i].equals(selectedCard))
-                getPlayerBoard().getHand()[i] = null;
+        getPlayerBoard().removeHandCard(selectedCard);
         endTurn();
     }
 
@@ -147,12 +151,12 @@ public class GameRoundController {
         return player2Board;
     }
 
-    private PlayerBoard getPlayerBoard() {
-        return player1Turn? player1Board: player2Board;
+    public PlayerBoard getPlayerBoard() {
+        return player1Turn ? player1Board : player2Board;
     }
 
-    private PlayerBoard getRivalBoard() {
-        return player1Turn? player2Board: player1Board;
+    public PlayerBoard getRivalBoard() {
+        return player1Turn ? player2Board : player1Board;
     }
 
     private void endTurn() {

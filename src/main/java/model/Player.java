@@ -20,7 +20,7 @@ public class Player {
         this.health -= delta;
     }
 
-    public User getPlayer() {
+    public User getUser() {
         return user;
     }
 }

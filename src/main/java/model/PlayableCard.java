@@ -79,4 +79,25 @@ public class PlayableCard {
     public void setHasAttacked(boolean hasAttacked) {
         this.hasAttacked = hasAttacked;
     }
+
+    /**
+     * How should rival see this card?
+     *
+     * @return The text to show
+     */
+    public String toRivalString() {
+        switch (cardPlace) {
+            case HAND:
+                return "c";
+            case FIELD:
+                return "O";
+            case MONSTER:
+                if (isHidden())
+                    return "DH";
+                return isAttacking() ? "OO" : "DO";
+            case SPELL:
+                return isHidden() ? "H " : "O ";
+        }
+        return "";
+    }
 }

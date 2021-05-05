@@ -12,12 +12,17 @@ public class PlayerBoard {
     private final PlayableCard[] spellCard = new PlayableCard[5];
     private final PlayableCard[] monsterCard = new PlayableCard[5];
     private final ArrayList<PlayableCard> graveyard = new ArrayList<>();
-    private final PlayableCard[] hand = new PlayableCard[6];
+    private final ArrayList<PlayableCard> hand = new ArrayList<>(6);
     private final ArrayList<Card> deck;
 
     public PlayerBoard(Player player, ArrayList<Card> cards) {
         this.player = player;
         this.deck = cards;
+        // Setup hand
+        for (int i = 0; i < 5; i++) {
+            hand.add(new PlayableCard(cards.get(0), CardPlaceType.HAND));
+            cards.remove(0);
+        }
     }
 
     public Player getPlayer() {
@@ -32,21 +37,23 @@ public class PlayerBoard {
         return graveyard;
     }
 
-    public PlayableCard[] getHand() {
+    public ArrayList<PlayableCard> getHand() {
         return hand;
     }
 
     public void drawCard() {
-        for (int i = 0; i < hand.length; i++)
-            if (hand[i] == null) {
-                hand[i] = new PlayableCard(deck.get(0), CardPlaceType.HAND);
-                deck.remove(0);
-                return;
-            }
+        if (hand.size() < 6) {
+            hand.add(new PlayableCard(deck.get(0), CardPlaceType.HAND));
+            deck.remove(0);
+        }
     }
 
-    public void removeHandCard(int i) {
-        hand[i] = null;
+    public void removeHandCard(int index) {
+        hand.remove(index);
+    }
+
+    public void removeHandCard(PlayableCard card) {
+        hand.remove(card);
     }
 
     public void removeMonsterCard(int i) {
