@@ -51,6 +51,14 @@ public class DuelMenu extends Menu {
         System.out.printf("%s:%d\n", myBoard.getPlayer().getUser().getNickname(), myBoard.getPlayer().getHealth());
     }
 
+    private boolean painkiller(String command) {
+        if (command.equals(CHEAT_HP)) {
+            gameController.getRound().painkiller();
+            return true;
+        }
+        return false;
+    }
+
     public static void printRivalBoard(PlayerBoard board) {
         // Count cards in hand
         board.getHand().forEach(x -> System.out.print("\tc"));

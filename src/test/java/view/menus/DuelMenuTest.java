@@ -52,13 +52,13 @@ public class DuelMenuTest {
                 "35\n" +
                 "\tE \tE \tE \tE \tE \n" +
                 "\tE \tE \tE \tE \tE \n" +
-                "00\t\t\t\t\t\tE\n", Setuper.getOutput().toString());
+                "00\t\t\t\t\t\tE\n", Setuper.getOutputString());
         Setuper.reset();
         DuelMenu.printMyBoard(board);
         assertEquals("00\t\t\t\t\t\tE\n" +
                 "\tE \tE \tE \tE \tE \n" +
                 "\tE \tE \tE \tE \tE \n" +
                 "\t\t\t\t\t\t35\n" +
-                "c\tc\tc\tc\tc\t\n", Setuper.getOutput().toString());
+                "c\tc\tc\tc\tc\t\n", Setuper.getOutputString());
     }
 }

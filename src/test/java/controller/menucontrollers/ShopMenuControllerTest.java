@@ -1,10 +1,7 @@
 package controller.menucontrollers;
 
 import model.User;
-import model.cards.CardType;
-import model.cards.MonsterAttributeType;
-import model.cards.MonsterType;
-import model.cards.SimpleMonster;
+import model.cards.*;
 import model.exceptions.CardNotExistsException;
 import model.exceptions.InsufficientBalanceException;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,5 +46,14 @@ public class ShopMenuControllerTest {
             fail(e);
         } catch (InsufficientBalanceException ignored) {
         }
+    }
+
+    @Test
+    void addAll() {
+        User user = new User("1", "1", "1");
+        ShopMenuController.addAllCardsCheat(user);
+        for (Card card : Card.getAllCards())
+            if (!user.getAvailableCards().contains(card))
+                fail(card.toString() + " does not exists in user deck");
     }
 }

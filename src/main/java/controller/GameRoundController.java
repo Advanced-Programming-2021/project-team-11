@@ -166,4 +166,11 @@ public class GameRoundController {
                 getPlayerBoard().getMonsterCards()[i].setHasAttacked(false);
         player1Turn = !player1Turn;
     }
+
+    /**
+     * Painkiller is a cheat to increase the players health
+     */
+    public void painkiller() {
+        getPlayerBoard().getPlayer().increaseHealth(8000);
+    }
 }

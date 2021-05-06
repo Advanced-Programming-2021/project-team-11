@@ -7,6 +7,7 @@ import model.exceptions.InsufficientBalanceException;
 
 public class ShopMenuController {
     private static final int INCREASE_MONEY_CHEAT_DIFF = 100000;
+
     public static void buyCardForUser(User user, String cardName) throws CardNotExistsException, InsufficientBalanceException {
         Card card = Card.getCardByName(cardName);
         if (card == null)
@@ -19,5 +20,9 @@ public class ShopMenuController {
 
     public static void increaseMoneyCheat(User user) {
         user.increaseMoney(INCREASE_MONEY_CHEAT_DIFF);
+    }
+
+    public static void addAllCardsCheat(User user) {
+        Card.getAllCards().forEach(user::addCardToPlayer);
     }
 }

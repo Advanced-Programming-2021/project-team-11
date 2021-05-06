@@ -22,4 +22,8 @@ public class Setuper {
     public static ByteArrayOutputStream getOutput() {
         return outContent;
     }
+
+    public static String getOutputString() {
+        return outContent.toString().replaceAll("\r\n","\n");
+    }
 }

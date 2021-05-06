@@ -9,6 +9,7 @@ import model.exceptions.InvalidCommandException;
 import view.menus.commands.shop.ShopBuyItemCommand;
 
 public class ShopMenu extends Menu {
+    private static final String CHEAT_MONEY = "HESOYAM", CHEAT_CARDS = "TOOLUP";
     private final User loggedInUser;
 
     ShopMenu(User loggedInUser) {
@@ -27,7 +28,7 @@ public class ShopMenu extends Menu {
             } catch (InvalidCommandException ignored) {
             }
             // Other commands
-            if (buyCard(command) || hesoyam(command) || showAllCards(command))
+            if (buyCard(command) || hesoyam(command) || showAllCards(command) || toolup(command))
                 continue;
             System.out.println(MenuUtils.INVALID_COMMAND);
         }
@@ -55,9 +56,18 @@ public class ShopMenu extends Menu {
     }
 
     private boolean hesoyam(String command) {
-        if (command.equals("HESOYAM")) {
+        if (command.equals(CHEAT_MONEY)) {
             ShopMenuController.increaseMoneyCheat(loggedInUser);
             System.out.println("$$$$$$$$$$$$$$$$");
+            return true;
+        }
+        return false;
+    }
+
+    private boolean toolup(String command) {
+        if (command.equals(CHEAT_CARDS)) {
+            ShopMenuController.addAllCardsCheat(loggedInUser);
+            System.out.println(":)");
             return true;
         }
         return false;
