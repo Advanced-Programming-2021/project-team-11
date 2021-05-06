@@ -14,6 +14,7 @@ public class PlayerBoard {
     private final ArrayList<PlayableCard> graveyard = new ArrayList<>();
     private final ArrayList<PlayableCard> hand = new ArrayList<>(6);
     private final ArrayList<Card> deck;
+    private PlayableCard field;
 
     public PlayerBoard(Player player, ArrayList<Card> cards) {
         this.player = player;
@@ -41,11 +42,27 @@ public class PlayerBoard {
         return hand;
     }
 
-    public void drawCard() {
+    /**
+     * Tries to draw a card from players deck
+     *
+     * @return If there is no more cards to draw, returns false
+     */
+    public boolean drawCard() {
+        if (deck.size() == 0)
+            return false;
         if (hand.size() < 6) {
             hand.add(new PlayableCard(deck.get(0), CardPlaceType.HAND));
             deck.remove(0);
         }
+        return true;
+    }
+
+    public PlayableCard getField() {
+        return field;
+    }
+
+    public void setField(PlayableCard field) {
+        this.field = field;
     }
 
     public void removeHandCard(int index) {

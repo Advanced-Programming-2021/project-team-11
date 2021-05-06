@@ -19,17 +19,13 @@ public class GameRoundController {
         END_PHASE,
     }
 
-    ;
-
     private static enum GameStatus {
         ONGOING,
         PLAYER1_SURRENDER,
-        PlAYER2_SURRENDER,
+        PLAYER2_SURRENDER,
         PLAYER1_WON,
         PLAYER2_WON,
     }
-
-    ;
 
     private final PlayerBoard player1Board;
     private final PlayerBoard player2Board;
@@ -49,26 +45,33 @@ public class GameRoundController {
         phase = Phase.DRAW;
     }
 
-    public void selectCard(int index, boolean fromPlayer1, CardPlaceType cardPlace) {
+    public void selectCard(int index, boolean fromOpponent, CardPlaceType cardPlace) throws NoCardFoundInPositionException {
         switch (cardPlace) {
             case SPELL:
-                selectedCard = getPlayerBoard().getSpellCards()[index - 1];
+                selectedCard = (fromOpponent ? getRivalBoard() : getPlayerBoard()).getSpellCards()[index - 1];
                 break;
             case MONSTER:
-                selectedCard = getPlayerBoard().getMonsterCards()[index - 1];
+                selectedCard = (fromOpponent ? getRivalBoard() : getPlayerBoard()).getMonsterCards()[index - 1];
                 break;
             case GRAVEYARD:
-                selectedCard = getPlayerBoard().getGraveyard().get(index - 1);
+                selectedCard = (fromOpponent ? getRivalBoard() : getPlayerBoard()).getGraveyard().get(index - 1);
                 break;
             case HAND:
-                selectedCard = getPlayerBoard().getHand().get(index - 1);
+                selectedCard = (fromOpponent ? getRivalBoard() : getPlayerBoard()).getHand().get(index - 1);
+                break;
+            case FIELD:
+                selectedCard = (fromOpponent ? getRivalBoard() : getPlayerBoard()).getField();
                 break;
             default:
                 throw new BooAnException("Card place not found!");
         }
+        if (selectedCard == null)
+            throw new NoCardFoundInPositionException();
     }
 
-    public void deselectCard() {
+    public void deselectCard() throws NoCardSelectedYetException {
+        if (selectedCard == null)
+            throw new NoCardSelectedYetException();
         selectedCard = null;
     }
 
@@ -90,7 +93,7 @@ public class GameRoundController {
             if (getRivalBoard().getMonsterCards()[i] != null)
                 throw new CantAttackToPlayerException();
 
-        int attacked = selectedCard.getAttackDelta();
+        int attacked = selectedCard.getAttack();
         getRivalBoard().getPlayer().decreaseHealth(attacked);
         selectedCard.setHasAttacked(true);
         endTurn();
@@ -119,7 +122,6 @@ public class GameRoundController {
 
     public void draw() {
         getPlayerBoard().drawCard();
-        endTurn();
     }
 
 //    public void setCardPosition(boolean attacking) {
@@ -160,7 +162,10 @@ public class GameRoundController {
     }
 
     private void endTurn() {
-        deselectCard();
+        try {
+            deselectCard();
+        } catch (NoCardSelectedYetException ignored) {
+        }
         for (int i = 0; i < 5; i++)
             if (getPlayerBoard().getMonsterCards()[i] != null)
                 getPlayerBoard().getMonsterCards()[i].setHasAttacked(false);

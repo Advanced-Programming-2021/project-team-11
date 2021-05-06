@@ -1,10 +1,16 @@
 package view.menus;
 
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
 import controller.GameController;
+import controller.menucontrollers.LoginMenuController;
 import model.PlayerBoard;
 import model.User;
 import model.enums.GameRounds;
 import model.exceptions.InvalidCommandException;
+import model.exceptions.NoCardFoundInPositionException;
+import model.exceptions.NoCardSelectedYetException;
+import view.menus.commands.game.SelectCommand;
 
 import java.util.Arrays;
 
@@ -57,6 +63,36 @@ public class DuelMenu extends Menu {
             return true;
         }
         return false;
+    }
+
+    private boolean selectCommandProcessor(String command) {
+        try {
+            SelectCommand selectCommand = new SelectCommand();
+            JCommander.newBuilder()
+                    .addObject(selectCommand)
+                    .build()
+                    .parse(selectCommand.removePrefix(command).split(" "));
+            if (!selectCommand.isValid())
+                throw new InvalidCommandException();
+            // Check what command this is
+            if (selectCommand.isDeselect()) {
+                gameController.getRound().deselectCard();
+                System.out.println("card deselected");
+                return true;
+            }
+            if (!selectCommand.isSelectionValid()) {
+                System.out.println("invalid selection");
+                return true;
+            }
+            gameController.getRound().selectCard(selectCommand.getIndex(), selectCommand.isOpponent(), selectCommand.getCardPlaceType());
+            System.out.println("card selected");
+            return true;
+        } catch (InvalidCommandException | ParameterException e) {
+            return false;
+        } catch (NoCardSelectedYetException | NoCardFoundInPositionException e) {
+            System.out.println(e.getMessage());
+            return true;
+        }
     }
 
     public static void printRivalBoard(PlayerBoard board) {

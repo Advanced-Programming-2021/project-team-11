@@ -61,6 +61,16 @@ public class SelectCommand implements Command {
         return null;
     }
 
+    public int getIndex() {
+        if (monster != 0)
+            return monster;
+        if (spell != 0)
+            return spell;
+        if (hand != 0)
+            return hand;
+        return -1;
+    }
+
     public boolean isSelectionValid() {
         if (!isValid())
             return false;
