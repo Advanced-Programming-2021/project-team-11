@@ -140,13 +140,7 @@ public class DeckMenu extends Menu {
                     .parse(showDeckCommand.removePrefix(command).split(" "));
             ArrayList<Card> cards = DeckMenuController.getDeckCards(loggedInUser, showDeckCommand.getDeckName(), showDeckCommand.isSide());
             System.out.printf("Deck: %s\n", showDeckCommand.getDeckName());
-            System.out.printf("%s deck:\n", showDeckCommand.isSide() ? "Side" : "Main");
-            System.out.println("Monsters:");
-            cards.stream().filter(x -> x.getCardType() == CardType.MONSTER).sorted()
-                    .forEach(x -> System.out.printf("%s: %s\n", x.getName(), x.getDescription()));
-            System.out.println("Spell and Traps:");
-            cards.stream().filter(x -> x.getCardType() != CardType.MONSTER).sorted()
-                    .forEach(x -> System.out.printf("%s: %s\n", x.getName(), x.getDescription()));
+            showDeckCards(cards, showDeckCommand.isSide());
             return true;
         } catch (DeckDoesNotExistsException e) {
             System.out.println(e.getMessage());
@@ -154,6 +148,16 @@ public class DeckMenu extends Menu {
         } catch (InvalidCommandException | ParameterException e) {
             return false;
         }
+    }
+
+    public static void showDeckCards(ArrayList<Card> cards, boolean isSide) {
+        System.out.printf("%s deck:\n", isSide ? "Side" : "Main");
+        System.out.println("Monsters:");
+        cards.stream().filter(x -> x.getCardType() == CardType.MONSTER).sorted()
+                .forEach(x -> System.out.printf("%s: %s\n", x.getName(), x.getDescription()));
+        System.out.println("Spell and Traps:");
+        cards.stream().filter(x -> x.getCardType() != CardType.MONSTER).sorted()
+                .forEach(x -> System.out.printf("%s: %s\n", x.getName(), x.getDescription()));
     }
 
     private void showAllCards() {

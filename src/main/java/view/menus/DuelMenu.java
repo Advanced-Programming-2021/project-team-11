@@ -51,6 +51,13 @@ public class DuelMenu extends Menu {
                 System.out.println("Game Over!");
                 return;
             }
+            if (isRoundEnded) { // when we reach here, we must allow the users to change their decks
+                isRoundEnded = false;
+                new DuelChangeSideDeckMenu(player1).openMenu();
+                new DuelChangeSideDeckMenu(player2).openMenu();
+                // TODO Start a new round
+                continue;
+            }
             // Check commands
         }
     }

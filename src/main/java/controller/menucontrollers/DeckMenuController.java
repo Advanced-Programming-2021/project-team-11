@@ -150,4 +150,19 @@ public class DeckMenuController {
         }
         return cards;
     }
+
+    public static void swapCards(Deck deck, String mainDeckCardName, String sideDeckCardName) throws DeckCardNotExistsException {
+        // Get cards
+        Optional<Card> mainDeckCardCandidate = deck.getMainDeck().stream().filter(x -> x.getName().equals(mainDeckCardName)).findFirst();
+        if (!mainDeckCardCandidate.isPresent())
+            throw new DeckCardNotExistsException(mainDeckCardName, false);
+        Optional<Card> sideDeckCardCandidate = deck.getSideDeck().stream().filter(x -> x.getName().equals(sideDeckCardName)).findFirst();
+        if (!sideDeckCardCandidate.isPresent())
+            throw new DeckCardNotExistsException(sideDeckCardName, true);
+        // Swap!
+        deck.removeCardFromMainDeck(mainDeckCardCandidate.get());
+        deck.removeCardFromSideDeck(sideDeckCardCandidate.get());
+        deck.addCardToMainDeck(sideDeckCardCandidate.get());
+        deck.addCardToSideDeck(mainDeckCardCandidate.get());
+    }
 }
