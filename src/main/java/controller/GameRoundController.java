@@ -5,28 +5,13 @@ import model.PlayerBoard;
 import model.cards.CardType;
 import model.cards.SpellCard;
 import model.enums.CardPlaceType;
+import model.enums.GamePhase;
+import model.enums.GameStatus;
 import model.exceptions.*;
 
 import java.util.ArrayList;
 
 public class GameRoundController {
-    private static enum Phase {
-        DRAW,
-        STANDBY,
-        MAIN1,
-        BATTLE_PHASE,
-        MAIN2,
-        END_PHASE,
-    }
-
-    private static enum GameStatus {
-        ONGOING,
-        PLAYER1_SURRENDER,
-        PLAYER2_SURRENDER,
-        PLAYER1_WON,
-        PLAYER2_WON,
-    }
-
     private final PlayerBoard player1Board;
     private final PlayerBoard player2Board;
     private final ArrayList<PlayableCard> chainLink;
@@ -34,7 +19,7 @@ public class GameRoundController {
     private boolean player1Turn;
     private SpellCard field;
     private GameStatus gameStatus;
-    private Phase phase;
+    private GamePhase phase;
 
     GameRoundController(PlayerBoard player1Board, PlayerBoard player2Board, boolean player1Starting) {
         this.player1Board = player1Board;
@@ -42,7 +27,40 @@ public class GameRoundController {
         player1Turn = player1Starting;
         chainLink = new ArrayList<>();
         gameStatus = GameStatus.ONGOING;
-        phase = Phase.DRAW;
+        phase = GamePhase.DRAW;
+    }
+
+    /**
+     * Moves one phase forward and does anything if needed
+     *
+     * @return The current phase after advancing
+     */
+    public GamePhase advancePhase() {
+        switch (phase) {
+            case DRAW:
+                phase = GamePhase.STANDBY;
+                // TODO: Do something?
+                break;
+            case STANDBY:
+                phase = GamePhase.MAIN1;
+                break;
+            case MAIN1:
+                phase = GamePhase.BATTLE_PHASE;
+                break;
+            case BATTLE_PHASE:
+                phase = GamePhase.MAIN2;
+                break;
+            case MAIN2:
+                phase = GamePhase.END_PHASE;
+                endTurn(); // change the turn
+                break;
+            case END_PHASE:
+                phase = GamePhase.DRAW;
+                if (!getPlayerBoard().drawCard()) // player lost the round!
+                    gameStatus = isPlayer1Turn() ? GameStatus.PLAYER2_WON : GameStatus.PLAYER1_WON;
+                break;
+        }
+        return phase;
     }
 
     public void selectCard(int index, boolean fromOpponent, CardPlaceType cardPlace) throws NoCardFoundInPositionException {
@@ -85,7 +103,7 @@ public class GameRoundController {
             throw new NoCardSelectedException();
         if (selectedCard.getCardPlace() != CardPlaceType.MONSTER)
             throw new CantAttackCardException();
-        if (phase != Phase.BATTLE_PHASE)
+        if (phase != GamePhase.BATTLE_PHASE)
             throw new InvalidPhaseActionException();
         if (selectedCard.hasAttacked())
             throw new CardAlreadyAttackedException();
@@ -96,7 +114,6 @@ public class GameRoundController {
         int attacked = selectedCard.getAttack();
         getRivalBoard().getPlayer().decreaseHealth(attacked);
         selectedCard.setHasAttacked(true);
-        endTurn();
         return attacked;
     }
 
@@ -111,7 +128,6 @@ public class GameRoundController {
         else
             getPlayerBoard().addSpellCard(selectedCard);
         getPlayerBoard().removeHandCard(selectedCard);
-        endTurn();
     }
 
 //    public void flipSummon() {
@@ -170,6 +186,18 @@ public class GameRoundController {
             if (getPlayerBoard().getMonsterCards()[i] != null)
                 getPlayerBoard().getMonsterCards()[i].setHasAttacked(false);
         player1Turn = !player1Turn;
+    }
+
+    public GamePhase getPhase() {
+        return phase;
+    }
+
+    public GameStatus getGameStatus() {
+        return gameStatus;
+    }
+
+    public boolean isPlayer1Turn() {
+        return player1Turn;
     }
 
     /**

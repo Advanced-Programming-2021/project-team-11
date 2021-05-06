@@ -3,13 +3,17 @@ package view.menus;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import controller.GameController;
+import controller.GameRoundController;
 import controller.menucontrollers.LoginMenuController;
 import model.PlayerBoard;
 import model.User;
+import model.enums.GamePhase;
 import model.enums.GameRounds;
+import model.enums.GameStatus;
 import model.exceptions.InvalidCommandException;
 import model.exceptions.NoCardFoundInPositionException;
 import model.exceptions.NoCardSelectedYetException;
+import model.game.GameEndResults;
 import view.menus.commands.game.SelectCommand;
 
 import java.util.Arrays;
@@ -19,14 +23,14 @@ public class DuelMenu extends Menu {
     private static final String SUMMON_COMMAND = "summon", FLIP_SUMMON_COMMAND = "flip-summon",
             ATTACK_PREFIX_COMMAND = "attack ", ATTACK_DIRECT_COMMAND = "attack direct",
             ACTIVATE_EFFECT_COMMAND = "activate effect", SHOW_CARD_COMMAND = "card show --selected",
-            SURRENDER_COMMAND = "surrender", CHEAT_HP = "PAINKILLER";
-    private final User player1, player2;
+            SURRENDER_COMMAND = "surrender", CHEAT_HP = "PAINKILLER", NEXT_PHASE_COMMAND = "next phase";
     private final GameController gameController;
+    private final User player1, player2;
+    private boolean isRoundEnded = false, isGameEnded = false;
 
     DuelMenu(User player1, User player2, GameRounds rounds) {
         this.player1 = player1;
         this.player2 = player2;
-        // Say who is the beginner
         System.out.printf("%s is the beginner!", player1.getUsername());
         gameController = new GameController(player1, player2, rounds);
         openMenu();
@@ -42,8 +46,36 @@ public class DuelMenu extends Menu {
                 continue;
             } catch (InvalidCommandException ignored) {
             }
+            // Check game and round status
+            if (isGameEnded) {
+                System.out.println("Game Over!");
+                return;
+            }
             // Check commands
         }
+    }
+
+    /**
+     * Checks the round end status and does some stuff in controller in order to make
+     *
+     * @return True if the round has been ended
+     */
+    private boolean checkRoundEnd() {
+        if (gameController.isRoundEnded() != GameStatus.ONGOING) {
+            isRoundEnded = true;
+            GameEndResults results = gameController.isGameEnded();
+            if (results != null) {
+                isGameEnded = true;
+                // Apply the results
+                System.out.printf("%s is the winner!\n", results.didPlayer1Won() ? player1.getNickname() : player2.getNickname());
+                player1.increaseScore(results.getPlayer1Score());
+                player1.increaseMoney(results.getPlayer1Money());
+                player2.increaseScore(results.getPlayer2Score());
+                player2.increaseMoney(results.getPlayer2Money());
+            }
+            return true;
+        }
+        return false;
     }
 
     private void printBoard() {
@@ -131,6 +163,31 @@ public class DuelMenu extends Menu {
         // Count cards in hand
         board.getHand().forEach(x -> System.out.print("c\t"));
         System.out.println();
+    }
+
+    private boolean nextPhase(String command) {
+        if (!command.equals(NEXT_PHASE_COMMAND))
+            return false;
+        int oldHandSize = gameController.getRound().getPlayerBoard().getHand().size();
+        GamePhase nowPhase = gameController.getRound().advancePhase();
+        if (checkRoundEnd()) // check player lost on draw
+            return true;
+        // Otherwise process the data
+        System.out.printf("phase: %s\n", nowPhase.toString());
+        switch (nowPhase) {
+            case DRAW:
+                if (oldHandSize != 6)
+                    System.out.printf("new card added to the hand: %s\n", gameController.getRound().getPlayerBoard().getHand().get(oldHandSize).getCard().getName());
+                break;
+            case MAIN1:
+            case MAIN2:
+                printBoard();
+                break;
+            case END_PHASE:
+                System.out.printf("its %s's turn\n", gameController.getRound().getPlayerBoard().getPlayer().getUser().getNickname());
+                break;
+        }
+        return true;
     }
 
     @Override

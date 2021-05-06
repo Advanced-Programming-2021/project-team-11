@@ -4,6 +4,7 @@ import model.Player;
 import model.PlayerBoard;
 import model.User;
 import model.enums.GameRounds;
+import model.enums.GameStatus;
 import model.game.GameEndResults;
 
 import java.util.ArrayList;
@@ -48,6 +49,28 @@ public class GameController {
         else if (player2RoundsWon == 2)
             return new GameEndResults(player1MaxHealth, player2MaxHealth, false, 3);
         return null;
+    }
+
+    /**
+     * Checks if the round has been ended
+     * Does the after round stuff as well if it has been ended
+     *
+     * @return The status of the game. Round is not ended if it is {@link GameStatus#ONGOING}
+     */
+    public GameStatus isRoundEnded() {
+        if (round.getGameStatus() != GameStatus.ONGOING)
+            afterRoundCleanup();
+        return round.getGameStatus();
+    }
+
+    private void afterRoundCleanup() {
+        player1MaxHealth = Math.max(player1MaxHealth, round.getPlayer1Board().getPlayer().getHealth());
+        player2MaxHealth = Math.max(player2MaxHealth, round.getPlayer2Board().getPlayer().getHealth());
+        if (round.getGameStatus() == GameStatus.PLAYER1_WON || round.getGameStatus() == GameStatus.PLAYER2_SURRENDER)
+            player1RoundsWon++;
+        else
+            player2RoundsWon++;
+        player1Starting = !player1Starting;
     }
 
     public void setupRound() {
