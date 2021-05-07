@@ -3,6 +3,8 @@ package controller;
 import model.PlayableCard;
 import model.PlayerBoard;
 import model.cards.CardType;
+import model.cards.MonsterCard;
+import model.cards.MonsterCardType;
 import model.cards.SpellCard;
 import model.enums.CardPlaceType;
 import model.enums.GamePhase;
@@ -10,13 +12,15 @@ import model.enums.GameStatus;
 import model.exceptions.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
 
 public class GameRoundController {
     private final PlayerBoard player1Board;
     private final PlayerBoard player2Board;
     private final ArrayList<PlayableCard> chainLink;
     private PlayableCard selectedCard;
-    private boolean player1Turn;
+    private boolean player1Turn, playerAlreadySummoned = false;
     private SpellCard field;
     private GameStatus gameStatus;
     private GamePhase phase;
@@ -107,9 +111,8 @@ public class GameRoundController {
             throw new InvalidPhaseActionException();
         if (selectedCard.hasAttacked())
             throw new CardAlreadyAttackedException();
-        for (int i = 0; i < 5; i++)
-            if (getRivalBoard().getMonsterCards()[i] != null)
-                throw new CantAttackToPlayerException();
+        if (Arrays.stream(getRivalBoard().getMonsterCards()).anyMatch(Objects::nonNull))
+            throw new CantAttackToPlayerException();
 
         int attacked = selectedCard.getAttack();
         getRivalBoard().getPlayer().decreaseHealth(attacked);
@@ -133,14 +136,60 @@ public class GameRoundController {
 //    public void flipSummon() {
 //    }
 //
-//    public void summonCard(int[] tributes) {
-//    }
 
-    public void draw() {
-        getPlayerBoard().drawCard();
+    public void summonCard() throws NoCardSelectedYetException, CantSummonCardException, InvalidPhaseActionException, MonsterCardZoneFullException, AlreadySummonedException, NotEnoughCardsToTributeException, TributeNeededException {
+        if (selectedCard == null)
+            throw new NoCardSelectedYetException();
+        if (selectedCard.getCardPlace() != CardPlaceType.HAND || selectedCard.getCard().getCardType() != CardType.MONSTER
+                || isPlayableCardInRivalHand(selectedCard) || ((MonsterCard) selectedCard.getCard()).getMonsterCardType() == MonsterCardType.RITUAL)
+            throw new CantSummonCardException();
+        if (phase != GamePhase.MAIN2 && phase != GamePhase.MAIN1)
+            throw new InvalidPhaseActionException();
+        if (getPlayerBoard().isMonsterZoneFull())
+            throw new MonsterCardZoneFullException();
+        if (playerAlreadySummoned)
+            throw new AlreadySummonedException();
+        int level = ((MonsterCard) selectedCard.getCard()).getLevel();
+        if (level <= 4) { // GG! summon the card
+            summonSelectedCard();
+            return;
+        }
+        int cardsToTribute, activeMonstersCount = getPlayerBoard().countActiveMonsterCards();
+        if (level <= 6)
+            cardsToTribute = 1;
+        else if (level <= 8)
+            cardsToTribute = 2;
+        else
+            cardsToTribute = 3;
+        if (cardsToTribute > activeMonstersCount)
+            throw new NotEnoughCardsToTributeException();
+        throw new TributeNeededException(cardsToTribute);
     }
 
-//    public void setCardPosition(boolean attacking) {
+    /**
+     * Summons card with tributes. Please note that you must not immodestly call this function
+     * At first call {@link #summonCard()} then call this function
+     *
+     * @param tributes The positions of cards to tribute
+     */
+    public void summonCard(ArrayList<Integer> tributes) throws NoMonsterOnTheseAddressesException {
+        // Check these places
+        if (tributes.stream().anyMatch(x -> getPlayerBoard().getMonsterCards()[x] == null))
+            throw new NoMonsterOnTheseAddressesException();
+        // Remove them and add the card!
+        tributes.forEach(x -> getPlayerBoard().removeMonsterCard(x));
+        summonSelectedCard();
+    }
+
+    private void summonSelectedCard() {
+        selectedCard.makeVisible();
+        selectedCard.setAttacking();
+        getPlayerBoard().addMonsterCard(selectedCard);
+        selectedCard = null;
+        playerAlreadySummoned = true;
+    }
+
+    //    public void setCardPosition(boolean attacking) {
 //    }
 //
 //    public void activeSpell() {
@@ -152,12 +201,10 @@ public class GameRoundController {
 //    public int checkWinner() {
 //    }
 //
-//    public void surrender() {
-//    }
-//
-//    public void gameEnd() {
-//    }
-//
+    public void surrender() {
+        gameStatus = isPlayer1Turn() ? GameStatus.PLAYER1_SURRENDER : GameStatus.PLAYER2_SURRENDER;
+    }
+
 //    public String boardForPlayer() {
 //    }
 
@@ -178,14 +225,12 @@ public class GameRoundController {
     }
 
     private void endTurn() {
-        try {
-            deselectCard();
-        } catch (NoCardSelectedYetException ignored) {
-        }
+        selectedCard = null;
         for (int i = 0; i < 5; i++)
             if (getPlayerBoard().getMonsterCards()[i] != null)
                 getPlayerBoard().getMonsterCards()[i].setHasAttacked(false);
         player1Turn = !player1Turn;
+        playerAlreadySummoned = false;
     }
 
     public GamePhase getPhase() {
@@ -205,5 +250,11 @@ public class GameRoundController {
      */
     public void painkiller() {
         getPlayerBoard().getPlayer().increaseHealth(8000);
+    }
+
+    private boolean isPlayableCardInRivalHand(PlayableCard card) {
+        return getRivalBoard().getHand().stream().anyMatch(x -> x == card) || Arrays.stream(getRivalBoard().getMonsterCards()).anyMatch(x -> x == card)
+                || Arrays.stream(getRivalBoard().getSpellCards()).anyMatch(x -> x == card) || getRivalBoard().getGraveyard().stream().anyMatch(x -> x == card) ||
+                getRivalBoard().getField() == card;
     }
 }

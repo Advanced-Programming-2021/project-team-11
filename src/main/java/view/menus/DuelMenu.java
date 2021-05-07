@@ -10,20 +10,21 @@ import model.User;
 import model.enums.GamePhase;
 import model.enums.GameRounds;
 import model.enums.GameStatus;
-import model.exceptions.InvalidCommandException;
-import model.exceptions.NoCardFoundInPositionException;
-import model.exceptions.NoCardSelectedYetException;
+import model.exceptions.*;
 import model.game.GameEndResults;
 import view.menus.commands.game.SelectCommand;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.TreeSet;
 
 public class DuelMenu extends Menu {
     private static final int[] RIVAL_BOARD_INDEXES = {5, 3, 1, 2, 4}, MY_BOARD_INDEXES = {4, 2, 1, 3, 5};
     private static final String SUMMON_COMMAND = "summon", FLIP_SUMMON_COMMAND = "flip-summon",
             ATTACK_PREFIX_COMMAND = "attack ", ATTACK_DIRECT_COMMAND = "attack direct",
             ACTIVATE_EFFECT_COMMAND = "activate effect", SHOW_CARD_COMMAND = "card show --selected",
-            SURRENDER_COMMAND = "surrender", CHEAT_HP = "PAINKILLER", NEXT_PHASE_COMMAND = "next phase";
+            SURRENDER_COMMAND = "surrender", CHEAT_HP = "PAINKILLER", NEXT_PHASE_COMMAND = "next phase",
+            CANCEL_COMMAND = "cancel";
     private final GameController gameController;
     private final User player1, player2;
     private boolean isRoundEnded = false, isGameEnded = false;
@@ -59,6 +60,9 @@ public class DuelMenu extends Menu {
                 continue;
             }
             // Check commands
+            if (painkiller(command) || selectCommandProcessor(command) || nextPhase(command) || selectCommandProcessor(command) || summon(command))
+                continue;
+            System.out.println(MenuUtils.INVALID_COMMAND);
         }
     }
 
@@ -125,13 +129,12 @@ public class DuelMenu extends Menu {
             }
             gameController.getRound().selectCard(selectCommand.getIndex(), selectCommand.isOpponent(), selectCommand.getCardPlaceType());
             System.out.println("card selected");
-            return true;
         } catch (InvalidCommandException | ParameterException e) {
             return false;
         } catch (NoCardSelectedYetException | NoCardFoundInPositionException e) {
             System.out.println(e.getMessage());
-            return true;
         }
+        return true;
     }
 
     public static void printRivalBoard(PlayerBoard board) {
@@ -193,6 +196,53 @@ public class DuelMenu extends Menu {
             case END_PHASE:
                 System.out.printf("its %s's turn\n", gameController.getRound().getPlayerBoard().getPlayer().getUser().getNickname());
                 break;
+        }
+        return true;
+    }
+
+    private boolean summon(String command) {
+        if (!command.equals(SUMMON_COMMAND))
+            return false;
+        boolean success = false;
+        try {
+            gameController.getRound().summonCard();
+            success = true;
+        } catch (AlreadySummonedException | NotEnoughCardsToTributeException | NoCardSelectedYetException | CantSummonCardException
+                | InvalidPhaseActionException | MonsterCardZoneFullException e) {
+            System.out.println(e.getMessage());
+        } catch (TributeNeededException e) {
+            success = summonWithTribute(e.getNeededTributes());
+        }
+        if (success) {
+            System.out.println("summoned successfully");
+            printBoard();
+        }
+        return true;
+    }
+
+    /**
+     * Gets the card positions to remove from user monster card zone
+     *
+     * @param neededCardsToTribute Number of cards needed to tribute
+     * @return True if we have successfully got all card. False if user have canceled it
+     */
+    private boolean summonWithTribute(int neededCardsToTribute) {
+        TreeSet<Integer> cardPositions = new TreeSet<>();
+        while (cardPositions.size() != neededCardsToTribute) {
+            System.out.print("Select a card position to tribute or type \"cancel\" to cancel: ");
+            String command = MenuUtils.readLine();
+            if (command.equals(CANCEL_COMMAND))
+                return false;
+            try {
+                cardPositions.add(Integer.parseInt(command));
+            } catch (NumberFormatException ignored) {
+            }
+        }
+        // Try to tribute
+        try {
+            gameController.getRound().summonCard(new ArrayList<>(cardPositions));
+        } catch (NoMonsterOnTheseAddressesException e) {
+            return false;
         }
         return true;
     }

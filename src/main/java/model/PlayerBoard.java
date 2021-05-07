@@ -5,7 +5,9 @@ import model.enums.CardPlaceType;
 import model.exceptions.BooAnException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Objects;
 
 public class PlayerBoard {
     private final Player player;
@@ -82,21 +84,35 @@ public class PlayerBoard {
     }
 
     public int addMonsterCard(PlayableCard card) {
+        card.setCardPlace(CardPlaceType.MONSTER);
         for (int i = 0; i < monsterCard.length; i++)
             if (monsterCard[i] == null) {
                 monsterCard[i] = card;
                 return i;
             }
-        throw new BooAnException("Monster deck is full");
+        throw new BooAnException("Monster zone is full");
     }
 
     public int addSpellCard(PlayableCard card) {
+        card.setCardPlace(CardPlaceType.SPELL);
         for (int i = 0; i < spellCard.length; i++)
             if (spellCard[i] == null) {
                 spellCard[i] = card;
                 return i;
             }
-        throw new BooAnException("Spell deck is full");
+        throw new BooAnException("Spell zone is full");
+    }
+
+    public boolean isMonsterZoneFull() {
+        return Arrays.stream(monsterCard).noneMatch(Objects::isNull);
+    }
+
+    public boolean isSpellZoneFull() {
+        return Arrays.stream(spellCard).noneMatch(Objects::isNull);
+    }
+
+    public int countActiveMonsterCards() {
+        return (int) Arrays.stream(monsterCard).filter(Objects::nonNull).count();
     }
 
     public PlayableCard[] getMonsterCards() {

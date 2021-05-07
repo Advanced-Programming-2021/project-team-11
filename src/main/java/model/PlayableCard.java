@@ -32,6 +32,14 @@ public class PlayableCard {
         return attack;
     }
 
+    public void setAttacking() {
+        attack = true;
+    }
+
+    public void setDefencing() {
+        attack = false;
+    }
+
     public Card getCard() {
         return card;
     }
