@@ -2,10 +2,7 @@ package controller;
 
 import model.PlayableCard;
 import model.PlayerBoard;
-import model.cards.CardType;
-import model.cards.MonsterCard;
-import model.cards.MonsterCardType;
-import model.cards.SpellCard;
+import model.cards.*;
 import model.enums.AttackResult;
 import model.enums.CardPlaceType;
 import model.enums.GamePhase;
@@ -296,12 +293,17 @@ public class GameRoundController {
         selectedCard.swapAttackMode();
     }
 
-//    public void activeSpell() {
+    //    public void activeSpell() {
 //    }
 //
-//    public String getCard() {
-//    }
-//
+    public Card getSelectedCard() throws NoCardSelectedYetException, CardHiddenException {
+        if (selectedCard == null)
+            throw new NoCardSelectedYetException();
+        if (selectedCard.isHidden())
+            throw new CardHiddenException();
+        return selectedCard.getCard();
+    }
+
 
     public void surrender() {
         gameStatus = isPlayer1Turn() ? GameStatus.PLAYER1_SURRENDER : GameStatus.PLAYER2_SURRENDER;
@@ -329,10 +331,6 @@ public class GameRoundController {
         Arrays.stream(getPlayerBoard().getMonsterCards()).filter(Objects::nonNull).forEach(PlayableCard::resetPositionChangedInThisTurn);
         player1Turn = !player1Turn;
         playerAlreadySummoned = false;
-    }
-
-    public GamePhase getPhase() {
-        return phase;
     }
 
     public GameStatus getGameStatus() {

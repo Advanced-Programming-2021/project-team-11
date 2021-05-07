@@ -3,6 +3,7 @@ package view.menus;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import controller.GameController;
+import model.PlayableCard;
 import model.PlayerBoard;
 import model.User;
 import model.enums.GamePhase;
@@ -24,7 +25,7 @@ public class DuelMenu extends Menu {
             ATTACK_PREFIX_COMMAND = "attack ", ATTACK_DIRECT_COMMAND = "attack direct",
             ACTIVATE_EFFECT_COMMAND = "activate effect", SHOW_CARD_COMMAND = "card show --selected",
             SURRENDER_COMMAND = "surrender", CHEAT_HP = "PAINKILLER", NEXT_PHASE_COMMAND = "next phase",
-            CANCEL_COMMAND = "cancel";
+            CANCEL_COMMAND = "cancel", SHOW_GRAVEYARD_COMMAND = "show graveyard";
     private final GameController gameController;
     private final User player1, player2;
     private boolean isRoundEnded = false, isGameEnded = false;
@@ -59,9 +60,12 @@ public class DuelMenu extends Menu {
                 // TODO Start a new round
                 continue;
             }
+            if (checkRoundEnd())
+                continue;
             // Check commands
             if (painkiller(command) || selectCommandProcessor(command) || nextPhase(command) || selectCommandProcessor(command)
-                    || summon(command) || setCard(command) || flipSummon(command) || directAttack(command) || attackToMonster(command))
+                    || summon(command) || setCard(command) || flipSummon(command) || directAttack(command) || attackToMonster(command)
+                    || showGraveyard(command) || surrender(command) || showCard(command))
                 continue;
             System.out.println(MenuUtils.INVALID_COMMAND);
         }
@@ -73,18 +77,23 @@ public class DuelMenu extends Menu {
      * @return True if the round has been ended
      */
     private boolean checkRoundEnd() {
-        if (gameController.isRoundEnded() != GameStatus.ONGOING) {
+        GameStatus roundStatus = gameController.isRoundEnded();
+        if (roundStatus != GameStatus.ONGOING) {
             isRoundEnded = true;
             GameEndResults results = gameController.isGameEnded();
             if (results != null) {
                 isGameEnded = true;
                 // Apply the results
-                System.out.printf("%s is the winner!\n", results.didPlayer1Won() ? player1.getNickname() : player2.getNickname());
+                System.out.printf("%s won the whole match with score: %d-%d\n",
+                        results.didPlayer1Won() ? player1.getNickname() : player2.getNickname(),
+                        player1.getScore(), player2.getScore());
                 player1.increaseScore(results.getPlayer1Score());
                 player1.increaseMoney(results.getPlayer1Money());
                 player2.increaseScore(results.getPlayer2Score());
                 player2.increaseMoney(results.getPlayer2Money());
+                return true;
             }
+            System.out.printf("%s won the game\n", roundStatus == GameStatus.PLAYER1_WON ? player1.getNickname() : player2.getNickname());
             return true;
         }
         return false;
@@ -328,6 +337,42 @@ public class DuelMenu extends Menu {
             MonsterAttackResult result = gameController.getRound().attackToMonster(inputToRivalBoard(positionToAttack));
             System.out.println(result.toString());
         } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return true;
+    }
+
+    private boolean showGraveyard(String command) {
+        if (!command.equals(SHOW_GRAVEYARD_COMMAND))
+            return false;
+        System.out.printf("%s's graveyard\n", player1.getNickname());
+        printGraveyard(gameController.getRound().getPlayer1Board().getGraveyard());
+        System.out.printf("%s's graveyard\n", player2.getNickname());
+        printGraveyard(gameController.getRound().getPlayer2Board().getGraveyard());
+        return true;
+    }
+
+    private static void printGraveyard(ArrayList<PlayableCard> graveyard) {
+        if (graveyard.size() == 0)
+            System.out.println("graveyard empty");
+        else
+            for (int i = 0; i < graveyard.size(); i++)
+                System.out.printf("%d. %s:%s\n", i + 1, graveyard.get(i).getCard().getName(), graveyard.get(i).getCard().getDescription());
+    }
+
+    private boolean surrender(String command) {
+        if (!command.equals(SURRENDER_COMMAND))
+            return false;
+        gameController.getRound().surrender();
+        return true;
+    }
+
+    private boolean showCard(String command) {
+        if (!command.equals(SHOW_CARD_COMMAND))
+            return false;
+        try {
+            System.out.println(gameController.getRound().getSelectedCard());
+        } catch (NoCardSelectedYetException | CardHiddenException e) {
             System.out.println(e.getMessage());
         }
         return true;

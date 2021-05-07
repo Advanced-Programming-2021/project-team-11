@@ -66,10 +66,20 @@ public class GameController {
     private void afterRoundCleanup() {
         player1MaxHealth = Math.max(player1MaxHealth, round.getPlayer1Board().getPlayer().getHealth());
         player2MaxHealth = Math.max(player2MaxHealth, round.getPlayer2Board().getPlayer().getHealth());
-        if (round.getGameStatus() == GameStatus.PLAYER1_WON || round.getGameStatus() == GameStatus.PLAYER2_SURRENDER)
-            player1RoundsWon++;
-        else
-            player2RoundsWon++;
+        switch (round.getGameStatus()) {
+            case PLAYER1_WON:
+                player1RoundsWon++;
+                break;
+            case PLAYER2_WON:
+                player2RoundsWon++;
+                break;
+            case PLAYER1_SURRENDER:
+                player2RoundsWon = rounds == GameRounds.ONE ? 1 : 2;
+                break;
+            case PLAYER2_SURRENDER:
+                player1RoundsWon = rounds == GameRounds.ONE ? 1 : 2;
+                break;
+        }
         player1Starting = !player1Starting;
     }
 
