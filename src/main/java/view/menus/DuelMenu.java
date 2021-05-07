@@ -10,6 +10,7 @@ import model.enums.GameRounds;
 import model.enums.GameStatus;
 import model.exceptions.*;
 import model.game.GameEndResults;
+import model.results.MonsterAttackResult;
 import view.menus.commands.game.SelectCommand;
 import view.menus.commands.game.SetCommand;
 
@@ -60,7 +61,7 @@ public class DuelMenu extends Menu {
             }
             // Check commands
             if (painkiller(command) || selectCommandProcessor(command) || nextPhase(command) || selectCommandProcessor(command)
-                    || summon(command) || setCard(command) || flipSummon(command))
+                    || summon(command) || setCard(command) || flipSummon(command) || directAttack(command) || attackToMonster(command))
                 continue;
             System.out.println(MenuUtils.INVALID_COMMAND);
         }
@@ -127,7 +128,8 @@ public class DuelMenu extends Menu {
                 System.out.println("invalid selection");
                 return true;
             }
-            gameController.getRound().selectCard(selectCommand.getIndex(), selectCommand.isOpponent(), selectCommand.getCardPlaceType());
+            int index = selectCommand.isOpponent() ? inputToRivalBoard(selectCommand.getIndex()) : inputToPlayerBoard(selectCommand.getIndex());
+            gameController.getRound().selectCard(index, selectCommand.isOpponent(), selectCommand.getCardPlaceType());
             System.out.println("card selected");
         } catch (InvalidCommandException | ParameterException e) {
             return false;
@@ -297,6 +299,52 @@ public class DuelMenu extends Menu {
             System.out.println(e.getMessage());
         }
         return true;
+    }
+
+    private boolean directAttack(String command) {
+        if (!command.equals(ATTACK_DIRECT_COMMAND))
+            return false;
+        try {
+            int damageReceived = gameController.getRound().attackToPlayer();
+            System.out.printf("you opponent receives %d battle damage\n", damageReceived);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return true;
+    }
+
+    private boolean attackToMonster(String command) {
+        if (!command.startsWith(ATTACK_PREFIX_COMMAND))
+            return false;
+        int positionToAttack;
+        try {
+            positionToAttack = Integer.parseInt(command.substring(ATTACK_PREFIX_COMMAND.length()));
+            if (positionToAttack <= 0 || positionToAttack > 5)
+                throw new InvalidCommandException();
+        } catch (InvalidCommandException | NumberFormatException e) {
+            return false;
+        }
+        try {
+            MonsterAttackResult result = gameController.getRound().attackToMonster(inputToRivalBoard(positionToAttack));
+            System.out.println(result.toString());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return true;
+    }
+
+    private static int inputToPlayerBoard(int index) {
+        for (int i = 0; i < MY_BOARD_INDEXES.length; i++)
+            if (MY_BOARD_INDEXES[i] == index)
+                return i;
+        throw new BooAnException("Invalid input: " + index);
+    }
+
+    private static int inputToRivalBoard(int index) {
+        for (int i = 0; i < RIVAL_BOARD_INDEXES.length; i++)
+            if (RIVAL_BOARD_INDEXES[i] == index)
+                return i;
+        throw new BooAnException("Invalid input: " + index);
     }
 
     @Override

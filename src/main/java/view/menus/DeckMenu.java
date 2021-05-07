@@ -7,6 +7,7 @@ import model.User;
 import model.cards.Card;
 import model.cards.CardType;
 import model.exceptions.*;
+import model.results.GetDecksResult;
 import view.menus.commands.deck.*;
 
 import java.util.ArrayList;
@@ -121,13 +122,13 @@ public class DeckMenu extends Menu {
     }
 
     private void showAllDecks() {
-        DeckMenuController.GetDecksResult result = DeckMenuController.getDecks(loggedInUser);
+        GetDecksResult result = DeckMenuController.getDecks(loggedInUser);
         System.out.println("Decks:");
         System.out.println("Active deck:");
         if (result.getActiveDeck() != null)
             System.out.println(result.getActiveDeck().toString());
         System.out.println("Other decks:");
-        for (DeckMenuController.GetDecksResult.DeckResult deck : result.getOtherDecks())
+        for (GetDecksResult.DeckResult deck : result.getOtherDecks())
             System.out.println(deck.toString());
     }
 

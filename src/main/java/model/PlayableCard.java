@@ -104,6 +104,15 @@ public class PlayableCard {
         this.hasAttacked = hasAttacked;
     }
 
+    public void sendToGraveyard() {
+        this.cardPlace = CardPlaceType.GRAVEYARD;
+        hidden = false;
+        hasAttacked = false;
+        changedPosition = false;
+        defenceDelta = 0;
+        attackDelta = 0;
+    }
+
     /**
      * How should rival see this card?
      *

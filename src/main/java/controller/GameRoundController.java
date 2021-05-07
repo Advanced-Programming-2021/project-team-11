@@ -6,19 +6,22 @@ import model.cards.CardType;
 import model.cards.MonsterCard;
 import model.cards.MonsterCardType;
 import model.cards.SpellCard;
+import model.enums.AttackResult;
 import model.enums.CardPlaceType;
 import model.enums.GamePhase;
 import model.enums.GameStatus;
 import model.exceptions.*;
+import model.results.MonsterAttackResult;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Stack;
 
 public class GameRoundController {
     private final PlayerBoard player1Board;
     private final PlayerBoard player2Board;
-    private final ArrayList<PlayableCard> chainLink;
+    private final Stack<PlayableCard> chainLink;
     private PlayableCard selectedCard;
     private boolean player1Turn, playerAlreadySummoned = false;
     private SpellCard field;
@@ -29,7 +32,7 @@ public class GameRoundController {
         this.player1Board = player1Board;
         this.player2Board = player2Board;
         player1Turn = player1Starting;
-        chainLink = new ArrayList<>();
+        chainLink = new Stack<>();
         gameStatus = GameStatus.ONGOING;
         phase = GamePhase.DRAW;
     }
@@ -97,20 +100,70 @@ public class GameRoundController {
         selectedCard = null;
     }
 
-//    public String attackToMonster(int index) {
-//        PlayerBoard rivalBoard = player1Turn? player2Board: player1Board;
-//        PlayableCard monster = rivalBoard.getMonsterCards()[index - 1];
-//    }
-
-    public int attackToPlayer() throws Exception {
+    private void preAttackChecks() throws Exception {
         if (selectedCard == null)
             throw new NoCardSelectedException();
-        if (selectedCard.getCardPlace() != CardPlaceType.MONSTER)
+        if (selectedCard.getCardPlace() != CardPlaceType.MONSTER || isPlayableCardInRivalHand(selectedCard))
             throw new CantAttackCardException();
         if (phase != GamePhase.BATTLE_PHASE)
             throw new InvalidPhaseActionException();
         if (selectedCard.hasAttacked())
             throw new CardAlreadyAttackedException();
+    }
+
+    /**
+     * Attacks to a monster.
+     *
+     * @param index The index of card in rival board. Please note that the range is [1,5]
+     * @return The attack result
+     * @throws Exception If anything goes wrong
+     */
+    public MonsterAttackResult attackToMonster(int index) throws Exception {
+        preAttackChecks();
+        PlayableCard toAttackCard = getRivalBoard().getMonsterCards()[index - 1];
+        if (toAttackCard == null)
+            throw new NoCardHereToAttackException();
+        // Check the attack possibilities
+        selectedCard.setHasAttacked(true);
+        int myMonsterAttack = selectedCard.getAttackPower();
+        if (toAttackCard.isAttacking()) {
+            int rivalAttack = toAttackCard.getAttackPower();
+            if (myMonsterAttack > rivalAttack) {
+                int damageReceived = myMonsterAttack - rivalAttack;
+                getRivalBoard().getPlayer().decreaseHealth(damageReceived);
+                toAttackCard.sendToGraveyard();
+                return new MonsterAttackResult(damageReceived, false, true, toAttackCard.getCard(), AttackResult.RIVAL_DESTROYED);
+            } else if (myMonsterAttack < rivalAttack) {
+                int damageReceived = rivalAttack - myMonsterAttack;
+                getPlayerBoard().getPlayer().decreaseHealth(damageReceived);
+                selectedCard.sendToGraveyard();
+                selectedCard = null;
+                return new MonsterAttackResult(damageReceived, false, true, toAttackCard.getCard(), AttackResult.ME_DESTROYED);
+            } else {
+                toAttackCard.sendToGraveyard();
+                selectedCard.sendToGraveyard();
+                selectedCard = null;
+                return new MonsterAttackResult(0, false, true, toAttackCard.getCard(), AttackResult.DRAW);
+            }
+        } else {
+            int rivalDefence = toAttackCard.getDefencePower();
+            if (myMonsterAttack > rivalDefence) {
+                toAttackCard.sendToGraveyard();
+                return new MonsterAttackResult(0, toAttackCard.isHidden(), false, toAttackCard.getCard(), AttackResult.RIVAL_DESTROYED);
+            } else if (myMonsterAttack < rivalDefence) {
+                int damageReceived = rivalDefence - myMonsterAttack;
+                getPlayerBoard().getPlayer().decreaseHealth(damageReceived);
+                selectedCard.sendToGraveyard();
+                selectedCard = null;
+                return new MonsterAttackResult(damageReceived, toAttackCard.isHidden(), false, toAttackCard.getCard(), AttackResult.ME_DESTROYED);
+            } else {
+                return new MonsterAttackResult(0, toAttackCard.isHidden(), false, toAttackCard.getCard(), AttackResult.DRAW);
+            }
+        }
+    }
+
+    public int attackToPlayer() throws Exception {
+        preAttackChecks();
         if (Arrays.stream(getRivalBoard().getMonsterCards()).anyMatch(Objects::nonNull))
             throw new CantAttackToPlayerException();
 
@@ -272,9 +325,8 @@ public class GameRoundController {
 
     private void endTurn() {
         selectedCard = null;
-        for (int i = 0; i < 5; i++)
-            if (getPlayerBoard().getMonsterCards()[i] != null)
-                getPlayerBoard().getMonsterCards()[i].setHasAttacked(false);
+        Arrays.stream(getPlayerBoard().getMonsterCards()).filter(Objects::nonNull).forEach(x -> x.setHasAttacked(false));
+        Arrays.stream(getPlayerBoard().getMonsterCards()).filter(Objects::nonNull).forEach(PlayableCard::resetPositionChangedInThisTurn);
         player1Turn = !player1Turn;
         playerAlreadySummoned = false;
     }
