@@ -11,7 +11,7 @@ public class SetCommand implements Command {
 
     @Override
     public String removePrefix(String command) throws InvalidCommandException {
-        return CommandUtils.removePrefixFromCommand(command, "select");
+        return CommandUtils.removePrefixFromCommand(command, "set");
     }
 
     public String getPosition() {

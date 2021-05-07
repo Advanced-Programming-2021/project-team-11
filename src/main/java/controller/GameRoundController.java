@@ -114,7 +114,7 @@ public class GameRoundController {
         if (Arrays.stream(getRivalBoard().getMonsterCards()).anyMatch(Objects::nonNull))
             throw new CantAttackToPlayerException();
 
-        int attacked = selectedCard.getAttack();
+        int attacked = selectedCard.getAttackPower();
         getRivalBoard().getPlayer().decreaseHealth(attacked);
         selectedCard.setHasAttacked(true);
         return attacked;
@@ -155,9 +155,18 @@ public class GameRoundController {
         setSelectedSpellCard();
     }
 
-//    public void flipSummon() {
-//    }
-//
+    public void flipSummon() throws Exception {
+        if (selectedCard == null)
+            throw new NoCardSelectedYetException();
+        if (selectedCard.getCardPlace() != CardPlaceType.MONSTER || isPlayableCardInRivalHand(selectedCard))
+            throw new CantChangeCardPositionException();
+        if (phase != GamePhase.MAIN2 && phase != GamePhase.MAIN1)
+            throw new InvalidPhaseActionException();
+        if (!(selectedCard.isHidden() && !selectedCard.isAttacking()) || selectedCard.isPositionChangedInThisTurn())
+            throw new CantFlipSummonException();
+        selectedCard.flipSummon();
+    }
+
 
     public void summonCard() throws NoCardSelectedYetException, CantSummonCardException, InvalidPhaseActionException, MonsterCardZoneFullException, AlreadySummonedException, NotEnoughCardsToTributeException, TributeNeededException {
         if (selectedCard == null)
@@ -219,9 +228,21 @@ public class GameRoundController {
         selectedCard = null;
     }
 
-    //    public void setCardPosition(boolean attacking) {
-//    }
-//
+    public void setCardPosition(boolean attacking) throws Exception {
+        if (selectedCard == null)
+            throw new NoCardSelectedYetException();
+        if (selectedCard.getCardPlace() != CardPlaceType.MONSTER || isPlayableCardInRivalHand(selectedCard)
+                || selectedCard.isHidden())
+            throw new CantChangeCardPositionException();
+        if (phase != GamePhase.MAIN2 && phase != GamePhase.MAIN1)
+            throw new InvalidPhaseActionException();
+        if (attacking == selectedCard.isAttacking())
+            throw new CardAlreadyInWantedPositionException();
+        if (selectedCard.isPositionChangedInThisTurn())
+            throw new CardPositionAlreadyChanged();
+        selectedCard.swapAttackMode();
+    }
+
 //    public void activeSpell() {
 //    }
 //
@@ -232,9 +253,6 @@ public class GameRoundController {
     public void surrender() {
         gameStatus = isPlayer1Turn() ? GameStatus.PLAYER1_SURRENDER : GameStatus.PLAYER2_SURRENDER;
     }
-
-//    public String boardForPlayer() {
-//    }
 
     public PlayerBoard getPlayer1Board() {
         return player1Board;

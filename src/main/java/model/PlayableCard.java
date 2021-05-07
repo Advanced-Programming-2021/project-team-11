@@ -9,7 +9,7 @@ public class PlayableCard {
     private final Card card;
     private CardPlaceType cardPlace;
     private int attackDelta, defenceDelta;
-    private boolean hidden = true, attack, hasAttacked;
+    private boolean hidden = true, isAttacking, hasAttacked = false, changedPosition = false;
 
     public PlayableCard(Card card, CardPlaceType cardPlace) {
         this.card = card;
@@ -25,32 +25,48 @@ public class PlayableCard {
     }
 
     public void swapAttackMode() {
-        attack = !attack;
+        changedPosition = true;
+        isAttacking = !isAttacking;
     }
 
     public boolean isAttacking() {
-        return attack;
+        return isAttacking;
     }
 
     public void setAttacking() {
-        attack = true;
+        changedPosition = true;
+        isAttacking = true;
     }
 
     public void setDefencing() {
-        attack = false;
+        changedPosition = true;
+        isAttacking = false;
+    }
+
+    public void flipSummon() {
+        changedPosition = true;
+        isAttacking = true;
+    }
+
+    public boolean isPositionChangedInThisTurn() {
+        return changedPosition;
+    }
+
+    public void resetPositionChangedInThisTurn() {
+        changedPosition = false;
     }
 
     public Card getCard() {
         return card;
     }
 
-    public int getAttack() {
+    public int getAttackPower() {
         if (card.getCardType() == CardType.MONSTER)
             return ((MonsterCard) card).getAttack() + attackDelta;
         return 0;
     }
 
-    public int getDefence() {
+    public int getDefencePower() {
         if (card.getCardType() == CardType.MONSTER)
             return ((MonsterCard) card).getDefence() + defenceDelta;
         return 0;

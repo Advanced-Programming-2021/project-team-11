@@ -3,8 +3,6 @@ package view.menus;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import controller.GameController;
-import controller.GameRoundController;
-import controller.menucontrollers.LoginMenuController;
 import model.PlayerBoard;
 import model.User;
 import model.enums.GamePhase;
@@ -13,6 +11,7 @@ import model.enums.GameStatus;
 import model.exceptions.*;
 import model.game.GameEndResults;
 import view.menus.commands.game.SelectCommand;
+import view.menus.commands.game.SetCommand;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +23,7 @@ public class DuelMenu extends Menu {
             ATTACK_PREFIX_COMMAND = "attack ", ATTACK_DIRECT_COMMAND = "attack direct",
             ACTIVATE_EFFECT_COMMAND = "activate effect", SHOW_CARD_COMMAND = "card show --selected",
             SURRENDER_COMMAND = "surrender", CHEAT_HP = "PAINKILLER", NEXT_PHASE_COMMAND = "next phase",
-            CANCEL_COMMAND = "cancel", SET_COMMAND = "set";
+            CANCEL_COMMAND = "cancel";
     private final GameController gameController;
     private final User player1, player2;
     private boolean isRoundEnded = false, isGameEnded = false;
@@ -61,7 +60,7 @@ public class DuelMenu extends Menu {
             }
             // Check commands
             if (painkiller(command) || selectCommandProcessor(command) || nextPhase(command) || selectCommandProcessor(command)
-                    || summon(command) || setCard(command))
+                    || summon(command) || setCard(command) || flipSummon(command))
                 continue;
             System.out.println(MenuUtils.INVALID_COMMAND);
         }
@@ -249,11 +248,51 @@ public class DuelMenu extends Menu {
     }
 
     private boolean setCard(String command) {
-        if (!command.equals(SET_COMMAND))
+        try {
+            SetCommand setCommand = new SetCommand();
+            JCommander.newBuilder()
+                    .addObject(setCommand)
+                    .build()
+                    .parse(setCommand.removePrefix(command).split(" "));
+            if (!setCommand.isValid())
+                throw new InvalidCommandException();
+            if (setCommand.getPosition() == null || setCommand.getPosition().equals(""))
+                handleSetSpellMonsterCard();
+            else
+                handleChangeCardPosition(setCommand.getPosition().equals("attack"));
+        } catch (InvalidCommandException | ParameterException e) {
             return false;
+        }
+        return true;
+    }
+
+    /**
+     * Sets a Trap/Spell/Monster card on ground
+     */
+    private void handleSetSpellMonsterCard() {
         try {
             gameController.getRound().setCard();
             System.out.println("set successfully");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void handleChangeCardPosition(boolean isAttacking) {
+        try {
+            gameController.getRound().setCardPosition(isAttacking);
+            System.out.println("monster card position changed successfully");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private boolean flipSummon(String command) {
+        if (!command.equals(FLIP_SUMMON_COMMAND))
+            return false;
+        try {
+            gameController.getRound().flipSummon();
+            System.out.println("flip summoned successfully");
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
