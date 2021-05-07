@@ -24,7 +24,7 @@ public class DuelMenu extends Menu {
             ATTACK_PREFIX_COMMAND = "attack ", ATTACK_DIRECT_COMMAND = "attack direct",
             ACTIVATE_EFFECT_COMMAND = "activate effect", SHOW_CARD_COMMAND = "card show --selected",
             SURRENDER_COMMAND = "surrender", CHEAT_HP = "PAINKILLER", NEXT_PHASE_COMMAND = "next phase",
-            CANCEL_COMMAND = "cancel";
+            CANCEL_COMMAND = "cancel", SET_COMMAND = "set";
     private final GameController gameController;
     private final User player1, player2;
     private boolean isRoundEnded = false, isGameEnded = false;
@@ -60,7 +60,8 @@ public class DuelMenu extends Menu {
                 continue;
             }
             // Check commands
-            if (painkiller(command) || selectCommandProcessor(command) || nextPhase(command) || selectCommandProcessor(command) || summon(command))
+            if (painkiller(command) || selectCommandProcessor(command) || nextPhase(command) || selectCommandProcessor(command)
+                    || summon(command) || setCard(command))
                 continue;
             System.out.println(MenuUtils.INVALID_COMMAND);
         }
@@ -243,6 +244,18 @@ public class DuelMenu extends Menu {
             gameController.getRound().summonCard(new ArrayList<>(cardPositions));
         } catch (NoMonsterOnTheseAddressesException e) {
             return false;
+        }
+        return true;
+    }
+
+    private boolean setCard(String command) {
+        if (!command.equals(SET_COMMAND))
+            return false;
+        try {
+            gameController.getRound().setCard();
+            System.out.println("set successfully");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
         return true;
     }

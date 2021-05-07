@@ -123,14 +123,36 @@ public class GameRoundController {
     public void setCard() throws Exception {
         if (selectedCard == null)
             throw new NoCardSelectedException();
-        if (selectedCard.getCardPlace() != CardPlaceType.HAND)
-            throw new CantSummonCardException();
+        if (selectedCard.getCardPlace() != CardPlaceType.HAND || isPlayableCardInRivalHand(selectedCard))
+            throw new CantSetCardException();
+        if (phase != GamePhase.MAIN2 && phase != GamePhase.MAIN1)
+            throw new InvalidPhaseActionException();
 
         if (selectedCard.getCard().getCardType() == CardType.MONSTER)
-            getPlayerBoard().addMonsterCard(selectedCard);
+            setMonsterCard();
         else
-            getPlayerBoard().addSpellCard(selectedCard);
-        getPlayerBoard().removeHandCard(selectedCard);
+            setSpellCard();
+    }
+
+    private void setMonsterCard() throws MonsterCardZoneFullException, AlreadySummonedException, NotEnoughCardsToTributeException, TributeNeededException {
+        if (getPlayerBoard().isSpellZoneFull())
+            throw new MonsterCardZoneFullException();
+        if (playerAlreadySummoned)
+            throw new AlreadySummonedException();
+        int cardsToTribute = ((MonsterCard) selectedCard.getCard()).getCardsNeededToTribute();
+        if (cardsToTribute == 0) { // GG! summon the card
+            setSelectedMonsterCard();
+            return;
+        }
+        if (cardsToTribute > getPlayerBoard().countActiveMonsterCards())
+            throw new NotEnoughCardsToTributeException();
+        throw new TributeNeededException(cardsToTribute);
+    }
+
+    private void setSpellCard() throws SpellCardZoneFullException {
+        if (getPlayerBoard().isSpellZoneFull())
+            throw new SpellCardZoneFullException();
+        setSelectedSpellCard();
     }
 
 //    public void flipSummon() {
@@ -149,19 +171,12 @@ public class GameRoundController {
             throw new MonsterCardZoneFullException();
         if (playerAlreadySummoned)
             throw new AlreadySummonedException();
-        int level = ((MonsterCard) selectedCard.getCard()).getLevel();
-        if (level <= 4) { // GG! summon the card
+        int cardsToTribute = ((MonsterCard) selectedCard.getCard()).getCardsNeededToTribute();
+        if (cardsToTribute == 0) { // GG! summon the card
             summonSelectedCard();
             return;
         }
-        int cardsToTribute, activeMonstersCount = getPlayerBoard().countActiveMonsterCards();
-        if (level <= 6)
-            cardsToTribute = 1;
-        else if (level <= 8)
-            cardsToTribute = 2;
-        else
-            cardsToTribute = 3;
-        if (cardsToTribute > activeMonstersCount)
+        if (cardsToTribute > getPlayerBoard().countActiveMonsterCards())
             throw new NotEnoughCardsToTributeException();
         throw new TributeNeededException(cardsToTribute);
     }
@@ -185,8 +200,23 @@ public class GameRoundController {
         selectedCard.makeVisible();
         selectedCard.setAttacking();
         getPlayerBoard().addMonsterCard(selectedCard);
+        getPlayerBoard().removeHandCard(selectedCard);
         selectedCard = null;
         playerAlreadySummoned = true;
+    }
+
+    private void setSelectedMonsterCard() {
+        selectedCard.setDefencing();
+        getPlayerBoard().addMonsterCard(selectedCard);
+        getPlayerBoard().removeHandCard(selectedCard);
+        selectedCard = null;
+        playerAlreadySummoned = true;
+    }
+
+    private void setSelectedSpellCard() {
+        getPlayerBoard().addSpellCard(selectedCard);
+        getPlayerBoard().removeHandCard(selectedCard);
+        selectedCard = null;
     }
 
     //    public void setCardPosition(boolean attacking) {
@@ -198,9 +228,7 @@ public class GameRoundController {
 //    public String getCard() {
 //    }
 //
-//    public int checkWinner() {
-//    }
-//
+
     public void surrender() {
         gameStatus = isPlayer1Turn() ? GameStatus.PLAYER1_SURRENDER : GameStatus.PLAYER2_SURRENDER;
     }

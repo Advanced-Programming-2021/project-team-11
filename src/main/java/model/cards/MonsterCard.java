@@ -44,6 +44,20 @@ public abstract class MonsterCard extends Card {
         return monsterType;
     }
 
+    public int getCardsNeededToTribute() {
+        return getCardsNeededToTribute(level);
+    }
+
+    public static int getCardsNeededToTribute(int level) {
+        if (level <= 4)
+            return 0;
+        if (level <= 6)
+            return 1;
+        if (level <= 8)
+            return 2;
+        return 3;
+    }
+
     public static ArrayList<MonsterCard> getAllMonsterCards() {
         return allMonsterCards;
     }
