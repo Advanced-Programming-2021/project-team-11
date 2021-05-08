@@ -1,5 +1,6 @@
 package model.cards;
 
+import model.PlayableCard;
 import model.PlayerBoard;
 
 public class SimpleMonster extends MonsterCard {
@@ -9,7 +10,7 @@ public class SimpleMonster extends MonsterCard {
     }
 
     @Override
-    public void activateEffect() {
+    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard card, int activationCounter) {
         // Does nothing!
     }
 

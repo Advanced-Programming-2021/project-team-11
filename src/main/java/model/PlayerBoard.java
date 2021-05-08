@@ -75,8 +75,22 @@ public class PlayerBoard {
         hand.remove(card);
     }
 
-    public void removeMonsterCard(int i) {
-        monsterCard[i] = null;
+    public void moveMonsterToGraveyard(int cardPosition) {
+        monsterCard[cardPosition].sendToGraveyard();
+        monsterCard[cardPosition] = null;
+    }
+
+    public void moveMonsterToGraveyard(PlayableCard card) {
+        int index = -1;
+        for (int i = 0; i < monsterCard.length; i++)
+            if (monsterCard[i] == card) {
+                index = i;
+                break;
+            }
+        if (index == -1)
+            return;
+        monsterCard[index].sendToGraveyard();
+        monsterCard[index] = null;
     }
 
     public void removeSpellCard(int i) {
@@ -105,6 +119,10 @@ public class PlayerBoard {
 
     public boolean isMonsterZoneFull() {
         return Arrays.stream(monsterCard).noneMatch(Objects::isNull);
+    }
+
+    public boolean isMonsterZoneEmpty() {
+        return Arrays.stream(getMonsterCards()).allMatch(Objects::isNull);
     }
 
     public boolean isSpellZoneFull() {

@@ -1,6 +1,6 @@
 package model.cards;
 
-import model.cards.monsters.CommandKnight;
+import model.cards.monsters.*;
 
 public class HardcodedCardsLoader {
     public static void load() {
@@ -11,6 +11,8 @@ public class HardcodedCardsLoader {
 
     private static void loadMonsters() {
         CommandKnight.makeInstance();
+        YomiShip.makeInstance();
+        ManEaterBug.makeInstance();
     }
 
     private static void loadSpells() {
@@ -18,6 +20,5 @@ public class HardcodedCardsLoader {
     }
 
     private static void loadTraps() {
-        CommandKnight.makeInstance();
     }
 }

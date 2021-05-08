@@ -5,22 +5,54 @@ import model.enums.AttackResult;
 
 public class MonsterAttackResult {
     private final int damageReceived;
-    private final boolean isHidden, wasAttackCard;
+    /**
+     * Was the card which we attacked to hidden?
+     */
+    private final boolean wasHidden;
+    /**
+     * Was the card which we attacked to in attack mode?
+     */
+    private final boolean wasAttackCard;
+    /**
+     * The card name which we attacked to
+     */
     private final String cardName;
     private final AttackResult result;
 
     public MonsterAttackResult(int damageReceived, boolean wasCardHidden, boolean wasCardModeAttack, Card attackedCard, AttackResult attackResult) {
         this.damageReceived = damageReceived;
-        this.isHidden = wasCardHidden;
+        this.wasHidden = wasCardHidden;
         this.wasAttackCard = wasCardModeAttack;
         this.cardName = attackedCard.getName();
         this.result = attackResult;
     }
 
+    public int getDamageReceived() {
+        return damageReceived;
+    }
+
+    /**
+     * Get the card name which we attacked to
+     *
+     * @return The card name which we attacked to
+     */
+    public String getCardName() {
+        return cardName;
+    }
+
+    /**
+     * Get the final result of battle
+     *
+     * @return The result of battle
+     */
+    public AttackResult getBattleResult() {
+        return result;
+    }
+
     @Override
     public String toString() {
         String resultString = "";
-        if (isHidden)
+        if (wasHidden)
             resultString += String.format("opponent’s monster card was %s and ", cardName);
         switch (result) {
             case RIVAL_DESTROYED:

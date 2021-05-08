@@ -1,5 +1,6 @@
 package model.cards;
 
+import model.PlayableCard;
 import model.PlayerBoard;
 import org.jetbrains.annotations.NotNull;
 
@@ -52,7 +53,7 @@ public abstract class Card implements Comparable<Card> {
         return name;
     }
 
-    public abstract void activateEffect();
+    public abstract void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard card, int activationCounter);
 
     public abstract void deactivateEffect();
 

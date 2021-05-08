@@ -8,10 +8,11 @@ import java.util.Optional;
 
 public class CommandKnight extends EffectMonsters {
     private static CommandKnight instance;
+    private final static String CARD_NAME = "Command Knight";
     private final static int ATTACK_DELTA = 400;
 
     private CommandKnight() {
-        super("Command Knight");
+        super(CARD_NAME);
     }
 
     public static void makeInstance() {
@@ -19,12 +20,16 @@ public class CommandKnight extends EffectMonsters {
             instance = new CommandKnight();
     }
 
+    public static String getCardName() {
+        return CARD_NAME;
+    }
+
     public static int getAttackDelta() {
         return ATTACK_DELTA;
     }
 
     @Override
-    public void activateEffect() {
+    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard card, int activationCounter) {
 
     }
 

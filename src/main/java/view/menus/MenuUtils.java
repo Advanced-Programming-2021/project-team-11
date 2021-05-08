@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 class MenuUtils {
     static final String INVALID_COMMAND = "invalid command";
+    static final String INVALID_NUMBER = "invalid number";
     static final String MENU_NAV_FAILED = "menu navigation is not possible";
     static final Scanner scanner = new Scanner(System.in);
 

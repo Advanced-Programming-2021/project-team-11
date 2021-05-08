@@ -4,6 +4,7 @@ import model.PlayableCard;
 import model.PlayerBoard;
 import model.cards.*;
 import model.cards.monsters.CommandKnight;
+import model.cards.monsters.YomiShip;
 import model.enums.AttackResult;
 import model.enums.CardPlaceType;
 import model.enums.GamePhase;
@@ -126,6 +127,14 @@ public class GameRoundController {
             throw new CantAttackCardException();
         // Check the attack possibilities
         selectedCard.setHasAttacked(true);
+        MonsterAttackResult result = processAttackToMonster(toAttackCard);
+        if (result.getBattleResult() == AttackResult.RIVAL_DESTROYED && toAttackCard.getCard() instanceof YomiShip)
+            selectedCard.sendToGraveyard();
+        selectedCard = null;
+        return result;
+    }
+
+    private MonsterAttackResult processAttackToMonster(PlayableCard toAttackCard) {
         int myMonsterAttack = selectedCard.getAttackPower(getPlayerBoard());
         if (toAttackCard.isAttacking()) {
             int rivalAttack = toAttackCard.getAttackPower(getRivalBoard());
@@ -138,12 +147,10 @@ public class GameRoundController {
                 int damageReceived = rivalAttack - myMonsterAttack;
                 getPlayerBoard().getPlayer().decreaseHealth(damageReceived);
                 selectedCard.sendToGraveyard();
-                selectedCard = null;
                 return new MonsterAttackResult(damageReceived, false, true, toAttackCard.getCard(), AttackResult.ME_DESTROYED);
             } else {
                 toAttackCard.sendToGraveyard();
                 selectedCard.sendToGraveyard();
-                selectedCard = null;
                 return new MonsterAttackResult(0, false, true, toAttackCard.getCard(), AttackResult.DRAW);
             }
         } else {
@@ -155,7 +162,6 @@ public class GameRoundController {
                 int damageReceived = rivalDefence - myMonsterAttack;
                 getPlayerBoard().getPlayer().decreaseHealth(damageReceived);
                 selectedCard.sendToGraveyard();
-                selectedCard = null;
                 return new MonsterAttackResult(damageReceived, toAttackCard.isHidden(), false, toAttackCard.getCard(), AttackResult.ME_DESTROYED);
             } else {
                 return new MonsterAttackResult(0, toAttackCard.isHidden(), false, toAttackCard.getCard(), AttackResult.DRAW);
@@ -165,7 +171,7 @@ public class GameRoundController {
 
     public int attackToPlayer() throws Exception {
         preAttackChecks();
-        if (Arrays.stream(getRivalBoard().getMonsterCards()).anyMatch(Objects::nonNull))
+        if (!getRivalBoard().isMonsterZoneEmpty())
             throw new CantAttackToPlayerException();
 
         int attacked = selectedCard.getAttackPower(getPlayerBoard());
@@ -255,7 +261,7 @@ public class GameRoundController {
         if (tributes.stream().anyMatch(x -> getPlayerBoard().getMonsterCards()[x] == null))
             throw new NoMonsterOnTheseAddressesException();
         // Remove them and add the card!
-        tributes.forEach(x -> getPlayerBoard().removeMonsterCard(x));
+        tributes.forEach(x -> getPlayerBoard().moveMonsterToGraveyard(x));
         summonSelectedCard();
     }
 
@@ -303,9 +309,13 @@ public class GameRoundController {
     public Card getSelectedCard() throws NoCardSelectedYetException, CardHiddenException {
         if (selectedCard == null)
             throw new NoCardSelectedYetException();
-        if (selectedCard.isHidden())
+        if (selectedCard.isHidden() && isPlayableCardInRivalHand(selectedCard))
             throw new CardHiddenException();
         return selectedCard.getCard();
+    }
+
+    public PlayableCard returnPlayableCard() {
+        return selectedCard;
     }
 
 

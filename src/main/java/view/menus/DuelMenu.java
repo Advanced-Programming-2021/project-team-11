@@ -6,6 +6,7 @@ import controller.GameController;
 import model.PlayableCard;
 import model.PlayerBoard;
 import model.User;
+import model.cards.monsters.ManEaterBug;
 import model.enums.GamePhase;
 import model.enums.GameRounds;
 import model.enums.GameStatus;
@@ -302,7 +303,10 @@ public class DuelMenu extends Menu {
         if (!command.equals(FLIP_SUMMON_COMMAND))
             return false;
         try {
+            PlayableCard selectedCard = gameController.getRound().returnPlayableCard();
             gameController.getRound().flipSummon();
+            if (selectedCard.getCard() instanceof ManEaterBug)
+                CardSpecificMenus.handleManEaterBugRemoval(gameController.getRound().getRivalBoard(), (ManEaterBug) selectedCard.getCard());
             System.out.println("flip summoned successfully");
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -378,14 +382,14 @@ public class DuelMenu extends Menu {
         return true;
     }
 
-    private static int inputToPlayerBoard(int index) {
+    public static int inputToPlayerBoard(int index) {
         for (int i = 0; i < MY_BOARD_INDEXES.length; i++)
             if (MY_BOARD_INDEXES[i] == index)
                 return i;
         throw new BooAnException("Invalid input: " + index);
     }
 
-    private static int inputToRivalBoard(int index) {
+    public static int inputToRivalBoard(int index) {
         for (int i = 0; i < RIVAL_BOARD_INDEXES.length; i++)
             if (RIVAL_BOARD_INDEXES[i] == index)
                 return i;
