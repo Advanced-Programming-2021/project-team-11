@@ -13,6 +13,7 @@ public class HardcodedCardsLoader {
         CommandKnight.makeInstance();
         YomiShip.makeInstance();
         ManEaterBug.makeInstance();
+        Marshmallon.makeInstance();
     }
 
     private static void loadSpells() {

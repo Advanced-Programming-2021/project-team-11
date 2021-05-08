@@ -3,8 +3,7 @@ package controller;
 import model.PlayableCard;
 import model.PlayerBoard;
 import model.cards.*;
-import model.cards.monsters.CommandKnight;
-import model.cards.monsters.YomiShip;
+import model.cards.monsters.*;
 import model.enums.AttackResult;
 import model.enums.CardPlaceType;
 import model.enums.GamePhase;
@@ -141,7 +140,8 @@ public class GameRoundController {
             if (myMonsterAttack > rivalAttack) {
                 int damageReceived = myMonsterAttack - rivalAttack;
                 getRivalBoard().getPlayer().decreaseHealth(damageReceived);
-                toAttackCard.sendToGraveyard();
+                if (!(toAttackCard.getCard() instanceof Marshmallon))
+                    toAttackCard.sendToGraveyard();
                 return new MonsterAttackResult(damageReceived, false, true, toAttackCard.getCard(), AttackResult.RIVAL_DESTROYED);
             } else if (myMonsterAttack < rivalAttack) {
                 int damageReceived = rivalAttack - myMonsterAttack;
@@ -149,14 +149,19 @@ public class GameRoundController {
                 selectedCard.sendToGraveyard();
                 return new MonsterAttackResult(damageReceived, false, true, toAttackCard.getCard(), AttackResult.ME_DESTROYED);
             } else {
-                toAttackCard.sendToGraveyard();
+                if (!(toAttackCard.getCard() instanceof Marshmallon))
+                    toAttackCard.sendToGraveyard();
                 selectedCard.sendToGraveyard();
                 return new MonsterAttackResult(0, false, true, toAttackCard.getCard(), AttackResult.DRAW);
             }
         } else {
+            if (toAttackCard.isHidden() && toAttackCard.getCard() instanceof Marshmallon)
+                getPlayerBoard().getPlayer().decreaseHealth(Marshmallon.getToReduceHp());
+            toAttackCard.makeVisible();
             int rivalDefence = toAttackCard.getDefencePower(getRivalBoard());
             if (myMonsterAttack > rivalDefence) {
-                toAttackCard.sendToGraveyard();
+                if (!(toAttackCard.getCard() instanceof Marshmallon))
+                    toAttackCard.sendToGraveyard();
                 return new MonsterAttackResult(0, toAttackCard.isHidden(), false, toAttackCard.getCard(), AttackResult.RIVAL_DESTROYED);
             } else if (myMonsterAttack < rivalDefence) {
                 int damageReceived = rivalDefence - myMonsterAttack;
