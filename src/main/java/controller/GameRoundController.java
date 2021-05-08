@@ -3,6 +3,7 @@ package controller;
 import model.PlayableCard;
 import model.PlayerBoard;
 import model.cards.*;
+import model.cards.monsters.CommandKnight;
 import model.enums.AttackResult;
 import model.enums.CardPlaceType;
 import model.enums.GamePhase;
@@ -120,11 +121,14 @@ public class GameRoundController {
         PlayableCard toAttackCard = getRivalBoard().getMonsterCards()[index - 1];
         if (toAttackCard == null)
             throw new NoCardHereToAttackException();
+        // Check Command Knight
+        if (toAttackCard.getCard() instanceof CommandKnight && toAttackCard.getCard().isConditionMade(getPlayerBoard(), getRivalBoard()))
+            throw new CantAttackCardException();
         // Check the attack possibilities
         selectedCard.setHasAttacked(true);
-        int myMonsterAttack = selectedCard.getAttackPower();
+        int myMonsterAttack = selectedCard.getAttackPower(getPlayerBoard());
         if (toAttackCard.isAttacking()) {
-            int rivalAttack = toAttackCard.getAttackPower();
+            int rivalAttack = toAttackCard.getAttackPower(getRivalBoard());
             if (myMonsterAttack > rivalAttack) {
                 int damageReceived = myMonsterAttack - rivalAttack;
                 getRivalBoard().getPlayer().decreaseHealth(damageReceived);
@@ -143,7 +147,7 @@ public class GameRoundController {
                 return new MonsterAttackResult(0, false, true, toAttackCard.getCard(), AttackResult.DRAW);
             }
         } else {
-            int rivalDefence = toAttackCard.getDefencePower();
+            int rivalDefence = toAttackCard.getDefencePower(getRivalBoard());
             if (myMonsterAttack > rivalDefence) {
                 toAttackCard.sendToGraveyard();
                 return new MonsterAttackResult(0, toAttackCard.isHidden(), false, toAttackCard.getCard(), AttackResult.RIVAL_DESTROYED);
@@ -164,7 +168,7 @@ public class GameRoundController {
         if (Arrays.stream(getRivalBoard().getMonsterCards()).anyMatch(Objects::nonNull))
             throw new CantAttackToPlayerException();
 
-        int attacked = selectedCard.getAttackPower();
+        int attacked = selectedCard.getAttackPower(getPlayerBoard());
         getRivalBoard().getPlayer().decreaseHealth(attacked);
         selectedCard.setHasAttacked(true);
         return attacked;

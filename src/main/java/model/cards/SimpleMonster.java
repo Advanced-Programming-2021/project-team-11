@@ -1,5 +1,7 @@
 package model.cards;
 
+import model.PlayerBoard;
+
 public class SimpleMonster extends MonsterCard {
 
     public SimpleMonster(String name, String description, int price, int level, int defence, int attack, MonsterType monsterType, MonsterAttributeType monsterAttributeType) {
@@ -17,7 +19,7 @@ public class SimpleMonster extends MonsterCard {
     }
 
     @Override
-    public boolean haveEffectCondition() {
+    public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard) {
         return false;
     }
 }

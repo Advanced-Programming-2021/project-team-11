@@ -1,5 +1,6 @@
 package model.cards;
 
+import model.PlayerBoard;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public abstract class Card implements Comparable<Card> {
 
     public abstract void deactivateEffect();
 
-    public abstract boolean haveEffectCondition();
+    public abstract boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard);
 
     public static ArrayList<Card> getAllCards() {
         ArrayList<Card> cards = new ArrayList<>();

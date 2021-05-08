@@ -3,7 +3,10 @@ package model;
 import model.cards.Card;
 import model.cards.CardType;
 import model.cards.MonsterCard;
+import model.cards.monsters.CommandKnight;
 import model.enums.CardPlaceType;
+
+import java.util.Arrays;
 
 public class PlayableCard {
     private final Card card;
@@ -60,24 +63,29 @@ public class PlayableCard {
         return card;
     }
 
-    public int getAttackPower() {
+    public int getAttackPower(PlayerBoard myBoard) {
         if (card.getCardType() == CardType.MONSTER)
-            return ((MonsterCard) card).getAttack() + attackDelta;
+            return ((MonsterCard) card).getAttack() + getAttackDelta(myBoard);
         return 0;
     }
 
-    public int getDefencePower() {
+    public int getDefencePower(PlayerBoard myBoard) {
+        int tempDelta = 0;
         if (card.getCardType() == CardType.MONSTER)
-            return ((MonsterCard) card).getDefence() + defenceDelta;
+            return ((MonsterCard) card).getDefence() + getDefenceDelta(myBoard);
         return 0;
     }
 
-    public int getAttackDelta() {
-        return attackDelta;
+    public int getAttackDelta(PlayerBoard myBoard) {
+        int tempDelta = 0;
+        if (Arrays.stream(myBoard.getMonsterCards()).anyMatch(card -> card.getCard() instanceof CommandKnight))
+            tempDelta += CommandKnight.getAttackDelta();
+        return attackDelta + tempDelta;
     }
 
-    public int getDefenceDelta() {
-        return defenceDelta;
+    public int getDefenceDelta(PlayerBoard myBoard) {
+        int tempDelta = 0;
+        return defenceDelta + tempDelta;
     }
 
     public CardPlaceType getCardPlace() {
