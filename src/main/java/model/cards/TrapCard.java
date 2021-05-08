@@ -26,4 +26,12 @@ public abstract class TrapCard extends Card {
         Optional<TrapCard> card = getAllTrapCards().stream().filter(x -> x.getName().equals(name) && x.isInitialized()).findFirst();
         return card.orElse(null);
     }
+
+    @Override
+    public String toString() {
+        return String.format("Name: %s\n" +
+                "Trap\n" +
+                "Type: %s\n" +
+                "Description: %s", getName(), getTrapCardType().toString(), getDescription());
+    }
 }

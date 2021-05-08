@@ -26,4 +26,12 @@ public abstract class SpellCard extends Card {
         Optional<SpellCard> card = getAllSpellCards().stream().filter(x -> x.getName().equals(name) && x.isInitialized()).findFirst();
         return card.orElse(null);
     }
+
+    @Override
+    public final String toString() {
+        return String.format("Name: %s\n" +
+                "Spell\n" +
+                "Type: %s\n" +
+                "Description: %s", getName(), getSpellCardType().toString(), getDescription());
+    }
 }
