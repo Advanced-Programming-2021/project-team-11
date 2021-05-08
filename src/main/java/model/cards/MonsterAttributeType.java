@@ -6,5 +6,9 @@ public enum MonsterAttributeType {
     WATER,
     FIRE,
     LIGHT,
-    WIND,
+    WIND;
+
+    public static MonsterAttributeType valueOfCaseInsensitive(String value) {
+        return MonsterAttributeType.valueOf(value.replace('-', '_').toUpperCase());
+    }
 }

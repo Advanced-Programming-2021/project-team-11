@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public abstract class Card implements Comparable<Card> {
-    private final String name, description;
-    private final int price;
+    private final String name;
+    private int price;
+    private String description;
     private final CardType cardType;
+    private boolean initialized = false;
 
     public Card(String name, String description, CardType cardType, int price) {
         this.name = name;
@@ -25,6 +27,22 @@ public abstract class Card implements Comparable<Card> {
         return price;
     }
 
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public final boolean isInitialized() {
+        return initialized;
+    }
+
+    public final void init() {
+        initialized = true;
+    }
+
     public final String getDescription() {
         return description;
     }
@@ -33,7 +51,11 @@ public abstract class Card implements Comparable<Card> {
         return name;
     }
 
-    abstract void activateEffect();
+    public abstract void activateEffect();
+
+    public abstract void deactivateEffect();
+
+    public abstract boolean haveEffectCondition();
 
     public static ArrayList<Card> getAllCards() {
         ArrayList<Card> cards = new ArrayList<>();
@@ -44,7 +66,7 @@ public abstract class Card implements Comparable<Card> {
     }
 
     public static Card getCardByName(String name) {
-        Optional<Card> card = getAllCards().stream().filter(x -> x.getName().equals(name)).findFirst();
+        Optional<Card> card = getAllCards().stream().filter(x -> x.getName().equals(name) && x.isInitialized()).findFirst();
         return card.orElse(null);
     }
 

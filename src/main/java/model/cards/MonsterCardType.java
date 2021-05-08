@@ -3,5 +3,9 @@ package model.cards;
 public enum MonsterCardType {
     NORMAL,
     EFFECT,
-    RITUAL
+    RITUAL;
+
+    public static MonsterCardType valueOfCaseInsensitive(String value) {
+        return MonsterCardType.valueOf(value.replace('-', '_').toUpperCase());
+    }
 }

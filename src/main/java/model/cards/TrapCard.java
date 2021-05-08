@@ -1,15 +1,17 @@
 package model.cards;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public abstract class TrapCard extends Card {
     private final static ArrayList<TrapCard> allTrapCards = new ArrayList<>();
     private final TrapCardType trapCardType;
 
-    public TrapCard(String name, String description, CardType cardType, int price, TrapCardType trapCardType) {
-        super(name, description, cardType, price);
+    public TrapCard(String name, String description, int price, TrapCardType trapCardType) {
+        super(name, description, CardType.TRAP, price);
         this.trapCardType = trapCardType;
         allTrapCards.add(this);
+        init();
     }
 
     public TrapCardType getTrapCardType() {
@@ -21,9 +23,7 @@ public abstract class TrapCard extends Card {
     }
 
     public static TrapCard getTrapCardByName(String name) {
-        for (TrapCard card : allTrapCards)
-            if (card.getName().equals(name))
-                return card;
-        return null;
+        Optional<TrapCard> card = getAllTrapCards().stream().filter(x -> x.getName().equals(name) && x.isInitialized()).findFirst();
+        return card.orElse(null);
     }
 }
