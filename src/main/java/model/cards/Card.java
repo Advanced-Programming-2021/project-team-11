@@ -57,7 +57,7 @@ public abstract class Card implements Comparable<Card> {
 
     public abstract void deactivateEffect();
 
-    public abstract boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard);
+    public abstract boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, int activationCounter);
 
     public static ArrayList<Card> getAllCards() {
         ArrayList<Card> cards = new ArrayList<>();

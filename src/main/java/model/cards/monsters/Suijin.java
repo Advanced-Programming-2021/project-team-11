@@ -3,17 +3,17 @@ package model.cards.monsters;
 import model.PlayableCard;
 import model.PlayerBoard;
 
-public class YomiShip extends EffectMonsters {
-    private static YomiShip instance;
-    private static final String CARD_NAME = "Yomi Ship";
+public class Suijin extends EffectMonsters {
+    private static Suijin instance;
+    private final static String CARD_NAME = "Suijin";
 
-    private YomiShip() {
+    private Suijin() {
         super(CARD_NAME);
     }
 
     public static void makeInstance() {
         if (instance == null)
-            instance = new YomiShip();
+            instance = new Suijin();
     }
 
     public static String getCardName() {
@@ -32,6 +32,6 @@ public class YomiShip extends EffectMonsters {
 
     @Override
     public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, int activationCounter) {
-        return false;
+        return activationCounter < 1;
     }
 }

@@ -131,7 +131,7 @@ public class GameRoundController {
         if (toAttackCard == null)
             throw new NoCardHereToAttackException();
         // Check Command Knight
-        if (toAttackCard.getCard() instanceof CommandKnight && toAttackCard.getCard().isConditionMade(getPlayerBoard(), getRivalBoard()))
+        if (toAttackCard.getCard() instanceof CommandKnight && toAttackCard.isEffectConditionMet(getPlayerBoard(), getRivalBoard()))
             throw new CantAttackWithThisCardException();
         // Check the attack possibilities
         selectedCard.setHasAttacked(true);
@@ -144,6 +144,10 @@ public class GameRoundController {
 
     private MonsterAttackResult processAttackToMonster(PlayableCard toAttackCard) {
         int myMonsterAttack = selectedCard.getAttackPower(getPlayerBoard());
+        if (toAttackCard.getCard() instanceof Suijin && toAttackCard.isEffectConditionMet(getPlayerBoard(), getRivalBoard(), true)) {
+            toAttackCard.activateEffect(getPlayerBoard(), getRivalBoard(), selectedCard);
+            myMonsterAttack = 0;
+        }
         if (toAttackCard.isAttacking()) {
             int rivalAttack = toAttackCard.getAttackPower(getRivalBoard());
             if (myMonsterAttack > rivalAttack) {
@@ -275,7 +279,7 @@ public class GameRoundController {
         if (tributes.stream().anyMatch(x -> getPlayerBoard().getMonsterCards()[x] == null))
             throw new NoMonsterOnTheseAddressesException();
         // Remove them and add the card!
-        tributes.forEach(x -> getPlayerBoard().moveMonsterToGraveyard(x));
+        tributes.forEach(x -> getPlayerBoard().sendSpellToGraveyard(x));
         summonSelectedCard();
     }
 

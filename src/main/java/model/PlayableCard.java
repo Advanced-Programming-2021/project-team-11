@@ -11,7 +11,7 @@ import java.util.Arrays;
 public class PlayableCard {
     private final Card card;
     private CardPlaceType cardPlace;
-    private int attackDelta, defenceDelta;
+    private int attackDelta, defenceDelta, effectActivateCounterTotal = 0, effectActivateCounterRound = 0;
     private boolean hidden = true, isAttacking, hasAttacked = false, changedPosition = false;
 
     public PlayableCard(Card card, CardPlaceType cardPlace) {
@@ -118,6 +118,26 @@ public class PlayableCard {
 
     public void setHasAttacked(boolean hasAttacked) {
         this.hasAttacked = hasAttacked;
+    }
+
+    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard card) {
+        effectActivateCounterRound++;
+        effectActivateCounterTotal++;
+        getCard().activateEffect(myBoard, rivalBoard, card, 0);
+    }
+
+    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard card, boolean isTotalTimeActivatedImportant) {
+        effectActivateCounterRound++;
+        effectActivateCounterTotal++;
+        getCard().activateEffect(myBoard, rivalBoard, card, isTotalTimeActivatedImportant ? effectActivateCounterTotal : effectActivateCounterRound);
+    }
+
+    public boolean isEffectConditionMet(PlayerBoard myBoard, PlayerBoard rivalBoard) {
+        return getCard().isConditionMade(myBoard, rivalBoard, 0);
+    }
+
+    public boolean isEffectConditionMet(PlayerBoard myBoard, PlayerBoard rivalBoard, boolean isTotalTimeActivatedImportant) {
+        return getCard().isConditionMade(myBoard, rivalBoard, isTotalTimeActivatedImportant ? effectActivateCounterTotal : effectActivateCounterRound);
     }
 
     void sendToGraveyard() {

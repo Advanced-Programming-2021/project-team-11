@@ -32,7 +32,7 @@ public class ManEaterBug extends EffectMonsters {
     public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard card, int activationCounter) {
         if (card == null)
             return;
-        rivalBoard.moveMonsterToGraveyard(card);
+        rivalBoard.sendToGraveyard(card);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class ManEaterBug extends EffectMonsters {
     }
 
     @Override
-    public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard) {
+    public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, int activationCounter) {
         return false;
     }
 }

@@ -46,7 +46,7 @@ public class CommandKnight extends EffectMonsters {
      * @return True if rival board only have more than one card (another card other than Command Knight)
      */
     @Override
-    public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard) {
+    public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, int activationCounter) {
         Optional<PlayableCard> thisCard = rivalBoard.getMonsterCardsList().stream().filter(x -> x.getCard().getName().equals(getName())).findFirst();
         return thisCard.filter(playableCard -> playableCard.isAttacking()
                 && rivalBoard.countActiveMonsterCards() - rivalBoard.getMonsterCardsList().stream().filter(x -> x.getCard().getName().equals(getName())).count() >= 1)

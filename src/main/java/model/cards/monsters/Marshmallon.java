@@ -42,7 +42,7 @@ public class Marshmallon extends EffectMonsters {
     }
 
     @Override
-    public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard) {
+    public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, int activationCounter) {
         return false;
     }
 }

@@ -19,7 +19,7 @@ public class RitualMonster extends MonsterCard {
     }
 
     @Override
-    public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard) {
+    public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, int activationCounter) {
         return false;
     }
 }

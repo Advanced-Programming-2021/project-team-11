@@ -73,22 +73,14 @@ public class PlayerBoard {
         hand.remove(card);
     }
 
-    public void moveMonsterToGraveyard(int cardPosition) {
+    public void sendMonsterToGraveyard(int cardPosition) {
         monsterCard[cardPosition].sendToGraveyard();
         monsterCard[cardPosition] = null;
     }
 
-    public void moveMonsterToGraveyard(PlayableCard card) {
-        int index = -1;
-        for (int i = 0; i < monsterCard.length; i++)
-            if (monsterCard[i] == card) {
-                index = i;
-                break;
-            }
-        if (index == -1)
-            return;
-        monsterCard[index].sendToGraveyard();
-        monsterCard[index] = null;
+    public void sendSpellToGraveyard(int cardPosition) {
+        spellCard[cardPosition].sendToGraveyard();
+        spellCard[cardPosition] = null;
     }
 
     public void removeSpellCard(int i) {
