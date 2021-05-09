@@ -24,7 +24,7 @@ public class PlayableCard {
     }
 
     public void makeVisible() {
-        this.hidden = true;
+        this.hidden = false;
     }
 
     public void swapAttackMode() {
@@ -48,7 +48,8 @@ public class PlayableCard {
 
     public void flipSummon() {
         changedPosition = true;
-        isAttacking = true;
+        makeVisible();
+        setAttacking();
     }
 
     public boolean isPositionChangedInThisTurn() {
@@ -70,22 +71,29 @@ public class PlayableCard {
     }
 
     public int getDefencePower(PlayerBoard myBoard) {
-        int tempDelta = 0;
         if (card.getCardType() == CardType.MONSTER)
             return ((MonsterCard) card).getDefence() + getDefenceDelta(myBoard);
         return 0;
     }
 
-    public int getAttackDelta(PlayerBoard myBoard) {
-        int tempDelta = 0;
-        if (Arrays.stream(myBoard.getMonsterCards()).anyMatch(card -> card.getCard() instanceof CommandKnight))
-            tempDelta += CommandKnight.getAttackDelta();
-        return attackDelta + tempDelta;
+    public int getAttackDeltaRaw() {
+        return attackDelta;
     }
 
-    public int getDefenceDelta(PlayerBoard myBoard) {
+    private int getAttackDelta(PlayerBoard myBoard) {
         int tempDelta = 0;
-        return defenceDelta + tempDelta;
+        if (myBoard.getMonsterCardsList().stream().anyMatch(card -> card.getCard() instanceof CommandKnight && card.isAttacking()))
+            tempDelta += CommandKnight.getAttackDelta();
+        return getAttackDeltaRaw() + tempDelta;
+    }
+
+    public int getDefenceDeltaRaw() {
+        return defenceDelta;
+    }
+
+    private int getDefenceDelta(PlayerBoard myBoard) {
+        int tempDelta = 0;
+        return getDefenceDeltaRaw() + tempDelta;
     }
 
     public CardPlaceType getCardPlace() {
@@ -112,7 +120,7 @@ public class PlayableCard {
         this.hasAttacked = hasAttacked;
     }
 
-    public void sendToGraveyard() {
+    void sendToGraveyard() {
         this.cardPlace = CardPlaceType.GRAVEYARD;
         hidden = false;
         hasAttacked = false;
@@ -122,11 +130,12 @@ public class PlayableCard {
     }
 
     /**
-     * How should rival see this card?
+     * How should player see this card?
      *
-     * @return The text to show
+     * @return A string which says how
      */
-    public String toRivalString() {
+    @Override
+    public String toString() {
         switch (cardPlace) {
             case HAND:
                 return "c";

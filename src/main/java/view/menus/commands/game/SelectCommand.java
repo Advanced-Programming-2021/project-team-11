@@ -79,13 +79,13 @@ public class SelectCommand implements Command {
             return false;
         switch (place) {
             case MONSTER:
-                return spell == 0 && hand == 0 && !field && monster <= 5 && monster >= 0;
+                return spell == 0 && hand == 0 && !field && monster <= 5 && monster > 0;
             case SPELL:
-                return monster == 0 && hand == 0 && !field && spell <= 5 && spell >= 0;
+                return monster == 0 && hand == 0 && !field && spell <= 5 && spell > 0;
             case FIELD:
                 return monster == 0 && spell == 0 && hand == 0;
             case HAND:
-                return monster == 0 && spell == 0 && !field && hand <= 6 && hand >= 0;
+                return monster == 0 && spell == 0 && !field && hand <= 6 && hand > 0;
         }
         return false;
     }

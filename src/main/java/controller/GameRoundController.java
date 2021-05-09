@@ -21,8 +21,7 @@ public class GameRoundController {
     private final PlayerBoard player2Board;
     private final Stack<PlayableCard> chainLink;
     private PlayableCard selectedCard;
-    private boolean player1Turn, playerAlreadySummoned = false;
-    private SpellCard field;
+    private boolean player1Turn, playerAlreadySummoned = false, isFirstBattle = true;
     private GameStatus gameStatus;
     private GamePhase phase;
 
@@ -33,6 +32,7 @@ public class GameRoundController {
         chainLink = new Stack<>();
         gameStatus = GameStatus.ONGOING;
         phase = GamePhase.DRAW;
+        getPlayerBoard().drawCard();
     }
 
     /**
@@ -53,6 +53,7 @@ public class GameRoundController {
                 phase = GamePhase.BATTLE_PHASE;
                 break;
             case BATTLE_PHASE:
+                isFirstBattle = false;
                 phase = GamePhase.MAIN2;
                 break;
             case MAIN2:
@@ -68,6 +69,14 @@ public class GameRoundController {
         return phase;
     }
 
+    /**
+     * Selects an card from board
+     *
+     * @param index        The index to select. Please note that this index starts from 1 not zero!
+     * @param fromOpponent Is this card from opponent
+     * @param cardPlace    Where is this card
+     * @throws NoCardFoundInPositionException If there is no card in that position
+     */
     public void selectCard(int index, boolean fromOpponent, CardPlaceType cardPlace) throws NoCardFoundInPositionException {
         switch (cardPlace) {
             case SPELL:
@@ -102,7 +111,7 @@ public class GameRoundController {
         if (selectedCard == null)
             throw new NoCardSelectedException();
         if (selectedCard.getCardPlace() != CardPlaceType.MONSTER || isPlayableCardInRivalHand(selectedCard))
-            throw new CantAttackCardException();
+            throw new CantAttackWithThisCardException();
         if (phase != GamePhase.BATTLE_PHASE)
             throw new InvalidPhaseActionException();
         if (selectedCard.hasAttacked())
@@ -123,12 +132,12 @@ public class GameRoundController {
             throw new NoCardHereToAttackException();
         // Check Command Knight
         if (toAttackCard.getCard() instanceof CommandKnight && toAttackCard.getCard().isConditionMade(getPlayerBoard(), getRivalBoard()))
-            throw new CantAttackCardException();
+            throw new CantAttackWithThisCardException();
         // Check the attack possibilities
         selectedCard.setHasAttacked(true);
         MonsterAttackResult result = processAttackToMonster(toAttackCard);
         if (result.getBattleResult() == AttackResult.RIVAL_DESTROYED && toAttackCard.getCard() instanceof YomiShip)
-            selectedCard.sendToGraveyard();
+            getPlayerBoard().sendToGraveyard(selectedCard);
         selectedCard = null;
         return result;
     }
@@ -141,17 +150,17 @@ public class GameRoundController {
                 int damageReceived = myMonsterAttack - rivalAttack;
                 getRivalBoard().getPlayer().decreaseHealth(damageReceived);
                 if (!(toAttackCard.getCard() instanceof Marshmallon))
-                    toAttackCard.sendToGraveyard();
+                    getRivalBoard().sendToGraveyard(toAttackCard);
                 return new MonsterAttackResult(damageReceived, false, true, toAttackCard.getCard(), AttackResult.RIVAL_DESTROYED);
             } else if (myMonsterAttack < rivalAttack) {
                 int damageReceived = rivalAttack - myMonsterAttack;
                 getPlayerBoard().getPlayer().decreaseHealth(damageReceived);
-                selectedCard.sendToGraveyard();
+                getPlayerBoard().sendToGraveyard(selectedCard);
                 return new MonsterAttackResult(damageReceived, false, true, toAttackCard.getCard(), AttackResult.ME_DESTROYED);
             } else {
                 if (!(toAttackCard.getCard() instanceof Marshmallon))
-                    toAttackCard.sendToGraveyard();
-                selectedCard.sendToGraveyard();
+                    getRivalBoard().sendToGraveyard(toAttackCard);
+                getPlayerBoard().sendToGraveyard(selectedCard);
                 return new MonsterAttackResult(0, false, true, toAttackCard.getCard(), AttackResult.DRAW);
             }
         } else {
@@ -161,12 +170,12 @@ public class GameRoundController {
             int rivalDefence = toAttackCard.getDefencePower(getRivalBoard());
             if (myMonsterAttack > rivalDefence) {
                 if (!(toAttackCard.getCard() instanceof Marshmallon))
-                    toAttackCard.sendToGraveyard();
+                    getRivalBoard().sendToGraveyard(toAttackCard);
                 return new MonsterAttackResult(0, toAttackCard.isHidden(), false, toAttackCard.getCard(), AttackResult.RIVAL_DESTROYED);
             } else if (myMonsterAttack < rivalDefence) {
                 int damageReceived = rivalDefence - myMonsterAttack;
                 getPlayerBoard().getPlayer().decreaseHealth(damageReceived);
-                selectedCard.sendToGraveyard();
+                getPlayerBoard().sendToGraveyard(selectedCard);
                 return new MonsterAttackResult(damageReceived, toAttackCard.isHidden(), false, toAttackCard.getCard(), AttackResult.ME_DESTROYED);
             } else {
                 return new MonsterAttackResult(0, toAttackCard.isHidden(), false, toAttackCard.getCard(), AttackResult.DRAW);
@@ -176,7 +185,7 @@ public class GameRoundController {
 
     public int attackToPlayer() throws Exception {
         preAttackChecks();
-        if (!getRivalBoard().isMonsterZoneEmpty())
+        if (!getRivalBoard().isMonsterZoneEmpty() || isFirstBattle)
             throw new CantAttackToPlayerException();
 
         int attacked = selectedCard.getAttackPower(getPlayerBoard());
@@ -354,6 +363,14 @@ public class GameRoundController {
 
     public GameStatus getGameStatus() {
         return gameStatus;
+    }
+
+    public PlayableCard getField() {
+        if (getPlayer1Board().getField() != null)
+            return getPlayer1Board().getField();
+        if (getPlayer2Board().getField() != null)
+            return getPlayer2Board().getField();
+        return null;
     }
 
     public boolean isPlayer1Turn() {

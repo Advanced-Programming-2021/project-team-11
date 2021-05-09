@@ -4,10 +4,8 @@ import model.cards.Card;
 import model.enums.CardPlaceType;
 import model.exceptions.BooAnException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class PlayerBoard {
     private final Player player;
@@ -137,11 +135,32 @@ public class PlayerBoard {
         return monsterCard;
     }
 
+    public ArrayList<PlayableCard> getMonsterCardsList() {
+        return Arrays.stream(monsterCard).filter(Objects::nonNull)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
     public PlayableCard[] getSpellCards() {
         return spellCard;
     }
 
+    public ArrayList<PlayableCard> getSpellCardsList() {
+        return Arrays.stream(spellCard).filter(Objects::nonNull)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
     public ArrayList<Card> getDeck() {
         return deck;
+    }
+
+    public void sendToGraveyard(PlayableCard card) {
+        for (int i = 0; i < monsterCard.length; i++)
+            if (card == monsterCard[i])
+                monsterCard[i] = null;
+        for (int i = 0; i < spellCard.length; i++)
+            if (card == spellCard[i])
+                spellCard[i] = null;
+        card.sendToGraveyard();
+        graveyard.add(card);
     }
 }

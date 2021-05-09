@@ -40,7 +40,7 @@ public class GetDecksResult {
 
         @Override
         public String toString() {
-            return String.format("%s: main deck %d, side deck %d, %s", getName(), getMainCount(), getSideCount(), isValid());
+            return String.format("%s: main deck %d, side deck %d, %s", getName(), getMainCount(), getSideCount(), isValid() ? "valid" : "invalid");
         }
     }
 

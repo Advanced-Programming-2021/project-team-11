@@ -47,7 +47,9 @@ public class CommandKnight extends EffectMonsters {
      */
     @Override
     public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard) {
-        Optional<PlayableCard> thisCard = Arrays.stream(rivalBoard.getMonsterCards()).filter(x -> x.getCard().getName().equals(getName())).findFirst();
-        return thisCard.filter(playableCard -> playableCard.isAttacking() && rivalBoard.countActiveMonsterCards() >= 1).isPresent();
+        Optional<PlayableCard> thisCard = rivalBoard.getMonsterCardsList().stream().filter(x -> x.getCard().getName().equals(getName())).findFirst();
+        return thisCard.filter(playableCard -> playableCard.isAttacking()
+                && rivalBoard.countActiveMonsterCards() - rivalBoard.getMonsterCardsList().stream().filter(x -> x.getCard().getName().equals(getName())).count() >= 1)
+                .isPresent();
     }
 }

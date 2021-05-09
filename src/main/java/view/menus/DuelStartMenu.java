@@ -44,22 +44,25 @@ public class DuelStartMenu extends Menu {
             if (duelStartCommand.getRounds() != 3 && duelStartCommand.getRounds() != 1)
                 throw new InvalidRoundNumbersException();
             if (duelStartCommand.isAi())
-                startMultiplayerDuel(duelStartCommand.getSecondPlayerName(), duelStartCommand.getRounds());
-            else
                 startAiDuel(duelStartCommand.getRounds());
+            else
+                startMultiplayerDuel(duelStartCommand.getSecondPlayerName(), duelStartCommand.getRounds());
             return true;
         } catch (InvalidCommandException e) {
             return false;
-        } catch (InvalidRoundNumbersException | UsernameNotExistsException | UserHaveNoActiveDeckException | UserDeckIsInvalidException e) {
+        } catch (InvalidRoundNumbersException | UsernameNotExistsException | UserHaveNoActiveDeckException
+                | UserDeckIsInvalidException | PlayedYourselfException e) {
             System.out.println(e.getMessage());
             return true;
         }
     }
 
-    private void startMultiplayerDuel(String secondPlayerUsername, int rounds) throws UserHaveNoActiveDeckException, UsernameNotExistsException, UserDeckIsInvalidException {
+    private void startMultiplayerDuel(String secondPlayerUsername, int rounds) throws UserHaveNoActiveDeckException, UsernameNotExistsException, UserDeckIsInvalidException, PlayedYourselfException {
         User player2 = User.getUserByUsername(secondPlayerUsername);
         if (player2 == null)
             throw new UsernameNotExistsException();
+        if (player1 == player2)
+            throw new PlayedYourselfException();
         // Check both players decks
         player1.validateUserActiveDeck();
         player2.validateUserActiveDeck();

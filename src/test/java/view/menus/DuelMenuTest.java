@@ -4,10 +4,7 @@ import model.Player;
 import model.PlayerBoard;
 import model.User;
 import model.cards.*;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
 
@@ -60,5 +57,19 @@ public class DuelMenuTest {
                 "\tE \tE \tE \tE \tE \n" +
                 "\t\t\t\t\t\t35\n" +
                 "c\tc\tc\tc\tc\t\n", Setuper.getOutputString());
+    }
+
+    @Test
+    void testSelection() {
+        assertEquals(2, DuelMenu.inputToPlayerBoard(1));
+        assertEquals(1, DuelMenu.inputToPlayerBoard(2));
+        assertEquals(3, DuelMenu.inputToPlayerBoard(3));
+        assertEquals(0, DuelMenu.inputToPlayerBoard(4));
+        assertEquals(4, DuelMenu.inputToPlayerBoard(5));
+        assertEquals(2, DuelMenu.inputToRivalBoard(1));
+        assertEquals(3, DuelMenu.inputToRivalBoard(2));
+        assertEquals(1, DuelMenu.inputToRivalBoard(3));
+        assertEquals(4, DuelMenu.inputToRivalBoard(4));
+        assertEquals(0, DuelMenu.inputToRivalBoard(5));
     }
 }

@@ -8,8 +8,10 @@ import model.exceptions.InsufficientBalanceException;
 import model.exceptions.InvalidCommandException;
 import view.menus.commands.shop.ShopBuyItemCommand;
 
+import static view.menus.MenuUtils.showCard;
+
 public class ShopMenu extends Menu {
-    private static final String CHEAT_MONEY = "HESOYAM", CHEAT_CARDS = "TOOLUP";
+    private static final String CHEAT_MONEY = "HESOYAM", CHEAT_CARDS = "TOOLUP", SHOW_ALL_CARDS_COMMAND = "shop show --all";
     private final User loggedInUser;
 
     ShopMenu(User loggedInUser) {
@@ -28,7 +30,7 @@ public class ShopMenu extends Menu {
             } catch (InvalidCommandException ignored) {
             }
             // Other commands
-            if (buyCard(command) || hesoyam(command) || showAllCards(command) || toolup(command))
+            if (buyCard(command) || hesoyam(command) || showAllCards(command) || toolup(command) || showCard(command))
                 continue;
             System.out.println(MenuUtils.INVALID_COMMAND);
         }
@@ -48,7 +50,7 @@ public class ShopMenu extends Menu {
     }
 
     private boolean showAllCards(String command) {
-        if (command.equals("shop show --all")) {
+        if (command.equals(SHOW_ALL_CARDS_COMMAND)) {
             Card.getAllCards().forEach(x -> System.out.printf("%s:%d\n", x.getName(), x.getPrice()));
             return true;
         }

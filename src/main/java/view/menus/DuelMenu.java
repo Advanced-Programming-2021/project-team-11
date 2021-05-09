@@ -26,7 +26,7 @@ public class DuelMenu extends Menu {
             ATTACK_PREFIX_COMMAND = "attack ", ATTACK_DIRECT_COMMAND = "attack direct",
             ACTIVATE_EFFECT_COMMAND = "activate effect", SHOW_CARD_COMMAND = "card show --selected",
             SURRENDER_COMMAND = "surrender", CHEAT_HP = "PAINKILLER", NEXT_PHASE_COMMAND = "next phase",
-            CANCEL_COMMAND = "cancel", SHOW_GRAVEYARD_COMMAND = "show graveyard";
+            CANCEL_COMMAND = "cancel", SHOW_GRAVEYARD_COMMAND = "show graveyard", PRINT_BOARD_COMMAND = "print board";
     private final GameController gameController;
     private final User player1, player2;
     private boolean isRoundEnded = false, isGameEnded = false;
@@ -34,21 +34,15 @@ public class DuelMenu extends Menu {
     DuelMenu(User player1, User player2, GameRounds rounds) {
         this.player1 = player1;
         this.player2 = player2;
-        System.out.printf("%s is the beginner!", player1.getUsername());
+        System.out.printf("%s is the beginner!\n", player1.getUsername());
         gameController = new GameController(player1, player2, rounds);
+        System.out.printf("new card added to the hand: %s\n", gameController.getRound().getPlayerBoard().getHand().get(5).getCard().getName());
         openMenu();
     }
 
     @Override
     void openMenu() {
         while (true) {
-            String command = MenuUtils.readLine();
-            try {
-                if (processMenuCommands(command))
-                    System.out.println(MenuUtils.MENU_NAV_FAILED); // THERE IS NO WAY OUT!!!!
-                continue;
-            } catch (InvalidCommandException ignored) {
-            }
             // Check game and round status
             if (isGameEnded) {
                 System.out.println("Game Over!");
@@ -63,10 +57,17 @@ public class DuelMenu extends Menu {
             }
             if (checkRoundEnd())
                 continue;
+            String command = MenuUtils.readLine();
+            try {
+                if (processMenuCommands(command))
+                    System.out.println(MenuUtils.MENU_NAV_FAILED); // THERE IS NO WAY OUT!!!!
+                continue;
+            } catch (InvalidCommandException ignored) {
+            }
             // Check commands
             if (painkiller(command) || selectCommandProcessor(command) || nextPhase(command) || selectCommandProcessor(command)
                     || summon(command) || setCard(command) || flipSummon(command) || directAttack(command) || attackToMonster(command)
-                    || showGraveyard(command) || surrender(command) || showCard(command))
+                    || showGraveyard(command) || surrender(command) || showCard(command) || printBoard(command))
                 continue;
             System.out.println(MenuUtils.INVALID_COMMAND);
         }
@@ -100,6 +101,13 @@ public class DuelMenu extends Menu {
         return false;
     }
 
+    private boolean printBoard(String command) {
+        if (!command.equals(PRINT_BOARD_COMMAND))
+            return false;
+        printBoard();
+        return true;
+    }
+
     private void printBoard() {
         PlayerBoard rivalBoard = gameController.getRound().getRivalBoard();
         System.out.printf("%s:%d\n", rivalBoard.getPlayer().getUser().getNickname(), rivalBoard.getPlayer().getHealth());
@@ -108,6 +116,7 @@ public class DuelMenu extends Menu {
         System.out.println("--------------------------");
         System.out.println();
         PlayerBoard myBoard = gameController.getRound().getPlayerBoard();
+        printMyBoard(myBoard);
         System.out.printf("%s:%d\n", myBoard.getPlayer().getUser().getNickname(), myBoard.getPlayer().getHealth());
     }
 
@@ -138,7 +147,7 @@ public class DuelMenu extends Menu {
                 System.out.println("invalid selection");
                 return true;
             }
-            int index = selectCommand.isOpponent() ? inputToRivalBoard(selectCommand.getIndex()) : inputToPlayerBoard(selectCommand.getIndex());
+            int index = selectCommand.getIndex();
             gameController.getRound().selectCard(index, selectCommand.isOpponent(), selectCommand.getCardPlaceType());
             System.out.println("card selected");
         } catch (InvalidCommandException | ParameterException e) {
@@ -156,9 +165,9 @@ public class DuelMenu extends Menu {
         // Print deck
         System.out.printf("%02d\n", board.getDeck().size());
         // Spell and traps
-        Arrays.stream(RIVAL_BOARD_INDEXES).forEach(i -> System.out.print("\t" + (board.getSpellCards()[i - 1] == null ? "E " : board.getSpellCards()[i - 1].toRivalString())));
+        Arrays.stream(RIVAL_BOARD_INDEXES).forEach(i -> System.out.print("\t" + (board.getSpellCards()[i - 1] == null ? "E " : board.getSpellCards()[i - 1].toString())));
         System.out.println();
-        Arrays.stream(RIVAL_BOARD_INDEXES).forEach(i -> System.out.print("\t" + (board.getMonsterCards()[i - 1] == null ? "E " : board.getMonsterCards()[i - 1].toRivalString())));
+        Arrays.stream(RIVAL_BOARD_INDEXES).forEach(i -> System.out.print("\t" + (board.getMonsterCards()[i - 1] == null ? "E " : board.getMonsterCards()[i - 1].toString())));
         System.out.println();
         // Graveyard and field
         System.out.printf("%02d", board.getGraveyard().size());
@@ -174,9 +183,9 @@ public class DuelMenu extends Menu {
             System.out.print('\t');
         System.out.println("E");
         // Spell and traps
-        Arrays.stream(MY_BOARD_INDEXES).forEach(i -> System.out.print("\t" + (board.getMonsterCards()[i - 1] == null ? "E " : board.getMonsterCards()[i - 1].toRivalString())));
+        Arrays.stream(MY_BOARD_INDEXES).forEach(i -> System.out.print("\t" + (board.getMonsterCards()[i - 1] == null ? "E " : board.getMonsterCards()[i - 1].toString())));
         System.out.println();
-        Arrays.stream(RIVAL_BOARD_INDEXES).forEach(i -> System.out.print("\t" + (board.getSpellCards()[i - 1] == null ? "E " : board.getSpellCards()[i - 1].toRivalString())));
+        Arrays.stream(RIVAL_BOARD_INDEXES).forEach(i -> System.out.print("\t" + (board.getSpellCards()[i - 1] == null ? "E " : board.getSpellCards()[i - 1].toString())));
         System.out.println();
         // Print deck
         for (int i = 0; i < 6; i++)
@@ -261,17 +270,18 @@ public class DuelMenu extends Menu {
 
     private boolean setCard(String command) {
         try {
+            if (command.equals("set")) {
+                handleSetSpellMonsterCard();
+                return true;
+            }
             SetCommand setCommand = new SetCommand();
             JCommander.newBuilder()
                     .addObject(setCommand)
                     .build()
-                    .parse(setCommand.removePrefix(command).split(" "));
+                    .parse(setCommand.removePrefix(command + " ").split(" "));
             if (!setCommand.isValid())
                 throw new InvalidCommandException();
-            if (setCommand.getPosition() == null || setCommand.getPosition().equals(""))
-                handleSetSpellMonsterCard();
-            else
-                handleChangeCardPosition(setCommand.getPosition().equals("attack"));
+            handleChangeCardPosition(setCommand.getPosition().equals("attack"));
         } catch (InvalidCommandException | ParameterException e) {
             return false;
         }
@@ -338,7 +348,7 @@ public class DuelMenu extends Menu {
             return false;
         }
         try {
-            MonsterAttackResult result = gameController.getRound().attackToMonster(inputToRivalBoard(positionToAttack));
+            MonsterAttackResult result = gameController.getRound().attackToMonster(positionToAttack);
             System.out.println(result.toString());
         } catch (Exception e) {
             System.out.println(e.getMessage());

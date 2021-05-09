@@ -72,10 +72,9 @@ public class DeckMenuController {
     public static GetDecksResult getDecks(User user) {
         String activeDeckName = user.getActiveDeckName();
         TreeSet<GetDecksResult.DeckResult> otherDecks = new TreeSet<>();
-        for (Map.Entry<String, Deck> entry : user.getDecks().entrySet()) {
+        for (Map.Entry<String, Deck> entry : user.getDecks().entrySet())
             if (!entry.getKey().equals(activeDeckName))
                 otherDecks.add(new GetDecksResult.DeckResult(entry.getKey(), entry.getValue()));
-        }
         return new GetDecksResult(activeDeckName == null ? null : new GetDecksResult.DeckResult(activeDeckName, user.getActiveDeck()), otherDecks);
     }
 
@@ -87,12 +86,12 @@ public class DeckMenuController {
     }
 
     public static ArrayList<Card> getAllCards(User user) {
-        ArrayList<Card> cards = new ArrayList<>(user.getAvailableCards());
+        TreeSet<Card> cards = new TreeSet<>(user.getAvailableCards());
         for (Deck deck : user.getDecks().values()) {
             cards.addAll(deck.getMainDeck());
             cards.addAll(deck.getSideDeck());
         }
-        return cards;
+        return new ArrayList<>(cards);
     }
 
     public static void swapCards(Deck deck, String mainDeckCardName, String sideDeckCardName) throws DeckCardNotExistsException {
@@ -108,5 +107,26 @@ public class DeckMenuController {
         deck.removeCardFromSideDeck(sideDeckCardCandidate.get());
         deck.addCardToMainDeck(sideDeckCardCandidate.get());
         deck.addCardToSideDeck(mainDeckCardCandidate.get());
+    }
+
+    public static String addAllCardsToNewDeck(User user) {
+        final String deckName = "deckup-deck";
+        try {
+            addDeck(user, deckName);
+        } catch (Exception ex) {
+        }
+        ArrayList<Card> cards = new ArrayList<>(Card.getAllCards());
+        Collections.shuffle(cards);
+        for (Card card : cards)
+            try {
+                user.addCardToPlayer(card);
+                addCardToDeck(user, deckName, card.getName(), false);
+            } catch (Exception ignored) {
+                try {
+                    addCardToDeck(user, deckName, card.getName(), true);
+                } catch (Exception ignored2) {
+                }
+            }
+        return deckName;
     }
 }

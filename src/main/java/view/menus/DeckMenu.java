@@ -12,7 +12,11 @@ import view.menus.commands.deck.*;
 
 import java.util.ArrayList;
 
+import static view.menus.MenuUtils.showCard;
+
 public class DeckMenu extends Menu {
+    private final static String SHOW_CARDS_COMMAND = "deck show --cards", SHOW_DECKS_COMMAND = "deck show --all",
+            DECK_UP_CHEAT = "DECKUP";
     private final User loggedInUser;
 
     DeckMenu(User loggedInUser) {
@@ -34,14 +38,20 @@ public class DeckMenu extends Menu {
             if (addDeck(command) || setActiveDeck(command) || deleteDeck(command) || addCardToDeck(command)
                     || removeCardFromDeck(command) || showDeckCards(command))
                 continue;
-            if (command.equals("deck show --all")) {
+            if (command.equals(SHOW_DECKS_COMMAND)) {
                 showAllDecks();
                 continue;
             }
-            if (command.equals("deck show --cards")) {
+            if (command.equals(SHOW_CARDS_COMMAND)) {
                 showAllCards();
                 continue;
             }
+            if (command.equals(DECK_UP_CHEAT)) {
+                deckUpCheat();
+                continue;
+            }
+            if (showCard(command))
+                continue;
             System.out.println(MenuUtils.INVALID_COMMAND);
         }
     }
@@ -149,6 +159,14 @@ public class DeckMenu extends Menu {
         } catch (InvalidCommandException | ParameterException e) {
             return false;
         }
+    }
+
+    /**
+     * Adds a deck with all cards to user
+     */
+    private void deckUpCheat() {
+        String deckName = DeckMenuController.addAllCardsToNewDeck(loggedInUser);
+        System.out.println("Added a deck with name of " + deckName + " :D");
     }
 
     public static void showDeckCards(ArrayList<Card> cards, boolean isSide) {
