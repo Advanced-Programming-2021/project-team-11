@@ -6,6 +6,7 @@ import controller.GameController;
 import model.PlayableCard;
 import model.PlayerBoard;
 import model.User;
+import model.cards.monsters.BeastKingBarbaros;
 import model.cards.monsters.ManEaterBug;
 import model.cards.monsters.ScannerCard;
 import model.enums.GamePhase;
@@ -189,11 +190,17 @@ public class DuelMenu extends Menu {
         try {
             gameController.getRound().summonCard();
             success = true;
-        } catch (AlreadySummonedException | NotEnoughCardsToTributeException | NoCardSelectedYetException | CantSummonCardException
+        } catch (AlreadySummonedException | NoCardSelectedYetException | CantSummonCardException
                 | InvalidPhaseActionException | MonsterCardZoneFullException e) {
             System.out.println(e.getMessage());
         } catch (TributeNeededException e) {
-            success = summonWithTribute(e.getNeededTributes());
+            if (e.getCard() instanceof BeastKingBarbaros)
+                success = CardSpecificMenus.summonBeastKingBarbaros(gameController.getRound());
+            else
+                success = summonWithTribute(e.getNeededTributes());
+        } catch (NotEnoughCardsToTributeException e) {
+            if (e.getCard() instanceof BeastKingBarbaros)
+                success = CardSpecificMenus.summonBeastKingBarbaros(gameController.getRound());
         }
         if (success) {
             System.out.println("summoned successfully");
@@ -209,20 +216,12 @@ public class DuelMenu extends Menu {
      * @return True if we have successfully got all card. False if user have canceled it
      */
     private boolean summonWithTribute(int neededCardsToTribute) {
-        TreeSet<Integer> cardPositions = new TreeSet<>();
-        while (cardPositions.size() != neededCardsToTribute) {
-            System.out.print("Select a card position to tribute or type \"cancel\" to cancel: ");
-            String command = MenuUtils.readLine();
-            if (command.equals(MenuUtils.CANCEL_COMMAND))
-                return false;
-            try {
-                cardPositions.add(Integer.parseInt(command));
-            } catch (NumberFormatException ignored) {
-            }
-        }
+        ArrayList<Integer> cards = DuelMenuUtils.readCardsToTribute(neededCardsToTribute);
+        if (cards == null)
+            return false;
         // Try to tribute
         try {
-            gameController.getRound().summonCard(new ArrayList<>(cardPositions));
+            gameController.getRound().summonCard(cards);
         } catch (NoMonsterOnTheseAddressesException e) {
             return false;
         }

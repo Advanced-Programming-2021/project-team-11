@@ -88,6 +88,8 @@ public class PlayableCard {
         int tempDelta = 0;
         if (myBoard.getMonsterCardsList().stream().anyMatch(card -> card.getCard() instanceof CommandKnight && card.isAttacking()))
             tempDelta += CommandKnight.getAttackDelta();
+        if (getCard() instanceof TheCalculator)
+            tempDelta += myBoard.getMonsterCardsList().stream().mapToInt(card -> ((MonsterCard) card.getCard()).getLevel()).sum() * TheCalculator.getAttackMultiplier();
         return getAttackDeltaRaw() + tempDelta;
     }
 

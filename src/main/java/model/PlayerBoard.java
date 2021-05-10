@@ -120,7 +120,7 @@ public class PlayerBoard {
     }
 
     public int countActiveMonsterCards() {
-        return (int) Arrays.stream(monsterCard).filter(Objects::nonNull).count();
+        return getMonsterCardsList().size();
     }
 
     public PlayableCard[] getMonsterCards() {

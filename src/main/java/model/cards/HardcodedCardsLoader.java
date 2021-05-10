@@ -16,6 +16,8 @@ public class HardcodedCardsLoader {
         Marshmallon.makeInstance();
         Suijin.makeInstance();
         ScannerCard.makeInstance();
+        TheCalculator.makeInstance();
+        BeastKingBarbaros.makeInstance();
     }
 
     private static void loadSpells() {

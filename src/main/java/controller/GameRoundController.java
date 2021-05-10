@@ -224,8 +224,8 @@ public class GameRoundController {
             return;
         }
         if (cardsToTribute > getPlayerBoard().countActiveMonsterCards())
-            throw new NotEnoughCardsToTributeException();
-        throw new TributeNeededException(cardsToTribute);
+            throw new NotEnoughCardsToTributeException(selectedCard.getCard());
+        throw new TributeNeededException(selectedCard.getCard(), cardsToTribute);
     }
 
     private void setSpellCard() throws SpellCardZoneFullException {
@@ -265,8 +265,8 @@ public class GameRoundController {
             return;
         }
         if (cardsToTribute > getPlayerBoard().countActiveMonsterCards())
-            throw new NotEnoughCardsToTributeException();
-        throw new TributeNeededException(cardsToTribute);
+            throw new NotEnoughCardsToTributeException(selectedCard.getCard());
+        throw new TributeNeededException(selectedCard.getCard(), cardsToTribute);
     }
 
     /**

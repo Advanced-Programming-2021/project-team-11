@@ -3,8 +3,6 @@ package model.cards.monsters;
 import model.PlayableCard;
 import model.PlayerBoard;
 
-import java.util.Optional;
-
 public class CommandKnight extends EffectMonsters {
     private static CommandKnight instance;
     private final static String CARD_NAME = "Command Knight";
@@ -23,6 +21,11 @@ public class CommandKnight extends EffectMonsters {
         return CARD_NAME;
     }
 
+    /**
+     * The damage to add to all monsters
+     *
+     * @return The damage to add to all monsters
+     */
     public static int getAttackDelta() {
         return ATTACK_DELTA;
     }

@@ -7,6 +7,7 @@ import model.exceptions.BooAnException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.TreeSet;
 
 class DuelMenuUtils {
     public static final int[] RIVAL_BOARD_INDEXES = {5, 3, 1, 2, 4}, MY_BOARD_INDEXES = {4, 2, 1, 3, 5};
@@ -74,5 +75,29 @@ class DuelMenuUtils {
         else
             for (int i = 0; i < graveyard.size(); i++)
                 System.out.printf("%d. %s:%s\n", i + 1, graveyard.get(i).getCard().getName(), graveyard.get(i).getCard().getDescription());
+    }
+
+    /**
+     * Reads a amount of cards to tribute them
+     *
+     * @param neededCardsToTribute Number of cards needed to tribute
+     * @return Null if canceled, otherwise the array of positions
+     */
+    public static ArrayList<Integer> readCardsToTribute(int neededCardsToTribute) {
+        TreeSet<Integer> cardPositions = new TreeSet<>();
+        while (cardPositions.size() != neededCardsToTribute) {
+            System.out.printf("Select a card position to tribute or type \"cancel\" to cancel (%d/%d): ",
+                    cardPositions.size(), neededCardsToTribute);
+            String command = MenuUtils.readLine();
+            if (command.equals(MenuUtils.CANCEL_COMMAND))
+                return null;
+            try {
+                int position = Integer.parseInt(command);
+                if (position > 0 && position <= 5)
+                    cardPositions.add(position);
+            } catch (NumberFormatException ignored) {
+            }
+        }
+        return new ArrayList<>(cardPositions);
     }
 }
