@@ -2,6 +2,7 @@ package view.menus;
 
 import model.PlayableCard;
 import model.PlayerBoard;
+import model.cards.CardType;
 import model.cards.monsters.ManEaterBug;
 import model.exceptions.CantActivateSpellException;
 
@@ -29,7 +30,7 @@ public class CardSpecificMenus {
     }
 
     public static void handleScannerCardEffect(ArrayList<PlayableCard> rivalGraveyard, PlayableCard scannerCard) throws CantActivateSpellException {
-        if (rivalGraveyard.isEmpty())
+        if (rivalGraveyard.stream().noneMatch(card -> card.getCard().getCardType() == CardType.MONSTER))
             throw new CantActivateSpellException();
         // Show the graveyard
         DuelMenuUtils.printGraveyard(rivalGraveyard, "rival");
@@ -44,6 +45,10 @@ public class CardSpecificMenus {
                 index = Integer.parseInt(MenuUtils.readLine());
             } catch (NumberFormatException ex) {
                 System.out.println(MenuUtils.INVALID_NUMBER);
+            }
+            if (rivalGraveyard.get(index).getCard().getCardType() != CardType.MONSTER) {
+                index = -1;
+                System.out.println("Please select a monster card");
             }
         }
         scannerCard.activateEffect(null, null, rivalGraveyard.get(index));
