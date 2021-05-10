@@ -13,7 +13,7 @@ class MenuUtils {
     private static final String CARD_SHOW_PREFIX = "card show";
 
     static String readLine() {
-        return scanner.nextLine();
+        return scanner.nextLine().trim();
     }
 
     static boolean showCard(String command) {

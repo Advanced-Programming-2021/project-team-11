@@ -18,6 +18,8 @@ public class HardcodedCardsLoader {
         ScannerCard.makeInstance();
         TheCalculator.makeInstance();
         BeastKingBarbaros.makeInstance();
+        MirageDragon.makeInstance();
+        HeraldOfCreation.makeInstance();
     }
 
     private static void loadSpells() {

@@ -1,6 +1,7 @@
 package controller;
 
 import model.cards.Card;
+import model.cards.monsters.HeraldOfCreation;
 import model.cards.monsters.ScannerCard;
 import model.enums.CoinFlipResult;
 
@@ -8,6 +9,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class GameUtils {
+    private static final String[] ACTIVATED_MONSTER_CARDS = {ScannerCard.getCardName(), HeraldOfCreation.getCardName()};
     public static final Random random = new Random();
 
     public static CoinFlipResult flipCoin() {
@@ -20,7 +22,6 @@ public class GameUtils {
 
     public static boolean canMonsterCardEffectBeActivated(Card card) {
         // I really don't want to use instance of here
-        String[] okCards = {ScannerCard.getCardName()};
-        return Arrays.stream(okCards).anyMatch(name -> name.equals(card.getName()));
+        return Arrays.stream(ACTIVATED_MONSTER_CARDS).anyMatch(name -> name.equals(card.getName()));
     }
 }

@@ -3,9 +3,12 @@ package view.menus;
 import controller.GameRoundController;
 import model.PlayableCard;
 import model.PlayerBoard;
+import model.cards.Card;
 import model.cards.CardType;
+import model.cards.MonsterCard;
 import model.cards.monsters.BeastKingBarbaros;
 import model.cards.monsters.ManEaterBug;
+import model.enums.CardPlaceType;
 import model.exceptions.*;
 
 import java.util.ArrayList;
@@ -58,6 +61,12 @@ public class CardSpecificMenus {
         System.out.printf("Your scanner is now %s!\n", rivalGraveyard.get(index).getCard().getName());
     }
 
+    /**
+     * Tries to summon Beast King Barbaros in one of the ways which it can spawn
+     *
+     * @param gameRoundController The round which is ongoing
+     * @return True if successfully summoned. Otherwise canceled
+     */
     public static boolean summonBeastKingBarbaros(GameRoundController gameRoundController) {
         int tributes, monstersHave = gameRoundController.getPlayerBoard().countActiveMonsterCards();
         while (true) {
@@ -90,6 +99,64 @@ public class CardSpecificMenus {
         }
         if (tributes == 3)
             Arrays.stream(gameRoundController.getRivalBoard().getMonsterCards()).forEach(card -> gameRoundController.getRivalBoard().sendToGraveyard(card));
+        return true;
+    }
+
+    /**
+     * Tries to move a card from graveyard to your hand with Herald Of Creation card
+     *
+     * @param playerBoard The board of player who has this card
+     * @param thisCard    This card
+     * @return True if used the effect, otherwise false (probably canceled)
+     * @throws NotEnoughCardsToTributeException There is not enough cards in hand
+     * @throws NoSuitableCardFoundException     There no card which can be used from players graveyard
+     */
+    public static boolean summonCardWithHeraldOfCreation(PlayerBoard playerBoard, PlayableCard thisCard) throws NotEnoughCardsToTributeException, NoSuitableCardFoundException {
+        if (playerBoard.getHand().size() == 0)
+            throw new NotEnoughCardsToTributeException(null);
+        if (playerBoard.getGraveyard().stream().noneMatch(card -> card.getCard().getCardType() == CardType.MONSTER && ((MonsterCard) card.getCard()).getLevel() >= 7))
+            throw new NoSuitableCardFoundException();
+        int handIndex, graveyardIndex;
+        System.out.println("Your hand:");
+        for (int i = 0; i < playerBoard.getHand().size(); i++)
+            System.out.printf("%d. %s\n", i + 1, playerBoard.getHand().get(i).getCard().getName());
+        while (true) {
+            try {
+                System.out.print("Select a card from your hand by index: ");
+                String input = MenuUtils.readLine();
+                if (input.equals(MenuUtils.CANCEL_COMMAND))
+                    return false;
+                handIndex = Integer.parseInt(input);
+                if (handIndex < 0 || handIndex >= playerBoard.getHand().size())
+                    throw new NumberFormatException();
+                break;
+            } catch (NumberFormatException ex) {
+                System.out.println(MenuUtils.INVALID_NUMBER);
+            }
+        }
+        // Now show the graveyard
+        DuelMenuUtils.printGraveyard(playerBoard.getGraveyard(), playerBoard.getPlayer().getUser());
+        while (true) {
+            try {
+                System.out.print("Select a card from your graveyard by index: ");
+                String input = MenuUtils.readLine();
+                if (input.equals(MenuUtils.CANCEL_COMMAND))
+                    return false;
+                graveyardIndex = Integer.parseInt(input);
+                if (graveyardIndex < 0 || graveyardIndex >= playerBoard.getGraveyard().size())
+                    throw new NumberFormatException();
+                break;
+            } catch (NumberFormatException ex) {
+                System.out.println(MenuUtils.INVALID_NUMBER);
+            }
+        }
+        // Do the thing
+        playerBoard.getHand().remove(handIndex);
+        PlayableCard toMoveCard = playerBoard.getGraveyard().remove(graveyardIndex);
+        toMoveCard.setCardPlace(CardPlaceType.HAND);
+        playerBoard.getHand().add(toMoveCard);
+        thisCard.activateEffect(null, null, null); // has no effect here
+        System.out.println("Card moved successfully!");
         return true;
     }
 }

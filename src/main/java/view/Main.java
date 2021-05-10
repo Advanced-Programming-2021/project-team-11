@@ -8,7 +8,7 @@ public class Main {
     public static void main(String[] args) {
         loader(parseCommandLineArgs(args)); // preload info we need in the program
         new LoginMenu(); // load the actual game
-        // save everything before exiting
+        // TODO save everything before exiting
     }
 
     private static CommandLineArguments parseCommandLineArgs(String[] args) {

@@ -7,6 +7,7 @@ import model.PlayableCard;
 import model.PlayerBoard;
 import model.User;
 import model.cards.monsters.BeastKingBarbaros;
+import model.cards.monsters.HeraldOfCreation;
 import model.cards.monsters.ManEaterBug;
 import model.cards.monsters.ScannerCard;
 import model.enums.GamePhase;
@@ -360,6 +361,13 @@ public class DuelMenu extends Menu {
             try {
                 CardSpecificMenus.handleScannerCardEffect(gameController.getRound().getRivalBoard().getGraveyard(), card);
             } catch (CantActivateSpellException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        if (card.getCard() instanceof HeraldOfCreation) {
+            try {
+                CardSpecificMenus.summonCardWithHeraldOfCreation(gameController.getRound().getPlayerBoard(), card);
+            } catch (NoSuitableCardFoundException | NotEnoughCardsToTributeException e) {
                 System.out.println(e.getMessage());
             }
         }
