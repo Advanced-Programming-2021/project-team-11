@@ -20,6 +20,8 @@ public class HardcodedCardsLoader {
         BeastKingBarbaros.makeInstance();
         MirageDragon.makeInstance();
         HeraldOfCreation.makeInstance();
+        ExploderDragon.makeInstance();
+        TerratigerTheEmpoweredWarrior.makeInstance();
     }
 
     private static void loadSpells() {

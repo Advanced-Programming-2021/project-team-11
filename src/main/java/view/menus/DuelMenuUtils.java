@@ -3,6 +3,7 @@ package view.menus;
 import model.PlayableCard;
 import model.PlayerBoard;
 import model.User;
+import model.cards.Card;
 import model.exceptions.BooAnException;
 
 import java.util.ArrayList;
@@ -99,5 +100,10 @@ class DuelMenuUtils {
             }
         }
         return new ArrayList<>(cardPositions);
+    }
+
+    public static void printNumberedCardList(ArrayList<PlayableCard> cards) {
+        for (int i = 0; i < cards.size(); i++)
+            System.out.printf("%d. %s\n", i + 1, cards.get(i).getCard().getName());
     }
 }

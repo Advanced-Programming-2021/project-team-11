@@ -6,10 +6,8 @@ import controller.GameController;
 import model.PlayableCard;
 import model.PlayerBoard;
 import model.User;
-import model.cards.monsters.BeastKingBarbaros;
-import model.cards.monsters.HeraldOfCreation;
-import model.cards.monsters.ManEaterBug;
-import model.cards.monsters.ScannerCard;
+import model.cards.Card;
+import model.cards.monsters.*;
 import model.enums.GamePhase;
 import model.enums.GameRounds;
 import model.enums.GameStatus;
@@ -20,7 +18,6 @@ import view.menus.commands.game.SelectCommand;
 import view.menus.commands.game.SetCommand;
 
 import java.util.ArrayList;
-import java.util.TreeSet;
 
 public class DuelMenu extends Menu {
     private static final String SUMMON_COMMAND = "summon", FLIP_SUMMON_COMMAND = "flip-summon",
@@ -188,7 +185,9 @@ public class DuelMenu extends Menu {
         if (!command.equals(SUMMON_COMMAND))
             return false;
         boolean success = false;
+        Card spawnedCard = null;
         try {
+            spawnedCard = gameController.getRound().returnPlayableCard().getCard();
             gameController.getRound().summonCard();
             success = true;
         } catch (AlreadySummonedException | NoCardSelectedYetException | CantSummonCardException
@@ -205,6 +204,8 @@ public class DuelMenu extends Menu {
         }
         if (success) {
             System.out.println("summoned successfully");
+            if (spawnedCard instanceof TerratigerTheEmpoweredWarrior)
+                CardSpecificMenus.handleTerratigerTheEmpoweredWarriorSummon(gameController.getRound().getPlayerBoard());
             printBoard();
         }
         return true;

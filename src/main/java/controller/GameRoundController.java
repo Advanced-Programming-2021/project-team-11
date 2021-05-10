@@ -152,9 +152,12 @@ public class GameRoundController {
             int rivalAttack = toAttackCard.getAttackPower(getRivalBoard());
             if (myMonsterAttack > rivalAttack) {
                 int damageReceived = myMonsterAttack - rivalAttack;
-                getRivalBoard().getPlayer().decreaseHealth(damageReceived);
                 if (!(toAttackCard.getCard() instanceof Marshmallon))
                     getRivalBoard().sendToGraveyard(toAttackCard);
+                if (toAttackCard.getCard() instanceof ExploderDragon)
+                    toAttackCard.activateEffect(getRivalBoard(), getPlayerBoard(), selectedCard);
+                else
+                    getRivalBoard().getPlayer().decreaseHealth(damageReceived);
                 return new MonsterAttackResult(damageReceived, false, true, toAttackCard.getCard(), AttackResult.RIVAL_DESTROYED);
             } else if (myMonsterAttack < rivalAttack) {
                 int damageReceived = rivalAttack - myMonsterAttack;
@@ -176,6 +179,8 @@ public class GameRoundController {
             if (myMonsterAttack > rivalDefence) {
                 if (!(toAttackCard.getCard() instanceof Marshmallon))
                     getRivalBoard().sendToGraveyard(toAttackCard);
+                if (toAttackCard.getCard() instanceof ExploderDragon)
+                    toAttackCard.activateEffect(getRivalBoard(), getPlayerBoard(), selectedCard);
                 return new MonsterAttackResult(0, wasHidden, false, toAttackCard.getCard(), AttackResult.RIVAL_DESTROYED);
             } else if (myMonsterAttack < rivalDefence) {
                 int damageReceived = rivalDefence - myMonsterAttack;

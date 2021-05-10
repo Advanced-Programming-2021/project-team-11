@@ -3,7 +3,6 @@ package view.menus;
 import controller.GameRoundController;
 import model.PlayableCard;
 import model.PlayerBoard;
-import model.cards.Card;
 import model.cards.CardType;
 import model.cards.MonsterCard;
 import model.cards.monsters.BeastKingBarbaros;
@@ -13,6 +12,7 @@ import model.exceptions.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class CardSpecificMenus {
     public static void handleManEaterBugRemoval(PlayerBoard rivalBoard, ManEaterBug card) {
@@ -107,25 +107,23 @@ public class CardSpecificMenus {
      *
      * @param playerBoard The board of player who has this card
      * @param thisCard    This card
-     * @return True if used the effect, otherwise false (probably canceled)
      * @throws NotEnoughCardsToTributeException There is not enough cards in hand
      * @throws NoSuitableCardFoundException     There no card which can be used from players graveyard
      */
-    public static boolean summonCardWithHeraldOfCreation(PlayerBoard playerBoard, PlayableCard thisCard) throws NotEnoughCardsToTributeException, NoSuitableCardFoundException {
+    public static void summonCardWithHeraldOfCreation(PlayerBoard playerBoard, PlayableCard thisCard) throws NotEnoughCardsToTributeException, NoSuitableCardFoundException {
         if (playerBoard.getHand().size() == 0)
             throw new NotEnoughCardsToTributeException(null);
         if (playerBoard.getGraveyard().stream().noneMatch(card -> card.getCard().getCardType() == CardType.MONSTER && ((MonsterCard) card.getCard()).getLevel() >= 7))
             throw new NoSuitableCardFoundException();
         int handIndex, graveyardIndex;
         System.out.println("Your hand:");
-        for (int i = 0; i < playerBoard.getHand().size(); i++)
-            System.out.printf("%d. %s\n", i + 1, playerBoard.getHand().get(i).getCard().getName());
+        DuelMenuUtils.printNumberedCardList(playerBoard.getHand());
         while (true) {
             try {
                 System.out.print("Select a card from your hand by index: ");
                 String input = MenuUtils.readLine();
                 if (input.equals(MenuUtils.CANCEL_COMMAND))
-                    return false;
+                    return;
                 handIndex = Integer.parseInt(input);
                 if (handIndex < 0 || handIndex >= playerBoard.getHand().size())
                     throw new NumberFormatException();
@@ -141,7 +139,7 @@ public class CardSpecificMenus {
                 System.out.print("Select a card from your graveyard by index: ");
                 String input = MenuUtils.readLine();
                 if (input.equals(MenuUtils.CANCEL_COMMAND))
-                    return false;
+                    return;
                 graveyardIndex = Integer.parseInt(input);
                 if (graveyardIndex < 0 || graveyardIndex >= playerBoard.getGraveyard().size())
                     throw new NumberFormatException();
@@ -157,6 +155,34 @@ public class CardSpecificMenus {
         playerBoard.getHand().add(toMoveCard);
         thisCard.activateEffect(null, null, null); // has no effect here
         System.out.println("Card moved successfully!");
-        return true;
+    }
+
+    public static void handleTerratigerTheEmpoweredWarriorSummon(PlayerBoard playerBoard) {
+        ArrayList<PlayableCard> allowedCards = playerBoard.getHand().stream().filter(card -> card.getCard().getCardType() == CardType.MONSTER
+                && ((MonsterCard) card.getCard()).getLevel() <= 4).collect(Collectors.toCollection(ArrayList::new));
+        if (allowedCards.size() == 0)
+            return;
+        if (playerBoard.isMonsterZoneFull())
+            return;
+        DuelMenuUtils.printNumberedCardList(allowedCards);
+        int index;
+        while (true) {
+            try {
+                System.out.print("Select a card from your hand by index: ");
+                String input = MenuUtils.readLine();
+                if (input.equals(MenuUtils.CANCEL_COMMAND))
+                    return;
+                index = Integer.parseInt(input);
+                if (index < 0 || index >= allowedCards.size())
+                    throw new NumberFormatException();
+                break;
+            } catch (NumberFormatException ex) {
+                System.out.println(MenuUtils.INVALID_NUMBER);
+            }
+        }
+        // Move the card
+        playerBoard.removeHandCard(allowedCards.get(index));
+        playerBoard.addMonsterCard(allowedCards.get(index));
+        System.out.printf("%s summoned successfully!\n", allowedCards.get(index).getCard().getName());
     }
 }
