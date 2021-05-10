@@ -14,6 +14,8 @@ public class HardcodedCardsLoader {
         YomiShip.makeInstance();
         ManEaterBug.makeInstance();
         Marshmallon.makeInstance();
+        Suijin.makeInstance();
+        ScannerCard.makeInstance();
     }
 
     private static void loadSpells() {

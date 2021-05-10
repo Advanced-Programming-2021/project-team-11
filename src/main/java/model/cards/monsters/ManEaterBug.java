@@ -25,14 +25,15 @@ public class ManEaterBug extends EffectMonsters {
      *
      * @param myBoard           No effect here. Pass null
      * @param rivalBoard        The rival board to remove card from it
-     * @param card              The card to remove from rival board. There is no problem passing an invalid card here
+     * @param thisCard          No effect here
+     * @param rivalCard         The card to remove from rival board. There is no problem passing an invalid card (null) here
      * @param activationCounter No effect here. Pass 0
      */
     @Override
-    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard card, int activationCounter) {
-        if (card == null)
+    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {
+        if (rivalCard == null)
             return;
-        rivalBoard.sendToGraveyard(card);
+        rivalBoard.sendToGraveyard(rivalCard);
     }
 
     @Override
@@ -41,7 +42,7 @@ public class ManEaterBug extends EffectMonsters {
     }
 
     @Override
-    public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, int activationCounter) {
+    public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, int activationCounter) {
         return false;
     }
 }

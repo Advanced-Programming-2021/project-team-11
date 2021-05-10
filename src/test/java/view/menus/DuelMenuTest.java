@@ -44,14 +44,14 @@ public class DuelMenuTest {
             cards.add(monster);
         PlayerBoard board = new PlayerBoard(new Player(user), cards);
         // Redirect output
-        DuelMenu.printRivalBoard(board);
+        DuelMenuUtils.printRivalBoard(board);
         assertEquals("\tc\tc\tc\tc\tc\n" +
                 "35\n" +
                 "\tE \tE \tE \tE \tE \n" +
                 "\tE \tE \tE \tE \tE \n" +
                 "00\t\t\t\t\t\tE\n", Setuper.getOutputString());
         Setuper.reset();
-        DuelMenu.printMyBoard(board);
+        DuelMenuUtils.printMyBoard(board);
         assertEquals("00\t\t\t\t\t\tE\n" +
                 "\tE \tE \tE \tE \tE \n" +
                 "\tE \tE \tE \tE \tE \n" +
@@ -61,15 +61,15 @@ public class DuelMenuTest {
 
     @Test
     void testSelection() {
-        assertEquals(2, DuelMenu.inputToPlayerBoard(1));
-        assertEquals(1, DuelMenu.inputToPlayerBoard(2));
-        assertEquals(3, DuelMenu.inputToPlayerBoard(3));
-        assertEquals(0, DuelMenu.inputToPlayerBoard(4));
-        assertEquals(4, DuelMenu.inputToPlayerBoard(5));
-        assertEquals(2, DuelMenu.inputToRivalBoard(1));
-        assertEquals(3, DuelMenu.inputToRivalBoard(2));
-        assertEquals(1, DuelMenu.inputToRivalBoard(3));
-        assertEquals(4, DuelMenu.inputToRivalBoard(4));
-        assertEquals(0, DuelMenu.inputToRivalBoard(5));
+        assertEquals(2, DuelMenuUtils.inputToPlayerBoard(1));
+        assertEquals(1, DuelMenuUtils.inputToPlayerBoard(2));
+        assertEquals(3, DuelMenuUtils.inputToPlayerBoard(3));
+        assertEquals(0, DuelMenuUtils.inputToPlayerBoard(4));
+        assertEquals(4, DuelMenuUtils.inputToPlayerBoard(5));
+        assertEquals(2, DuelMenuUtils.inputToRivalBoard(1));
+        assertEquals(3, DuelMenuUtils.inputToRivalBoard(2));
+        assertEquals(1, DuelMenuUtils.inputToRivalBoard(3));
+        assertEquals(4, DuelMenuUtils.inputToRivalBoard(4));
+        assertEquals(0, DuelMenuUtils.inputToRivalBoard(5));
     }
 }

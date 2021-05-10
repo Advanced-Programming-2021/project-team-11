@@ -170,19 +170,20 @@ public class GameRoundController {
         } else {
             if (toAttackCard.isHidden() && toAttackCard.getCard() instanceof Marshmallon)
                 getPlayerBoard().getPlayer().decreaseHealth(Marshmallon.getToReduceHp());
+            boolean wasHidden = toAttackCard.isHidden();
             toAttackCard.makeVisible();
             int rivalDefence = toAttackCard.getDefencePower(getRivalBoard());
             if (myMonsterAttack > rivalDefence) {
                 if (!(toAttackCard.getCard() instanceof Marshmallon))
                     getRivalBoard().sendToGraveyard(toAttackCard);
-                return new MonsterAttackResult(0, toAttackCard.isHidden(), false, toAttackCard.getCard(), AttackResult.RIVAL_DESTROYED);
+                return new MonsterAttackResult(0, wasHidden, false, toAttackCard.getCard(), AttackResult.RIVAL_DESTROYED);
             } else if (myMonsterAttack < rivalDefence) {
                 int damageReceived = rivalDefence - myMonsterAttack;
                 getPlayerBoard().getPlayer().decreaseHealth(damageReceived);
                 getPlayerBoard().sendToGraveyard(selectedCard);
-                return new MonsterAttackResult(damageReceived, toAttackCard.isHidden(), false, toAttackCard.getCard(), AttackResult.ME_DESTROYED);
+                return new MonsterAttackResult(damageReceived, wasHidden, false, toAttackCard.getCard(), AttackResult.ME_DESTROYED);
             } else {
-                return new MonsterAttackResult(0, toAttackCard.isHidden(), false, toAttackCard.getCard(), AttackResult.DRAW);
+                return new MonsterAttackResult(0, wasHidden, false, toAttackCard.getCard(), AttackResult.DRAW);
             }
         }
     }
@@ -321,9 +322,20 @@ public class GameRoundController {
         selectedCard.swapAttackMode();
     }
 
-    //    public void activeSpell() {
-//    }
-//
+    public void activeSpell() throws NoCardSelectedException, OnlySpellCardsAllowedException, InvalidPhaseActionException, CardAlreadyAttackedException, MonsterEffectMustBeHandledException {
+        if (selectedCard == null)
+            throw new NoCardSelectedException();
+        if (selectedCard.getCardPlace() == CardPlaceType.MONSTER && !selectedCard.hasEffectActivated())
+            if (GameUtils.canMonsterCardEffectBeActivated(selectedCard.getCard()) && selectedCard.isEffectConditionMet(getPlayerBoard(), getPlayerBoard(), false))
+                throw new MonsterEffectMustBeHandledException(selectedCard);
+        if (selectedCard.getCardPlace() != CardPlaceType.SPELL)
+            throw new OnlySpellCardsAllowedException();
+        if (phase != GamePhase.BATTLE_PHASE)
+            throw new InvalidPhaseActionException();
+        if (selectedCard.hasEffectActivated())
+            throw new CardAlreadyAttackedException();
+    }
+
     public Card getSelectedCard() throws NoCardSelectedYetException, CardHiddenException {
         if (selectedCard == null)
             throw new NoCardSelectedYetException();
@@ -359,8 +371,11 @@ public class GameRoundController {
 
     private void endTurn() {
         selectedCard = null;
-        Arrays.stream(getPlayerBoard().getMonsterCards()).filter(Objects::nonNull).forEach(x -> x.setHasAttacked(false));
+        Arrays.stream(getPlayerBoard().getMonsterCards()).filter(Objects::nonNull).forEach(card -> card.setHasAttacked(false));
         Arrays.stream(getPlayerBoard().getMonsterCards()).filter(Objects::nonNull).forEach(PlayableCard::resetPositionChangedInThisTurn);
+        Arrays.stream(getRivalBoard().getMonsterCards()).filter(Objects::nonNull).forEach(PlayableCard::resetEffectActivateCounterRound);
+        Arrays.stream(getPlayerBoard().getMonsterCards()).filter(Objects::nonNull).forEach(PlayableCard::resetEffectActivateCounterRound);
+        Arrays.stream(getPlayerBoard().getMonsterCards()).filter(Objects::nonNull).forEach(card -> card.setMimicCard(null));
         player1Turn = !player1Turn;
         playerAlreadySummoned = false;
     }

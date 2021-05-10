@@ -7,6 +7,7 @@ import model.PlayableCard;
 import model.PlayerBoard;
 import model.User;
 import model.cards.monsters.ManEaterBug;
+import model.cards.monsters.ScannerCard;
 import model.enums.GamePhase;
 import model.enums.GameRounds;
 import model.enums.GameStatus;
@@ -17,16 +18,14 @@ import view.menus.commands.game.SelectCommand;
 import view.menus.commands.game.SetCommand;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.TreeSet;
 
 public class DuelMenu extends Menu {
-    private static final int[] RIVAL_BOARD_INDEXES = {5, 3, 1, 2, 4}, MY_BOARD_INDEXES = {4, 2, 1, 3, 5};
     private static final String SUMMON_COMMAND = "summon", FLIP_SUMMON_COMMAND = "flip-summon",
             ATTACK_PREFIX_COMMAND = "attack ", ATTACK_DIRECT_COMMAND = "attack direct",
             ACTIVATE_EFFECT_COMMAND = "activate effect", SHOW_CARD_COMMAND = "card show --selected",
             SURRENDER_COMMAND = "surrender", CHEAT_HP = "PAINKILLER", NEXT_PHASE_COMMAND = "next phase",
-            CANCEL_COMMAND = "cancel", SHOW_GRAVEYARD_COMMAND = "show graveyard", PRINT_BOARD_COMMAND = "print board";
+            SHOW_GRAVEYARD_COMMAND = "show graveyard", PRINT_BOARD_COMMAND = "print board";
     private final GameController gameController;
     private final User player1, player2;
     private boolean isRoundEnded = false, isGameEnded = false;
@@ -67,7 +66,7 @@ public class DuelMenu extends Menu {
             // Check commands
             if (painkiller(command) || selectCommandProcessor(command) || nextPhase(command) || selectCommandProcessor(command)
                     || summon(command) || setCard(command) || flipSummon(command) || directAttack(command) || attackToMonster(command)
-                    || showGraveyard(command) || surrender(command) || showCard(command) || printBoard(command))
+                    || showGraveyard(command) || surrender(command) || showCard(command) || printBoard(command) || activateSpell(command))
                 continue;
             System.out.println(MenuUtils.INVALID_COMMAND);
         }
@@ -111,12 +110,12 @@ public class DuelMenu extends Menu {
     private void printBoard() {
         PlayerBoard rivalBoard = gameController.getRound().getRivalBoard();
         System.out.printf("%s:%d\n", rivalBoard.getPlayer().getUser().getNickname(), rivalBoard.getPlayer().getHealth());
-        printRivalBoard(rivalBoard);
+        DuelMenuUtils.printRivalBoard(rivalBoard);
         System.out.println();
         System.out.println("--------------------------");
         System.out.println();
         PlayerBoard myBoard = gameController.getRound().getPlayerBoard();
-        printMyBoard(myBoard);
+        DuelMenuUtils.printMyBoard(myBoard);
         System.out.printf("%s:%d\n", myBoard.getPlayer().getUser().getNickname(), myBoard.getPlayer().getHealth());
     }
 
@@ -156,44 +155,6 @@ public class DuelMenu extends Menu {
             System.out.println(e.getMessage());
         }
         return true;
-    }
-
-    public static void printRivalBoard(PlayerBoard board) {
-        // Count cards in hand
-        board.getHand().forEach(x -> System.out.print("\tc"));
-        System.out.println();
-        // Print deck
-        System.out.printf("%02d\n", board.getDeck().size());
-        // Spell and traps
-        Arrays.stream(RIVAL_BOARD_INDEXES).forEach(i -> System.out.print("\t" + (board.getSpellCards()[i - 1] == null ? "E " : board.getSpellCards()[i - 1].toString())));
-        System.out.println();
-        Arrays.stream(RIVAL_BOARD_INDEXES).forEach(i -> System.out.print("\t" + (board.getMonsterCards()[i - 1] == null ? "E " : board.getMonsterCards()[i - 1].toString())));
-        System.out.println();
-        // Graveyard and field
-        System.out.printf("%02d", board.getGraveyard().size());
-        for (int i = 0; i < 6; i++)
-            System.out.print('\t');
-        System.out.println("E");
-    }
-
-    public static void printMyBoard(PlayerBoard board) {
-        // Graveyard and field
-        System.out.printf("%02d", board.getGraveyard().size());
-        for (int i = 0; i < 6; i++)
-            System.out.print('\t');
-        System.out.println("E");
-        // Spell and traps
-        Arrays.stream(MY_BOARD_INDEXES).forEach(i -> System.out.print("\t" + (board.getMonsterCards()[i - 1] == null ? "E " : board.getMonsterCards()[i - 1].toString())));
-        System.out.println();
-        Arrays.stream(RIVAL_BOARD_INDEXES).forEach(i -> System.out.print("\t" + (board.getSpellCards()[i - 1] == null ? "E " : board.getSpellCards()[i - 1].toString())));
-        System.out.println();
-        // Print deck
-        for (int i = 0; i < 6; i++)
-            System.out.print('\t');
-        System.out.printf("%02d\n", board.getDeck().size());
-        // Count cards in hand
-        board.getHand().forEach(x -> System.out.print("c\t"));
-        System.out.println();
     }
 
     private boolean nextPhase(String command) {
@@ -252,7 +213,7 @@ public class DuelMenu extends Menu {
         while (cardPositions.size() != neededCardsToTribute) {
             System.out.print("Select a card position to tribute or type \"cancel\" to cancel: ");
             String command = MenuUtils.readLine();
-            if (command.equals(CANCEL_COMMAND))
+            if (command.equals(MenuUtils.CANCEL_COMMAND))
                 return false;
             try {
                 cardPositions.add(Integer.parseInt(command));
@@ -359,19 +320,9 @@ public class DuelMenu extends Menu {
     private boolean showGraveyard(String command) {
         if (!command.equals(SHOW_GRAVEYARD_COMMAND))
             return false;
-        System.out.printf("%s's graveyard\n", player1.getNickname());
-        printGraveyard(gameController.getRound().getPlayer1Board().getGraveyard());
-        System.out.printf("%s's graveyard\n", player2.getNickname());
-        printGraveyard(gameController.getRound().getPlayer2Board().getGraveyard());
+        DuelMenuUtils.printGraveyard(gameController.getRound().getPlayer1Board().getGraveyard(), player1);
+        DuelMenuUtils.printGraveyard(gameController.getRound().getPlayer2Board().getGraveyard(), player2);
         return true;
-    }
-
-    private static void printGraveyard(ArrayList<PlayableCard> graveyard) {
-        if (graveyard.size() == 0)
-            System.out.println("graveyard empty");
-        else
-            for (int i = 0; i < graveyard.size(); i++)
-                System.out.printf("%d. %s:%s\n", i + 1, graveyard.get(i).getCard().getName(), graveyard.get(i).getCard().getDescription());
     }
 
     private boolean surrender(String command) {
@@ -392,18 +343,27 @@ public class DuelMenu extends Menu {
         return true;
     }
 
-    public static int inputToPlayerBoard(int index) {
-        for (int i = 0; i < MY_BOARD_INDEXES.length; i++)
-            if (MY_BOARD_INDEXES[i] == index)
-                return i;
-        throw new BooAnException("Invalid input: " + index);
+    private boolean activateSpell(String command) {
+        if (!command.equals(ACTIVATE_EFFECT_COMMAND))
+            return false;
+        try {
+            gameController.getRound().activeSpell();
+        } catch (OnlySpellCardsAllowedException | NoCardSelectedException | CardAlreadyAttackedException | InvalidPhaseActionException e) {
+            System.out.println(e.getMessage());
+        } catch (MonsterEffectMustBeHandledException e) {
+            handleMonsterWithEffectCard(e.getCard());
+        }
+        return true;
     }
 
-    public static int inputToRivalBoard(int index) {
-        for (int i = 0; i < RIVAL_BOARD_INDEXES.length; i++)
-            if (RIVAL_BOARD_INDEXES[i] == index)
-                return i;
-        throw new BooAnException("Invalid input: " + index);
+    private void handleMonsterWithEffectCard(PlayableCard card) {
+        if (card.getCard() instanceof ScannerCard) {
+            try {
+                CardSpecificMenus.handleScannerCardEffect(gameController.getRound().getRivalBoard().getGraveyard(), card);
+            } catch (CantActivateSpellException e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
     @Override

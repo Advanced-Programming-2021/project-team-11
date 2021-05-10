@@ -21,7 +21,7 @@ public class YomiShip extends EffectMonsters {
     }
 
     @Override
-    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard card, int activationCounter) {
+    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {
 
     }
 
@@ -31,7 +31,7 @@ public class YomiShip extends EffectMonsters {
     }
 
     @Override
-    public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, int activationCounter) {
+    public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, int activationCounter) {
         return false;
     }
 }

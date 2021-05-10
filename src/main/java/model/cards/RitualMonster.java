@@ -9,7 +9,7 @@ public class RitualMonster extends MonsterCard {
     }
 
     @Override
-    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard card, int activationCounter) {
+    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {
         // Does nothing!
     }
 
@@ -19,7 +19,7 @@ public class RitualMonster extends MonsterCard {
     }
 
     @Override
-    public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, int activationCounter) {
+    public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, int activationCounter) {
         return false;
     }
 }

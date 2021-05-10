@@ -8,7 +8,8 @@ class MenuUtils {
     static final String INVALID_COMMAND = "invalid command";
     static final String INVALID_NUMBER = "invalid number";
     static final String MENU_NAV_FAILED = "menu navigation is not possible";
-    static final Scanner scanner = new Scanner(System.in);
+    static final String CANCEL_COMMAND = "cancel";
+    private static final Scanner scanner = new Scanner(System.in);
     private static final String CARD_SHOW_PREFIX = "card show";
 
     static String readLine() {

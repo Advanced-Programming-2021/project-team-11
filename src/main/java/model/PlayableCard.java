@@ -3,16 +3,18 @@ package model;
 import model.cards.Card;
 import model.cards.CardType;
 import model.cards.MonsterCard;
-import model.cards.monsters.CommandKnight;
+import model.cards.monsters.*;
 import model.enums.CardPlaceType;
-
-import java.util.Arrays;
 
 public class PlayableCard {
     private final Card card;
     private CardPlaceType cardPlace;
     private int attackDelta, defenceDelta, effectActivateCounterTotal = 0, effectActivateCounterRound = 0;
-    private boolean hidden = true, isAttacking, hasAttacked = false, changedPosition = false;
+    private boolean hidden = true, isAttacking, hasAttacked = false, changedPosition = false, spellActivated = false;
+    /**
+     * This is only a temp card to mimic for when the card is {@link model.cards.monsters.ScannerCard}
+     */
+    private Card mimicCard;
 
     public PlayableCard(Card card, CardPlaceType cardPlace) {
         this.card = card;
@@ -61,18 +63,20 @@ public class PlayableCard {
     }
 
     public Card getCard() {
+        if (this.card instanceof ScannerCard && mimicCard != null)
+            return mimicCard;
         return card;
     }
 
     public int getAttackPower(PlayerBoard myBoard) {
-        if (card.getCardType() == CardType.MONSTER)
-            return ((MonsterCard) card).getAttack() + getAttackDelta(myBoard);
+        if (getCard().getCardType() == CardType.MONSTER)
+            return ((MonsterCard) getCard()).getAttack() + getAttackDelta(myBoard);
         return 0;
     }
 
     public int getDefencePower(PlayerBoard myBoard) {
-        if (card.getCardType() == CardType.MONSTER)
-            return ((MonsterCard) card).getDefence() + getDefenceDelta(myBoard);
+        if (getCard().getCardType() == CardType.MONSTER)
+            return ((MonsterCard) getCard()).getDefence() + getDefenceDelta(myBoard);
         return 0;
     }
 
@@ -104,6 +108,10 @@ public class PlayableCard {
         return hasAttacked;
     }
 
+    public boolean hasEffectActivated() {
+        return spellActivated;
+    }
+
     public void addDefenceDelta(int delta) {
         defenceDelta += delta;
     }
@@ -120,33 +128,49 @@ public class PlayableCard {
         this.hasAttacked = hasAttacked;
     }
 
-    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard card) {
+    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard rivalCard) {
         effectActivateCounterRound++;
         effectActivateCounterTotal++;
-        getCard().activateEffect(myBoard, rivalBoard, card, 0);
+        spellActivated = true;
+        getCard().activateEffect(myBoard, rivalBoard, this, rivalCard, 0);
     }
 
-    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard card, boolean isTotalTimeActivatedImportant) {
+    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard rivalCard, boolean isTotalTimeActivatedImportant) {
         effectActivateCounterRound++;
         effectActivateCounterTotal++;
-        getCard().activateEffect(myBoard, rivalBoard, card, isTotalTimeActivatedImportant ? effectActivateCounterTotal : effectActivateCounterRound);
+        spellActivated = true;
+        getCard().activateEffect(myBoard, rivalBoard, this, rivalCard, isTotalTimeActivatedImportant ? effectActivateCounterTotal : effectActivateCounterRound);
     }
 
     public boolean isEffectConditionMet(PlayerBoard myBoard, PlayerBoard rivalBoard) {
-        return getCard().isConditionMade(myBoard, rivalBoard, 0);
+        return getCard().isConditionMade(myBoard, rivalBoard, this, 0);
     }
 
     public boolean isEffectConditionMet(PlayerBoard myBoard, PlayerBoard rivalBoard, boolean isTotalTimeActivatedImportant) {
-        return getCard().isConditionMade(myBoard, rivalBoard, isTotalTimeActivatedImportant ? effectActivateCounterTotal : effectActivateCounterRound);
+        return getCard().isConditionMade(myBoard, rivalBoard, this, isTotalTimeActivatedImportant ? effectActivateCounterTotal : effectActivateCounterRound);
+    }
+
+    public void setMimicCard(Card mimicCard) {
+        this.mimicCard = mimicCard;
     }
 
     void sendToGraveyard() {
+        this.mimicCard = null;
         this.cardPlace = CardPlaceType.GRAVEYARD;
-        hidden = false;
-        hasAttacked = false;
-        changedPosition = false;
-        defenceDelta = 0;
-        attackDelta = 0;
+        this.hidden = false;
+        this.hasAttacked = false;
+        this.changedPosition = false;
+        this.defenceDelta = 0;
+        this.attackDelta = 0;
+    }
+
+    public void resetEffectActivateCounterRound() {
+        resetSpellActivated();
+        this.effectActivateCounterRound = 0;
+    }
+
+    public void resetSpellActivated() {
+        this.spellActivated = false;
     }
 
     /**

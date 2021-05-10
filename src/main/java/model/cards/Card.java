@@ -53,11 +53,11 @@ public abstract class Card implements Comparable<Card> {
         return name;
     }
 
-    public abstract void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard card, int activationCounter);
+    public abstract void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter);
 
     public abstract void deactivateEffect();
 
-    public abstract boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, int activationCounter);
+    public abstract boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, int activationCounter);
 
     public static ArrayList<Card> getAllCards() {
         ArrayList<Card> cards = new ArrayList<>();

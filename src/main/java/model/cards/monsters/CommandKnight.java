@@ -3,7 +3,6 @@ package model.cards.monsters;
 import model.PlayableCard;
 import model.PlayerBoard;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 public class CommandKnight extends EffectMonsters {
@@ -29,7 +28,7 @@ public class CommandKnight extends EffectMonsters {
     }
 
     @Override
-    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard card, int activationCounter) {
+    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {
 
     }
 
@@ -46,10 +45,8 @@ public class CommandKnight extends EffectMonsters {
      * @return True if rival board only have more than one card (another card other than Command Knight)
      */
     @Override
-    public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, int activationCounter) {
-        Optional<PlayableCard> thisCard = rivalBoard.getMonsterCardsList().stream().filter(x -> x.getCard().getName().equals(getName())).findFirst();
-        return thisCard.filter(playableCard -> playableCard.isAttacking()
-                && rivalBoard.countActiveMonsterCards() - rivalBoard.getMonsterCardsList().stream().filter(x -> x.getCard().getName().equals(getName())).count() >= 1)
-                .isPresent();
+    public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, int activationCounter) {
+        return thisCard.isAttacking()
+                && rivalBoard.countActiveMonsterCards() - rivalBoard.getMonsterCardsList().stream().filter(x -> x.getCard().getName().equals(getName())).count() >= 1;
     }
 }

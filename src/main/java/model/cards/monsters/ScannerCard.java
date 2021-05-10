@@ -3,18 +3,17 @@ package model.cards.monsters;
 import model.PlayableCard;
 import model.PlayerBoard;
 
-public class Marshmallon extends EffectMonsters {
-    private static Marshmallon instance;
-    private final static String CARD_NAME = "Marshmallon";
-    private final static int TO_REDUCE_HP = 1000;
+public class ScannerCard extends EffectMonsters {
+    private static ScannerCard instance;
+    private final static String CARD_NAME = "Scanner";
 
-    private Marshmallon() {
+    private ScannerCard() {
         super(CARD_NAME);
     }
 
     public static void makeInstance() {
         if (instance == null)
-            instance = new Marshmallon();
+            instance = new ScannerCard();
     }
 
     public static String getCardName() {
@@ -22,18 +21,17 @@ public class Marshmallon extends EffectMonsters {
     }
 
     /**
-     * When this card is faced down (hidden) and it's attacked to, we must reduce some amount of HP
-     * from the person who has attacked
+     * Mimics rival card to this card
      *
-     * @return The amount of HP to reduce
+     * @param myBoard           Has no effect
+     * @param rivalBoard        Has no effect
+     * @param thisCard          This card
+     * @param rivalCard         The card to mimic
+     * @param activationCounter Has no effect
      */
-    public static int getToReduceHp() {
-        return TO_REDUCE_HP;
-    }
-
     @Override
     public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {
-
+        thisCard.setMimicCard(rivalCard.getCard());
     }
 
     @Override
@@ -43,6 +41,6 @@ public class Marshmallon extends EffectMonsters {
 
     @Override
     public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, int activationCounter) {
-        return false;
+        return !(thisCard.getCard() instanceof ScannerCard);
     }
 }
