@@ -57,6 +57,8 @@ public class CardLoader {
                 new RitualMonster(name, description, price, level, defence, attack, monsterType, attribute);
                 break;
             case EFFECT:
+                if (name.equals("Gate Guardian"))
+                    new SimpleMonster(name, description, price, level, defence, attack, monsterType, attribute);
                 MonsterCard card = MonsterCard.getAllMonsterCardByName(name);
                 if (card instanceof EffectMonsters)
                     ((EffectMonsters) card).initialize(description, price, level, defence, attack, monsterType, attribute);

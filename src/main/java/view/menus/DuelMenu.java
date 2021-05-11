@@ -201,12 +201,20 @@ public class DuelMenu extends Menu {
         } catch (NotEnoughCardsToTributeException e) {
             if (e.getCard() instanceof BeastKingBarbaros)
                 success = CardSpecificMenus.summonBeastKingBarbaros(gameController.getRound());
+        } catch (SpecialSummonNeededException e) {
+            if (e.getToSummonCard().getCard() instanceof TheTricky)
+                success = CardSpecificMenus.spawnTheTricky(gameController.getRound().getPlayerBoard(), e.getToSummonCard());
         }
         if (success) {
             System.out.println("summoned successfully");
             if (spawnedCard instanceof TerratigerTheEmpoweredWarrior)
                 CardSpecificMenus.handleTerratigerTheEmpoweredWarriorSummon(gameController.getRound().getPlayerBoard());
             printBoard();
+            // Remove selected card
+            try {
+                gameController.getRound().deselectCard();
+            } catch (NoCardSelectedYetException ignored) {
+            }
         }
         return true;
     }

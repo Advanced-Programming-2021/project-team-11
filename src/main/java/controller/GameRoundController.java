@@ -252,7 +252,7 @@ public class GameRoundController {
     }
 
 
-    public void summonCard() throws NoCardSelectedYetException, CantSummonCardException, InvalidPhaseActionException, MonsterCardZoneFullException, AlreadySummonedException, NotEnoughCardsToTributeException, TributeNeededException {
+    public void summonCard() throws NoCardSelectedYetException, CantSummonCardException, InvalidPhaseActionException, MonsterCardZoneFullException, AlreadySummonedException, NotEnoughCardsToTributeException, TributeNeededException, SpecialSummonNeededException {
         if (selectedCard == null)
             throw new NoCardSelectedYetException();
         if (selectedCard.getCardPlace() != CardPlaceType.HAND || selectedCard.getCard().getCardType() != CardType.MONSTER
@@ -264,6 +264,8 @@ public class GameRoundController {
             throw new MonsterCardZoneFullException();
         if (playerAlreadySummoned)
             throw new AlreadySummonedException();
+        if (selectedCard.getCard() instanceof TheTricky)
+            throw new SpecialSummonNeededException(selectedCard);
         int cardsToTribute = ((MonsterCard) selectedCard.getCard()).getCardsNeededToTribute();
         if (cardsToTribute == 0) { // GG! summon the card
             summonSelectedCard();

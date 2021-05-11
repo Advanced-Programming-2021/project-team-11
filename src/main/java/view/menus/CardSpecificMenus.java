@@ -183,6 +183,47 @@ public class CardSpecificMenus {
         // Move the card
         playerBoard.removeHandCard(allowedCards.get(index));
         playerBoard.addMonsterCard(allowedCards.get(index));
+        allowedCards.get(index).makeVisible();
+        allowedCards.get(index).setDefencing();
         System.out.printf("%s summoned successfully!\n", allowedCards.get(index).getCard().getName());
+    }
+
+    /**
+     * Tries to spawn the {@link model.cards.monsters.TheTricky} card
+     * To spawn it, we need to tribute a card from player hand
+     *
+     * @param playerBoard The player board
+     * @param thisCard    This card which we want to spawn
+     * @return True if summoned successfully, otherwise false
+     */
+    public static boolean spawnTheTricky(PlayerBoard playerBoard, PlayableCard thisCard) {
+        if (playerBoard.getHand().size() <= 1) {
+            System.out.println("Your hand is empty!");
+            return false;
+        }
+        if (playerBoard.isMonsterZoneFull()) {
+            System.out.println(new MonsterCardZoneFullException().getMessage()); // SAM KHALES
+            return false;
+        }
+        DuelMenuUtils.printNumberedCardList(playerBoard.getHand());
+        int index;
+        while (true) {
+            try {
+                index = Integer.parseInt(MenuUtils.readLine());
+                if (index < 0 || index >= playerBoard.getHand().size())
+                    throw new NumberFormatException();
+                if (playerBoard.getHand().get(index) == thisCard)
+                    System.out.println("You played yourself!");
+                else
+                    break;
+            } catch (NumberFormatException ex) {
+                System.out.println(MenuUtils.INVALID_NUMBER);
+            }
+        }
+        // Remove the card
+        playerBoard.getHand().remove(index);
+        playerBoard.getHand().remove(thisCard);
+        playerBoard.addMonsterCard(thisCard);
+        return true;
     }
 }

@@ -22,6 +22,8 @@ public class HardcodedCardsLoader {
         HeraldOfCreation.makeInstance();
         ExploderDragon.makeInstance();
         TerratigerTheEmpoweredWarrior.makeInstance();
+        TheTricky.makeInstance();
+        Texchanger.makeInstance();
     }
 
     private static void loadSpells() {
