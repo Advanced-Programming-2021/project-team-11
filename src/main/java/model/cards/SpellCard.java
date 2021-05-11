@@ -7,19 +7,35 @@ public abstract class SpellCard extends Card {
     private final static ArrayList<SpellCard> allSpellCards = new ArrayList<>();
     private final SpellCardType spellCardType;
 
-    public SpellCard(String name, String description, int price, SpellCardType spellCardType) {
-        super(name, description, CardType.SPELL, price);
+    /**
+     * Creates an uninitialized spell card
+     *
+     * @param name          The name of card to create
+     * @param spellCardType The spell card type
+     */
+    public SpellCard(String name, SpellCardType spellCardType) {
+        super(name, "", CardType.SPELL, 0);
         this.spellCardType = spellCardType;
         allSpellCards.add(this);
-        init();
     }
 
     public SpellCardType getSpellCardType() {
         return spellCardType;
     }
 
+    public void init(String description, int price) {
+        setDescription(description);
+        setPrice(price);
+        init();
+    }
+
     public static ArrayList<SpellCard> getAllSpellCards() {
         return allSpellCards;
+    }
+
+    public static SpellCard getAllSpellCardByName(String name) {
+        Optional<SpellCard> card = getAllSpellCards().stream().filter(x -> x.getName().equals(name)).findFirst();
+        return card.orElse(null);
     }
 
     public static SpellCard getSpellCardByName(String name) {

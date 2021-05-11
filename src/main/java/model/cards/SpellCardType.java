@@ -4,8 +4,11 @@ import controller.GeneralUtil;
 
 public enum SpellCardType {
     NORMAL,
-    COUNTER,
-    CONTINUES;
+    CONTINUES,
+    QUICK_PLAY,
+    FIELD,
+    EQUIP,
+    RITUAL;
 
     @Override
     public String toString() {

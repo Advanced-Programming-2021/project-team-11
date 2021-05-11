@@ -3,7 +3,7 @@ package model.cards.monsters;
 import model.PlayableCard;
 import model.PlayerBoard;
 
-public class ScannerCard extends EffectMonsters {
+public class ScannerCard extends InitializableEffectMonsters {
     private static ScannerCard instance;
     private final static String CARD_NAME = "Scanner";
 
@@ -32,11 +32,6 @@ public class ScannerCard extends EffectMonsters {
     @Override
     public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {
         thisCard.setMimicCard(rivalCard.getCard());
-    }
-
-    @Override
-    public void deactivateEffect() {
-
     }
 
     @Override

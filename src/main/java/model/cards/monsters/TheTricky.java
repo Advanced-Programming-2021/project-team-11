@@ -3,7 +3,7 @@ package model.cards.monsters;
 import model.PlayableCard;
 import model.PlayerBoard;
 
-public class TheTricky extends EffectMonsters {
+public class TheTricky extends InitializableEffectMonsters {
     private static TheTricky instance;
     private final static String CARD_NAME = "The Tricky";
 
@@ -22,11 +22,6 @@ public class TheTricky extends EffectMonsters {
 
     @Override
     public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {
-
-    }
-
-    @Override
-    public void deactivateEffect() {
 
     }
 

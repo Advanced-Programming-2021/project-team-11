@@ -3,7 +3,7 @@ package model.cards.monsters;
 import model.PlayableCard;
 import model.PlayerBoard;
 
-public class BeastKingBarbaros extends EffectMonsters {
+public class BeastKingBarbaros extends InitializableEffectMonsters {
     private final static String CARD_NAME = "Beast King Barbaros";
     private static BeastKingBarbaros instance;
     private final static int REDUCED_ATTACK = 1900;
@@ -27,11 +27,6 @@ public class BeastKingBarbaros extends EffectMonsters {
 
     @Override
     public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {
-
-    }
-
-    @Override
-    public void deactivateEffect() {
 
     }
 

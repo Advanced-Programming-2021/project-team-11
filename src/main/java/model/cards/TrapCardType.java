@@ -4,11 +4,8 @@ import controller.GeneralUtil;
 
 public enum TrapCardType {
     NORMAL,
-    CONTINUES,
-    QUICK_PLAY,
-    FIELD,
-    EQUIP,
-    RITUAL;
+    COUNTER,
+    CONTINUES;
 
     @Override
     public String toString() {

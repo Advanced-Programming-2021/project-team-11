@@ -3,7 +3,7 @@ package model.cards.monsters;
 import model.PlayableCard;
 import model.PlayerBoard;
 
-public class CommandKnight extends EffectMonsters {
+public class CommandKnight extends InitializableEffectMonsters {
     private static CommandKnight instance;
     private final static String CARD_NAME = "Command Knight";
     private final static int ATTACK_DELTA = 400;
@@ -32,11 +32,6 @@ public class CommandKnight extends EffectMonsters {
 
     @Override
     public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {
-
-    }
-
-    @Override
-    public void deactivateEffect() {
 
     }
 

@@ -3,7 +3,7 @@ package model.cards.monsters;
 import model.PlayableCard;
 import model.PlayerBoard;
 
-public class ManEaterBug extends EffectMonsters {
+public class ManEaterBug extends InitializableEffectMonsters {
     private static ManEaterBug instance;
     private static final String CARD_NAME = "Man-Eater Bug";
 
@@ -34,11 +34,6 @@ public class ManEaterBug extends EffectMonsters {
         if (rivalCard == null)
             return;
         rivalBoard.sendToGraveyard(rivalCard);
-    }
-
-    @Override
-    public void deactivateEffect() {
-
     }
 
     @Override

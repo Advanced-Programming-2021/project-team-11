@@ -3,7 +3,7 @@ package model.cards.monsters;
 import model.PlayableCard;
 import model.PlayerBoard;
 
-public class YomiShip extends EffectMonsters {
+public class YomiShip extends InitializableEffectMonsters {
     private static YomiShip instance;
     private static final String CARD_NAME = "Yomi Ship";
 
@@ -22,11 +22,6 @@ public class YomiShip extends EffectMonsters {
 
     @Override
     public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {
-
-    }
-
-    @Override
-    public void deactivateEffect() {
 
     }
 

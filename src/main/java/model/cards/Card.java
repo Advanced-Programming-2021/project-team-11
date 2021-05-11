@@ -14,6 +14,14 @@ public abstract class Card implements Comparable<Card> {
     private final CardType cardType;
     private boolean initialized = false;
 
+    /**
+     * Creates a card. Please note that {@link #init()} is not called in the constructor
+     *
+     * @param name        The name of card. Must be unique
+     * @param description The description of card
+     * @param cardType    The card type
+     * @param price       Price of card to buy it
+     */
     public Card(String name, String description, CardType cardType, int price) {
         this.name = name;
         this.description = description;
@@ -41,7 +49,7 @@ public abstract class Card implements Comparable<Card> {
         return initialized;
     }
 
-    public final void init() {
+    protected final void init() {
         initialized = true;
     }
 

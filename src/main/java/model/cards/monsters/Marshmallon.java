@@ -3,7 +3,7 @@ package model.cards.monsters;
 import model.PlayableCard;
 import model.PlayerBoard;
 
-public class Marshmallon extends EffectMonsters {
+public class Marshmallon extends InitializableEffectMonsters {
     private static Marshmallon instance;
     private final static String CARD_NAME = "Marshmallon";
     private final static int TO_REDUCE_HP = 1000;
@@ -33,11 +33,6 @@ public class Marshmallon extends EffectMonsters {
 
     @Override
     public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {
-
-    }
-
-    @Override
-    public void deactivateEffect() {
 
     }
 

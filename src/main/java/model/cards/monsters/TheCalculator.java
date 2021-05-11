@@ -3,7 +3,7 @@ package model.cards.monsters;
 import model.PlayableCard;
 import model.PlayerBoard;
 
-public class TheCalculator extends EffectMonsters {
+public class TheCalculator extends InitializableEffectMonsters {
     private static TheCalculator instance;
     private final static String CARD_NAME = "The Calculator";
     private final static int DAMAGE_MULTIPLIER = 300;
@@ -27,11 +27,6 @@ public class TheCalculator extends EffectMonsters {
 
     @Override
     public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {
-
-    }
-
-    @Override
-    public void deactivateEffect() {
 
     }
 

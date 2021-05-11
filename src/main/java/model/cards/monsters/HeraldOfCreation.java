@@ -3,7 +3,7 @@ package model.cards.monsters;
 import model.PlayableCard;
 import model.PlayerBoard;
 
-public class HeraldOfCreation extends EffectMonsters {
+public class HeraldOfCreation extends InitializableEffectMonsters {
     private static HeraldOfCreation instance;
     private final static String CARD_NAME = "Herald of Creation";
 
@@ -22,11 +22,6 @@ public class HeraldOfCreation extends EffectMonsters {
 
     @Override
     public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {
-
-    }
-
-    @Override
-    public void deactivateEffect() {
 
     }
 

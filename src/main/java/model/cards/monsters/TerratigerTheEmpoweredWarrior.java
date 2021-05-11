@@ -3,7 +3,7 @@ package model.cards.monsters;
 import model.PlayableCard;
 import model.PlayerBoard;
 
-public class TerratigerTheEmpoweredWarrior extends EffectMonsters {
+public class TerratigerTheEmpoweredWarrior extends InitializableEffectMonsters {
     private static TerratigerTheEmpoweredWarrior instance;
     private final static String CARD_NAME = "Terratiger, the Empowered Warrior";
 
@@ -22,11 +22,6 @@ public class TerratigerTheEmpoweredWarrior extends EffectMonsters {
 
     @Override
     public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {
-
-    }
-
-    @Override
-    public void deactivateEffect() {
 
     }
 

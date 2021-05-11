@@ -3,7 +3,7 @@ package model.cards.monsters;
 import model.PlayableCard;
 import model.PlayerBoard;
 
-public class Texchanger extends EffectMonsters {
+public class Texchanger extends InitializableEffectMonsters {
     private static Texchanger instance;
     private final static String CARD_NAME = "Texchanger";
 
@@ -22,11 +22,6 @@ public class Texchanger extends EffectMonsters {
 
     @Override
     public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {
-
-    }
-
-    @Override
-    public void deactivateEffect() {
 
     }
 

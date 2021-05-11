@@ -4,9 +4,9 @@ import model.cards.MonsterAttributeType;
 import model.cards.MonsterCard;
 import model.cards.MonsterType;
 
-public abstract class EffectMonsters extends MonsterCard {
+public abstract class InitializableEffectMonsters extends MonsterCard {
 
-    public EffectMonsters(String name) {
+    public InitializableEffectMonsters(String name) {
         super(name);
     }
 
@@ -19,5 +19,10 @@ public abstract class EffectMonsters extends MonsterCard {
         setMonsterType(monsterType);
         setMonsterAttributeType(monsterAttributeType);
         init();
+    }
+
+    @Override
+    public final void deactivateEffect() {
+        // Monsters don't have this
     }
 }

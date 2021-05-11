@@ -5,7 +5,7 @@ import model.PlayerBoard;
 
 // TODO: when creating traps, check for this card
 
-public class MirageDragon extends EffectMonsters {
+public class MirageDragon extends InitializableEffectMonsters {
     private final static String CARD_NAME = "Mirage Dragon";
     private static MirageDragon instance;
 
@@ -20,11 +20,6 @@ public class MirageDragon extends EffectMonsters {
 
     @Override
     public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {
-
-    }
-
-    @Override
-    public void deactivateEffect() {
 
     }
 
