@@ -11,9 +11,10 @@ public class ManEaterBug extends InitializableEffectMonsters {
         super(CARD_NAME);
     }
 
-    public static void makeInstance() {
+    public static ManEaterBug getInstance() {
         if (instance == null)
             instance = new ManEaterBug();
+        return instance;
     }
 
     public static String getCardName() {

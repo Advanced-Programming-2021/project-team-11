@@ -4,10 +4,8 @@ import model.PlayableCard;
 import model.PlayerBoard;
 import model.cards.*;
 import model.cards.monsters.*;
-import model.enums.AttackResult;
-import model.enums.CardPlaceType;
-import model.enums.GamePhase;
-import model.enums.GameStatus;
+import model.cards.spells.AdvancedRitualArt;
+import model.enums.*;
 import model.exceptions.*;
 import model.results.MonsterAttackResult;
 
@@ -218,8 +216,10 @@ public class GameRoundController {
             setSpellCard();
     }
 
-    private void setMonsterCard() throws MonsterCardZoneFullException, AlreadySummonedException, NotEnoughCardsToTributeException, TributeNeededException {
-        if (getPlayerBoard().isSpellZoneFull())
+    private void setMonsterCard() throws MonsterCardZoneFullException, AlreadySummonedException, NotEnoughCardsToTributeException, TributeNeededException, CantSetCardException {
+        if (((MonsterCard) selectedCard.getCard()).getMonsterCardType() == MonsterCardType.RITUAL)
+            throw new CantSetCardException();
+        if (getPlayerBoard().isMonsterZoneFull())
             throw new MonsterCardZoneFullException();
         if (playerAlreadySummoned)
             throw new AlreadySummonedException();
@@ -329,7 +329,7 @@ public class GameRoundController {
         selectedCard.swapAttackMode();
     }
 
-    public void activeSpell() throws NoCardSelectedException, OnlySpellCardsAllowedException, InvalidPhaseActionException, CardAlreadyAttackedException, MonsterEffectMustBeHandledException {
+    public ActivateSpellCallback activeSpell() throws NoCardSelectedException, OnlySpellCardsAllowedException, InvalidPhaseActionException, CardAlreadyAttackedException, MonsterEffectMustBeHandledException, RitualSummonNotPossibleException {
         if (selectedCard == null)
             throw new NoCardSelectedException();
         if (selectedCard.getCardPlace() == CardPlaceType.MONSTER && !selectedCard.hasEffectActivated())
@@ -341,6 +341,16 @@ public class GameRoundController {
             throw new InvalidPhaseActionException();
         if (selectedCard.hasEffectActivated())
             throw new CardAlreadyAttackedException();
+        return handleActivateSpellCard();
+    }
+
+    private ActivateSpellCallback handleActivateSpellCard() throws RitualSummonNotPossibleException {
+        if (selectedCard.getCard() instanceof AdvancedRitualArt) {
+            if (!AdvancedRitualArt.isRitualSummonPossible(getPlayerBoard()))
+                throw new RitualSummonNotPossibleException();
+            return ActivateSpellCallback.RITUAL;
+        }
+        return null;
     }
 
     public Card getSelectedCard() throws NoCardSelectedYetException, CardHiddenException {

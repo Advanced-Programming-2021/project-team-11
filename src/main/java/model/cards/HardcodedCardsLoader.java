@@ -1,6 +1,7 @@
 package model.cards;
 
 import model.cards.monsters.*;
+import model.cards.spells.*;
 
 public class HardcodedCardsLoader {
     public static void load() {
@@ -10,24 +11,24 @@ public class HardcodedCardsLoader {
     }
 
     private static void loadMonsters() {
-        CommandKnight.makeInstance();
-        YomiShip.makeInstance();
-        ManEaterBug.makeInstance();
-        Marshmallon.makeInstance();
-        Suijin.makeInstance();
-        ScannerCard.makeInstance();
-        TheCalculator.makeInstance();
-        BeastKingBarbaros.makeInstance();
-        MirageDragon.makeInstance();
-        HeraldOfCreation.makeInstance();
-        ExploderDragon.makeInstance();
-        TerratigerTheEmpoweredWarrior.makeInstance();
-        TheTricky.makeInstance();
-        Texchanger.makeInstance();
+        CommandKnight.getInstance();
+        YomiShip.getInstance();
+        ManEaterBug.getInstance();
+        Marshmallon.getInstance();
+        Suijin.getInstance();
+        ScannerCard.getInstance();
+        TheCalculator.getInstance();
+        BeastKingBarbaros.getInstance();
+        MirageDragon.getInstance();
+        HeraldOfCreation.getInstance();
+        ExploderDragon.getInstance();
+        TerratigerTheEmpoweredWarrior.getInstance();
+        TheTricky.getInstance();
+        Texchanger.getInstance();
     }
 
     private static void loadSpells() {
-
+        AdvancedRitualArt.getInstance();
     }
 
     private static void loadTraps() {

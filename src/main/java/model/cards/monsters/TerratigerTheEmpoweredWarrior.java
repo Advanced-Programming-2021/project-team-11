@@ -11,9 +11,10 @@ public class TerratigerTheEmpoweredWarrior extends InitializableEffectMonsters {
         super(CARD_NAME);
     }
 
-    public static void makeInstance() {
+    public static TerratigerTheEmpoweredWarrior getInstance() {
         if (instance == null)
             instance = new TerratigerTheEmpoweredWarrior();
+        return instance;
     }
 
     public static String getCardName() {

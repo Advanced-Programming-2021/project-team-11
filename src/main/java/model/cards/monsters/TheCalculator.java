@@ -12,9 +12,10 @@ public class TheCalculator extends InitializableEffectMonsters {
         super(CARD_NAME);
     }
 
-    public static void makeInstance() {
+    public static TheCalculator getInstance() {
         if (instance == null)
             instance = new TheCalculator();
+        return instance;
     }
 
     public static String getCardName() {

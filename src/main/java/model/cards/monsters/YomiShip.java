@@ -11,9 +11,10 @@ public class YomiShip extends InitializableEffectMonsters {
         super(CARD_NAME);
     }
 
-    public static void makeInstance() {
+    public static YomiShip getInstance() {
         if (instance == null)
             instance = new YomiShip();
+        return instance;
     }
 
     public static String getCardName() {

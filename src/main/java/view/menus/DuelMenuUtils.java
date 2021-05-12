@@ -4,11 +4,14 @@ import model.PlayableCard;
 import model.PlayerBoard;
 import model.User;
 import model.cards.Card;
+import model.cards.MonsterCard;
 import model.exceptions.BooAnException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 class DuelMenuUtils {
     public static final int[] RIVAL_BOARD_INDEXES = {5, 3, 1, 2, 4}, MY_BOARD_INDEXES = {4, 2, 1, 3, 5};
@@ -102,8 +105,24 @@ class DuelMenuUtils {
         return new ArrayList<>(cardPositions);
     }
 
+    public static ArrayList<PlayableCard> printNumberedCardList(Stream<PlayableCard> cards) {
+        ArrayList<PlayableCard> list = cards.collect(Collectors.toCollection(ArrayList::new));
+        printNumberedCardList(list);
+        return list;
+    }
+
     public static void printNumberedCardList(ArrayList<PlayableCard> cards) {
         for (int i = 0; i < cards.size(); i++)
             System.out.printf("%d. %s\n", i + 1, cards.get(i).getCard().getName());
+    }
+
+    /**
+     * Prints a numbered list of cards and their levels
+     *
+     * @param cards List of cards
+     */
+    public static void printNumberedCardListWithLevel(ArrayList<PlayableCard> cards) {
+        for (int i = 0; i < cards.size(); i++)
+            System.out.printf("%d. %s -> level %d\n", i + 1, cards.get(i).getCard().getName(), ((MonsterCard) cards.get(i).getCard()).getLevel());
     }
 }

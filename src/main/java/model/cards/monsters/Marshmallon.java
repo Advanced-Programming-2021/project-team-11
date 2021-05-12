@@ -12,9 +12,10 @@ public class Marshmallon extends InitializableEffectMonsters {
         super(CARD_NAME);
     }
 
-    public static void makeInstance() {
+    public static Marshmallon getInstance() {
         if (instance == null)
             instance = new Marshmallon();
+        return instance;
     }
 
     public static String getCardName() {

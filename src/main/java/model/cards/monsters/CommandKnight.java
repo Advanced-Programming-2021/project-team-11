@@ -12,9 +12,10 @@ public class CommandKnight extends InitializableEffectMonsters {
         super(CARD_NAME);
     }
 
-    public static void makeInstance() {
+    public static CommandKnight getInstance() {
         if (instance == null)
             instance = new CommandKnight();
+        return instance;
     }
 
     public static String getCardName() {

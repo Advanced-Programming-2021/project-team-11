@@ -13,9 +13,10 @@ public class MirageDragon extends InitializableEffectMonsters {
         super(CARD_NAME);
     }
 
-    public static void makeInstance() {
+    public static MirageDragon getInstance() {
         if (instance == null)
             instance = new MirageDragon();
+        return instance;
     }
 
     @Override

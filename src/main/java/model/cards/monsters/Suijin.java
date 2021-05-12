@@ -11,9 +11,10 @@ public class Suijin extends InitializableEffectMonsters {
         super(CARD_NAME);
     }
 
-    public static void makeInstance() {
+    public static Suijin getInstance() {
         if (instance == null)
             instance = new Suijin();
+        return instance;
     }
 
     public static String getCardName() {

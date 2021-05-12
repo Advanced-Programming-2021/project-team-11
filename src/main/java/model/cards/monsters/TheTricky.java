@@ -11,9 +11,10 @@ public class TheTricky extends InitializableEffectMonsters {
         super(CARD_NAME);
     }
 
-    public static void makeInstance() {
+    public static TheTricky getInstance() {
         if (instance == null)
             instance = new TheTricky();
+        return instance;
     }
 
     public static String getCardName() {

@@ -11,9 +11,10 @@ public class Texchanger extends InitializableEffectMonsters {
         super(CARD_NAME);
     }
 
-    public static void makeInstance() {
+    public static Texchanger getInstance() {
         if (instance == null)
             instance = new Texchanger();
+        return instance;
     }
 
     public static String getCardName() {

@@ -12,9 +12,10 @@ public class BeastKingBarbaros extends InitializableEffectMonsters {
         super(CARD_NAME);
     }
 
-    public static void makeInstance() {
+    public static BeastKingBarbaros getInstance() {
         if (instance == null)
             instance = new BeastKingBarbaros();
+        return instance;
     }
 
     public static String getCardName() {

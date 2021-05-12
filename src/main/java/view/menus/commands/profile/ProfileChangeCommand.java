@@ -10,6 +10,8 @@ public class ProfileChangeCommand implements Command {
     @Parameter(names = {"--nickname", "-n"})
     private String nickname;
     @Parameter(names = {"--password", "-p"})
+    private boolean isPassword;
+    @Parameter(names = {"--current"})
     private String password;
     @Parameter(names = {"--new"})
     private String newPassword;
@@ -29,7 +31,7 @@ public class ProfileChangeCommand implements Command {
      * @return True if yes
      */
     public boolean isPasswordChange() {
-        return password != null && !password.equals("") && newPassword != null && !newPassword.equals("");
+        return isPassword;
     }
 
     public String getNickname() {

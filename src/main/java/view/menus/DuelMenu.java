@@ -8,6 +8,7 @@ import model.PlayerBoard;
 import model.User;
 import model.cards.Card;
 import model.cards.monsters.*;
+import model.enums.ActivateSpellCallback;
 import model.enums.GamePhase;
 import model.enums.GameRounds;
 import model.enums.GameStatus;
@@ -356,13 +357,23 @@ public class DuelMenu extends Menu {
         if (!command.equals(ACTIVATE_EFFECT_COMMAND))
             return false;
         try {
-            gameController.getRound().activeSpell();
-        } catch (OnlySpellCardsAllowedException | NoCardSelectedException | CardAlreadyAttackedException | InvalidPhaseActionException e) {
+            PlayableCard selectedCard = gameController.getRound().returnPlayableCard();
+            handleActivateSpellCallBack(gameController.getRound().activeSpell(), selectedCard);
+        } catch (OnlySpellCardsAllowedException | NoCardSelectedException | CardAlreadyAttackedException |
+                InvalidPhaseActionException | RitualSummonNotPossibleException e) {
             System.out.println(e.getMessage());
         } catch (MonsterEffectMustBeHandledException e) {
             handleMonsterWithEffectCard(e.getCard());
         }
         return true;
+    }
+
+    private void handleActivateSpellCallBack(ActivateSpellCallback result, PlayableCard selectedCard) {
+        switch (result) {
+            case RITUAL:
+                CardSpecificMenus.handleRitualSpawn(gameController.getRound().getPlayerBoard(), selectedCard);
+                break;
+        }
     }
 
     private void handleMonsterWithEffectCard(PlayableCard card) {

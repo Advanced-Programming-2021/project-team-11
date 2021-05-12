@@ -5,13 +5,16 @@ import model.PlayableCard;
 import model.PlayerBoard;
 import model.cards.CardType;
 import model.cards.MonsterCard;
+import model.cards.RitualMonster;
 import model.cards.monsters.BeastKingBarbaros;
 import model.cards.monsters.ManEaterBug;
+import model.cards.spells.AdvancedRitualArt;
 import model.enums.CardPlaceType;
 import model.exceptions.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public class CardSpecificMenus {
@@ -225,5 +228,51 @@ public class CardSpecificMenus {
         playerBoard.getHand().remove(thisCard);
         playerBoard.addMonsterCard(thisCard);
         return true;
+    }
+
+    public static void handleRitualSpawn(PlayerBoard board, PlayableCard spellCard) {
+        // At first print the monsters which user can choose
+        ArrayList<PlayableCard> list = DuelMenuUtils.printNumberedCardList(board.getHand().stream().filter
+                (card -> card.getCard() instanceof RitualMonster));
+        int index;
+        while (true) {
+            System.out.print("Choose a card to summon by it's index: ");
+            try {
+                index = Integer.parseInt(MenuUtils.readLine());
+                if (index < 0 || index >= list.size())
+                    throw new NumberFormatException();
+                if (AdvancedRitualArt.getInstance().isConditionMade(board, null, list.get(index), 0))
+                    break;
+                else
+                    System.out.println("You can't ritual summon this card!");
+            } catch (NumberFormatException ex) {
+                System.out.println(MenuUtils.INVALID_NUMBER);
+            }
+        }
+        // Choose cards which it levels match
+        DuelMenuUtils.printNumberedCardListWithLevel(board.getMonsterCardsList());
+        TreeSet<Integer> indexesOfMonsters = new TreeSet<>();
+        while (true) {
+            System.out.print("Choose some monsters by their index, separated by ',': ");
+            try {
+                for (String number : MenuUtils.readLine().split(","))
+                    indexesOfMonsters.add(Integer.parseInt(number));
+                // Check level
+                int sum = indexesOfMonsters.stream().mapToInt(i -> ((MonsterCard) board.getSpellCardsList().get(i).getCard()).getLevel()).sum();
+                if (((RitualMonster) list.get(index).getCard()).getLevel() == sum)
+                    break;
+                else
+                    System.out.printf("The sum of levels of card which you have chosen is not %d!\n", ((RitualMonster) list.get(index).getCard()).getLevel());
+            } catch (NumberFormatException ex) {
+                System.out.println(MenuUtils.INVALID_NUMBER);
+            }
+            indexesOfMonsters.clear();
+        }
+        // Tribute and summon
+        board.sendToGraveyard(spellCard);
+        ArrayList<PlayableCard> monstersToTribute = new ArrayList<>();
+        indexesOfMonsters.forEach(i -> monstersToTribute.add(board.getMonsterCardsList().get(i)));
+        monstersToTribute.forEach(board::sendToGraveyard);
+        board.addMonsterCard(list.get(index));
     }
 }

@@ -11,9 +11,10 @@ public class HeraldOfCreation extends InitializableEffectMonsters {
         super(CARD_NAME);
     }
 
-    public static void makeInstance() {
+    public static HeraldOfCreation getInstance() {
         if (instance == null)
             instance = new HeraldOfCreation();
+        return instance;
     }
 
     public static String getCardName() {

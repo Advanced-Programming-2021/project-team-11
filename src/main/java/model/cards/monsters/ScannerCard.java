@@ -11,9 +11,10 @@ public class ScannerCard extends InitializableEffectMonsters {
         super(CARD_NAME);
     }
 
-    public static void makeInstance() {
+    public static ScannerCard getInstance() {
         if (instance == null)
             instance = new ScannerCard();
+        return instance;
     }
 
     public static String getCardName() {
