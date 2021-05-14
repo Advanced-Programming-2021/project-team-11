@@ -116,6 +116,17 @@ class DuelMenuUtils {
             System.out.printf("%d. %s\n", i + 1, cards.get(i).getCard().getName());
     }
 
+    public static ArrayList<Card> printNumberedRawCardList(Stream<Card> cards) {
+        ArrayList<Card> list = cards.collect(Collectors.toCollection(ArrayList::new));
+        printNumberedRawCardList(list);
+        return list;
+    }
+
+    public static void printNumberedRawCardList(ArrayList<Card> cards) {
+        for (int i = 0; i < cards.size(); i++)
+            System.out.printf("%d. %s\n", i + 1, cards.get(i).getName());
+    }
+
     /**
      * Prints a numbered list of cards and their levels
      *

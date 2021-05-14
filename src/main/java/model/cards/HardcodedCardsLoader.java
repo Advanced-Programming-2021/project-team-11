@@ -29,6 +29,11 @@ public class HardcodedCardsLoader {
 
     private static void loadSpells() {
         AdvancedRitualArt.getInstance();
+        MonsterReborn.getInstance();
+        Terraforming.getInstance();
+        PotOfGreed.getInstance();
+        Raigeki.getInstance();
+        HarpiesFeatherDuster.getInstance();
     }
 
     private static void loadTraps() {

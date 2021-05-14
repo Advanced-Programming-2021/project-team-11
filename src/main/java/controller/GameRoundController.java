@@ -5,6 +5,7 @@ import model.PlayerBoard;
 import model.cards.*;
 import model.cards.monsters.*;
 import model.cards.spells.AdvancedRitualArt;
+import model.cards.spells.PotOfGreed;
 import model.enums.*;
 import model.exceptions.*;
 import model.results.MonsterAttackResult;
@@ -329,7 +330,7 @@ public class GameRoundController {
         selectedCard.swapAttackMode();
     }
 
-    public ActivateSpellCallback activeSpell() throws NoCardSelectedException, OnlySpellCardsAllowedException, InvalidPhaseActionException, CardAlreadyAttackedException, MonsterEffectMustBeHandledException, RitualSummonNotPossibleException {
+    public ActivateSpellCallback activeSpell() throws NoCardSelectedException, OnlySpellCardsAllowedException, InvalidPhaseActionException, CardAlreadyAttackedException, MonsterEffectMustBeHandledException, RitualSummonNotPossibleException, CantSpecialSummonException, CantUseSpellException {
         if (selectedCard == null)
             throw new NoCardSelectedException();
         if (selectedCard.getCardPlace() == CardPlaceType.MONSTER && !selectedCard.hasEffectActivated())
@@ -344,13 +345,32 @@ public class GameRoundController {
         return handleActivateSpellCard();
     }
 
-    private ActivateSpellCallback handleActivateSpellCard() throws RitualSummonNotPossibleException {
+    private ActivateSpellCallback handleActivateSpellCard() throws RitualSummonNotPossibleException, CantSpecialSummonException, CantUseSpellException {
         if (selectedCard.getCard() instanceof AdvancedRitualArt) {
             if (!AdvancedRitualArt.isRitualSummonPossible(getPlayerBoard()))
                 throw new RitualSummonNotPossibleException();
             return ActivateSpellCallback.RITUAL;
         }
-        return null;
+        if (!selectedCard.isEffectConditionMet(getPlayerBoard(), getPlayerBoard(), false))
+            if (selectedCard.getCard() instanceof SpellCard)
+                ((SpellCard) selectedCard.getCard()).throwConditionNotMadeException();
+        if (selectedCard.getCard() instanceof SpellCard && ((SpellCard) selectedCard.getCard()).getUserNeedInteraction())
+            return ActivateSpellCallback.NORMAL;
+        else {
+            selectedCard.activateEffect(getPlayerBoard(), getRivalBoard(), null);
+            return ActivateSpellCallback.DONE;
+        }
+    }
+
+    /**
+     * Special summons a card without any checks
+     *
+     * @param card        The card to summon
+     * @param isForPlayer Is this card for rival or player
+     */
+    public void specialSummon(MonsterCard card, boolean isForPlayer) {
+        PlayerBoard board = isForPlayer ? getPlayerBoard() : getRivalBoard();
+        board.addMonsterCard(new PlayableCard(card, CardPlaceType.HAND));
     }
 
     public Card getSelectedCard() throws NoCardSelectedYetException, CardHiddenException {

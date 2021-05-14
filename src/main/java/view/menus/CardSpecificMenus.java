@@ -3,9 +3,7 @@ package view.menus;
 import controller.GameRoundController;
 import model.PlayableCard;
 import model.PlayerBoard;
-import model.cards.CardType;
-import model.cards.MonsterCard;
-import model.cards.RitualMonster;
+import model.cards.*;
 import model.cards.monsters.BeastKingBarbaros;
 import model.cards.monsters.ManEaterBug;
 import model.cards.spells.AdvancedRitualArt;
@@ -46,7 +44,7 @@ public class CardSpecificMenus {
         // Get the card
         int index = -1;
         while (index < 0 || index >= rivalGraveyard.size()) {
-            System.out.print("Choose a card by it's number: ");
+            System.out.print(MenuUtils.CHOOSE_CARD_BY_INDEX);
             String command = MenuUtils.readLine();
             if (command.equals(MenuUtils.CANCEL_COMMAND))
                 return;
@@ -123,7 +121,7 @@ public class CardSpecificMenus {
         DuelMenuUtils.printNumberedCardList(playerBoard.getHand());
         while (true) {
             try {
-                System.out.print("Select a card from your hand by index: ");
+                System.out.print(MenuUtils.CHOOSE_CARD_BY_INDEX);
                 String input = MenuUtils.readLine();
                 if (input.equals(MenuUtils.CANCEL_COMMAND))
                     return;
@@ -139,11 +137,11 @@ public class CardSpecificMenus {
         DuelMenuUtils.printGraveyard(playerBoard.getGraveyard(), playerBoard.getPlayer().getUser());
         while (true) {
             try {
-                System.out.print("Select a card from your graveyard by index: ");
+                System.out.print(MenuUtils.CHOOSE_CARD_BY_INDEX);
                 String input = MenuUtils.readLine();
                 if (input.equals(MenuUtils.CANCEL_COMMAND))
                     return;
-                graveyardIndex = Integer.parseInt(input);
+                graveyardIndex = Integer.parseInt(input) - 1;
                 if (graveyardIndex < 0 || graveyardIndex >= playerBoard.getGraveyard().size())
                     throw new NumberFormatException();
                 break;
@@ -171,11 +169,11 @@ public class CardSpecificMenus {
         int index;
         while (true) {
             try {
-                System.out.print("Select a card from your hand by index: ");
+                System.out.print(MenuUtils.CHOOSE_CARD_BY_INDEX);
                 String input = MenuUtils.readLine();
                 if (input.equals(MenuUtils.CANCEL_COMMAND))
                     return;
-                index = Integer.parseInt(input);
+                index = Integer.parseInt(input) - 1;
                 if (index < 0 || index >= allowedCards.size())
                     throw new NumberFormatException();
                 break;
@@ -212,7 +210,7 @@ public class CardSpecificMenus {
         int index;
         while (true) {
             try {
-                index = Integer.parseInt(MenuUtils.readLine());
+                index = Integer.parseInt(MenuUtils.readLine()) - 1;
                 if (index < 0 || index >= playerBoard.getHand().size())
                     throw new NumberFormatException();
                 if (playerBoard.getHand().get(index) == thisCard)
@@ -236,9 +234,9 @@ public class CardSpecificMenus {
                 (card -> card.getCard() instanceof RitualMonster));
         int index;
         while (true) {
-            System.out.print("Choose a card to summon by it's index: ");
+            System.out.print(MenuUtils.CHOOSE_CARD_BY_INDEX);
             try {
-                index = Integer.parseInt(MenuUtils.readLine());
+                index = Integer.parseInt(MenuUtils.readLine()) - 1;
                 if (index < 0 || index >= list.size())
                     throw new NumberFormatException();
                 if (AdvancedRitualArt.getInstance().isConditionMade(board, null, list.get(index), 0))
@@ -274,5 +272,29 @@ public class CardSpecificMenus {
         indexesOfMonsters.forEach(i -> monstersToTribute.add(board.getMonsterCardsList().get(i)));
         monstersToTribute.forEach(board::sendToGraveyard);
         board.addMonsterCard(list.get(index));
+    }
+
+    public static void handleMonsterReborn(GameRoundController gameRoundController, PlayableCard thisCard) {
+        // Get the graveyards, mix them and then show them
+        ArrayList<PlayableCard> cards = new ArrayList<>();
+        cards.addAll(gameRoundController.getPlayerBoard().getGraveyard());
+        cards.addAll(gameRoundController.getRivalBoard().getGraveyard());
+        DuelMenuUtils.printNumberedCardList(cards);
+        // Let the player choose a card
+        int index = MenuUtils.readCardByIndex(cards.size());
+        // Summon that card
+        gameRoundController.specialSummon((MonsterCard) cards.get(index).getCard(), true);
+        gameRoundController.getPlayerBoard().sendToGraveyard(thisCard);
+        System.out.println(cards.get(index).getCard().getName() + " summoned!");
+    }
+
+    public static void handleTerraforming(PlayerBoard board) {
+        ArrayList<Card> list = DuelMenuUtils.printNumberedRawCardList(board.getDeck().stream()
+                .filter(card -> card instanceof SpellCard && ((SpellCard) card).getSpellCardType() == SpellCardType.FIELD));
+        int index = MenuUtils.readCardByIndex(list.size());
+        // Remove that card from hand
+        board.getDeck().remove(list.get(index));
+        board.getHand().add(new PlayableCard(list.get(index), CardPlaceType.HAND));
+        board.shuffleDeck();
     }
 }

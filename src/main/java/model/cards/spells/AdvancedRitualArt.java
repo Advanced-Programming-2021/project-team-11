@@ -16,7 +16,7 @@ public class AdvancedRitualArt extends SpellCard {
     private static AdvancedRitualArt instance;
 
     private AdvancedRitualArt() {
-        super(CARD_NAME, SpellCardType.RITUAL);
+        super(CARD_NAME, SpellCardType.RITUAL, true);
     }
 
     public static AdvancedRitualArt getInstance() {
@@ -80,5 +80,11 @@ public class AdvancedRitualArt extends SpellCard {
     public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, int activationCounter) {
         TreeSet<Integer> levelSums = subsetSum(myBoard.getMonsterCardsList().stream().mapToInt(card -> ((MonsterCard) card.getCard()).getLevel()));
         return levelSums.contains(((RitualMonster) thisCard.getCard()).getLevel());
+    }
+
+    @Override
+    public void throwConditionNotMadeException() {
+        // Does nothing
+        // The exception is handled in the game logic itself
     }
 }

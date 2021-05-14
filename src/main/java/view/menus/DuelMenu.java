@@ -8,6 +8,8 @@ import model.PlayerBoard;
 import model.User;
 import model.cards.Card;
 import model.cards.monsters.*;
+import model.cards.spells.MonsterReborn;
+import model.cards.spells.Terraforming;
 import model.enums.ActivateSpellCallback;
 import model.enums.GamePhase;
 import model.enums.GameRounds;
@@ -360,7 +362,8 @@ public class DuelMenu extends Menu {
             PlayableCard selectedCard = gameController.getRound().returnPlayableCard();
             handleActivateSpellCallBack(gameController.getRound().activeSpell(), selectedCard);
         } catch (OnlySpellCardsAllowedException | NoCardSelectedException | CardAlreadyAttackedException |
-                InvalidPhaseActionException | RitualSummonNotPossibleException e) {
+                InvalidPhaseActionException | RitualSummonNotPossibleException | CantSpecialSummonException |
+                CantUseSpellException e) {
             System.out.println(e.getMessage());
         } catch (MonsterEffectMustBeHandledException e) {
             handleMonsterWithEffectCard(e.getCard());
@@ -372,6 +375,12 @@ public class DuelMenu extends Menu {
         switch (result) {
             case RITUAL:
                 CardSpecificMenus.handleRitualSpawn(gameController.getRound().getPlayerBoard(), selectedCard);
+                break;
+            case NORMAL:
+                if (selectedCard.getCard() instanceof MonsterReborn)
+                    CardSpecificMenus.handleMonsterReborn(gameController.getRound(), selectedCard);
+                if (selectedCard.getCard() instanceof Terraforming)
+                    CardSpecificMenus.handleTerraforming(gameController.getRound().getPlayerBoard());
                 break;
         }
     }
