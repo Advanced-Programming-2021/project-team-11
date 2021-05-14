@@ -34,6 +34,8 @@ public class HardcodedCardsLoader {
         PotOfGreed.getInstance();
         Raigeki.getInstance();
         HarpiesFeatherDuster.getInstance();
+        ChangeOfHeart.getInstance();
+        DarkHole.getInstance();
     }
 
     private static void loadTraps() {

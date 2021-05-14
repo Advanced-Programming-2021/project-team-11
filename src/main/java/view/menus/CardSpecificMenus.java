@@ -1,5 +1,6 @@
 package view.menus;
 
+import controller.GameController;
 import controller.GameRoundController;
 import model.PlayableCard;
 import model.PlayerBoard;
@@ -288,7 +289,7 @@ public class CardSpecificMenus {
         System.out.println(cards.get(index).getCard().getName() + " summoned!");
     }
 
-    public static void handleTerraforming(PlayerBoard board) {
+    public static void handleTerraforming(PlayerBoard board, PlayableCard thisCard) {
         ArrayList<Card> list = DuelMenuUtils.printNumberedRawCardList(board.getDeck().stream()
                 .filter(card -> card instanceof SpellCard && ((SpellCard) card).getSpellCardType() == SpellCardType.FIELD));
         int index = MenuUtils.readCardByIndex(list.size());
@@ -296,5 +297,14 @@ public class CardSpecificMenus {
         board.getDeck().remove(list.get(index));
         board.getHand().add(new PlayableCard(list.get(index), CardPlaceType.HAND));
         board.shuffleDeck();
+        board.removeHandCard(thisCard);
+    }
+
+    public static void handleChangeOfHeart(GameRoundController roundController, PlayableCard thisCard) {
+        ArrayList<PlayableCard> monsters = roundController.getRivalBoard().getMonsterCardsList();
+        DuelMenuUtils.printNumberedCardList(monsters);
+        int index = MenuUtils.readCardByIndex(monsters.size());
+        roundController.changeOfHeartSwapOwner(monsters.get(index));
+        roundController.getPlayerBoard().removeHandCard(thisCard);
     }
 }

@@ -5,7 +5,6 @@ import model.PlayerBoard;
 import model.cards.*;
 import model.cards.monsters.*;
 import model.cards.spells.AdvancedRitualArt;
-import model.cards.spells.PotOfGreed;
 import model.enums.*;
 import model.exceptions.*;
 import model.results.MonsterAttackResult;
@@ -19,6 +18,7 @@ public class GameRoundController {
     private final PlayerBoard player1Board;
     private final PlayerBoard player2Board;
     private final Stack<PlayableCard> chainLink;
+    private final ArrayList<PlayableCard> changeOfHeartCards;
     private PlayableCard selectedCard;
     private boolean player1Turn, playerAlreadySummoned = false, isFirstBattle = true;
     private GameStatus gameStatus;
@@ -31,6 +31,7 @@ public class GameRoundController {
         chainLink = new Stack<>();
         gameStatus = GameStatus.ONGOING;
         phase = GamePhase.DRAW;
+        changeOfHeartCards = new ArrayList<>();
         getPlayerBoard().drawCard();
     }
 
@@ -413,6 +414,7 @@ public class GameRoundController {
         Arrays.stream(getRivalBoard().getMonsterCards()).filter(Objects::nonNull).forEach(PlayableCard::resetEffectActivateCounterRound);
         Arrays.stream(getPlayerBoard().getMonsterCards()).filter(Objects::nonNull).forEach(PlayableCard::resetEffectActivateCounterRound);
         Arrays.stream(getPlayerBoard().getMonsterCards()).filter(Objects::nonNull).forEach(card -> card.setMimicCard(null));
+        restoreChangeOfHeart();
         player1Turn = !player1Turn;
         playerAlreadySummoned = false;
     }
@@ -438,6 +440,33 @@ public class GameRoundController {
      */
     public void painkiller() {
         getPlayerBoard().getPlayer().increaseHealth(8000);
+    }
+
+    /**
+     * Forces the player to win the round
+     */
+    public void nuke() {
+        gameStatus = isPlayer1Turn() ? GameStatus.PLAYER1_WON : GameStatus.PLAYER2_WON;
+    }
+
+    private void restoreChangeOfHeart() {
+        ArrayList<PlayableCard> backup = new ArrayList<>(changeOfHeartCards);
+        backup.forEach(this::changeOfHeartSwapOwner);
+    }
+
+    /**
+     * Moves the card from the person who owns it to the other player
+     *
+     * @param card The card to move
+     */
+    public void changeOfHeartSwapOwner(PlayableCard card) {
+        PlayerBoard toRemoveFrom = isPlayableCardInRivalHand(card) ? getRivalBoard() : getPlayerBoard();
+        PlayerBoard toAddTo = isPlayableCardInRivalHand(card) ? getPlayerBoard() : getRivalBoard();
+        for (int i = 0; i < toRemoveFrom.getMonsterCards().length; i++)
+            if (toRemoveFrom.getMonsterCards()[i] == card)
+                toRemoveFrom.getMonsterCards()[i] = null;
+        toAddTo.addMonsterCard(card);
+        changeOfHeartCards.add(card);
     }
 
     private boolean isPlayableCardInRivalHand(PlayableCard card) {

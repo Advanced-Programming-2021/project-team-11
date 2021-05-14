@@ -8,6 +8,7 @@ import model.PlayerBoard;
 import model.User;
 import model.cards.Card;
 import model.cards.monsters.*;
+import model.cards.spells.ChangeOfHeart;
 import model.cards.spells.MonsterReborn;
 import model.cards.spells.Terraforming;
 import model.enums.ActivateSpellCallback;
@@ -27,7 +28,7 @@ public class DuelMenu extends Menu {
             ATTACK_PREFIX_COMMAND = "attack ", ATTACK_DIRECT_COMMAND = "attack direct",
             ACTIVATE_EFFECT_COMMAND = "activate effect", SHOW_CARD_COMMAND = "card show --selected",
             SURRENDER_COMMAND = "surrender", CHEAT_HP = "PAINKILLER", NEXT_PHASE_COMMAND = "next phase",
-            SHOW_GRAVEYARD_COMMAND = "show graveyard", PRINT_BOARD_COMMAND = "print board";
+            SHOW_GRAVEYARD_COMMAND = "show graveyard", PRINT_BOARD_COMMAND = "print board", NUKE_COMMAND = "nuke";
     private final GameController gameController;
     private final User player1, player2;
     private boolean isRoundEnded = false, isGameEnded = false;
@@ -68,7 +69,8 @@ public class DuelMenu extends Menu {
             // Check commands
             if (painkiller(command) || selectCommandProcessor(command) || nextPhase(command) || selectCommandProcessor(command)
                     || summon(command) || setCard(command) || flipSummon(command) || directAttack(command) || attackToMonster(command)
-                    || showGraveyard(command) || surrender(command) || showCard(command) || printBoard(command) || activateSpell(command))
+                    || showGraveyard(command) || surrender(command) || showCard(command) || printBoard(command) || activateSpell(command)
+                    || nuke(command))
                 continue;
             System.out.println(MenuUtils.INVALID_COMMAND);
         }
@@ -380,7 +382,9 @@ public class DuelMenu extends Menu {
                 if (selectedCard.getCard() instanceof MonsterReborn)
                     CardSpecificMenus.handleMonsterReborn(gameController.getRound(), selectedCard);
                 if (selectedCard.getCard() instanceof Terraforming)
-                    CardSpecificMenus.handleTerraforming(gameController.getRound().getPlayerBoard());
+                    CardSpecificMenus.handleTerraforming(gameController.getRound().getPlayerBoard(), selectedCard);
+                if (selectedCard.getCard() instanceof ChangeOfHeart)
+                    CardSpecificMenus.handleChangeOfHeart(gameController.getRound(), selectedCard);
                 break;
         }
     }
@@ -400,6 +404,14 @@ public class DuelMenu extends Menu {
                 System.out.println(e.getMessage());
             }
         }
+    }
+
+    private boolean nuke(String command) {
+        if (command.equals(NUKE_COMMAND)) {
+            gameController.getRound().nuke();
+            return true;
+        }
+        return false;
     }
 
     @Override
