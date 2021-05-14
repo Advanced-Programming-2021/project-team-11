@@ -131,7 +131,8 @@ public class GameRoundController {
         if (toAttackCard == null)
             throw new NoCardHereToAttackException();
         // Check Command Knight
-        if (toAttackCard.getCard() instanceof CommandKnight && toAttackCard.isEffectConditionMet(getPlayerBoard(), getRivalBoard()))
+        if (toAttackCard.getCard() instanceof CommandKnight && toAttackCard.isEffectConditionMet(getPlayerBoard(), getRivalBoard())
+                || getPlayerBoard().isEffectOfSwordOfRevealingLightActive())
             throw new CantAttackWithThisCardException();
         // Check the attack possibilities
         selectedCard.setHasAttacked(true);
@@ -196,6 +197,9 @@ public class GameRoundController {
     public int attackToPlayer() throws Exception {
         preAttackChecks();
         if (!getRivalBoard().isMonsterZoneEmpty() || isFirstBattle)
+            throw new CantAttackToPlayerException();
+
+        if (getPlayerBoard().isEffectOfSwordOfRevealingLightActive())
             throw new CantAttackToPlayerException();
 
         int attacked = selectedCard.getAttackPower(getPlayerBoard());
@@ -409,14 +413,20 @@ public class GameRoundController {
 
     private void endTurn() {
         selectedCard = null;
-        Arrays.stream(getPlayerBoard().getMonsterCards()).filter(Objects::nonNull).forEach(card -> card.setHasAttacked(false));
-        Arrays.stream(getPlayerBoard().getMonsterCards()).filter(Objects::nonNull).forEach(PlayableCard::resetPositionChangedInThisTurn);
-        Arrays.stream(getRivalBoard().getMonsterCards()).filter(Objects::nonNull).forEach(PlayableCard::resetEffectActivateCounterRound);
-        Arrays.stream(getPlayerBoard().getMonsterCards()).filter(Objects::nonNull).forEach(PlayableCard::resetEffectActivateCounterRound);
-        Arrays.stream(getPlayerBoard().getMonsterCards()).filter(Objects::nonNull).forEach(card -> card.setMimicCard(null));
+        resetCards(getPlayer1Board());
+        resetCards(getPlayer2Board());
         restoreChangeOfHeart();
+        getPlayer1Board().tryIncreaseSwordOfRevealingLightRound();
+        getPlayer2Board().tryIncreaseSwordOfRevealingLightRound();
         player1Turn = !player1Turn;
         playerAlreadySummoned = false;
+    }
+
+    private void resetCards(PlayerBoard board) {
+        Arrays.stream(board.getMonsterCards()).filter(Objects::nonNull).forEach(card -> card.setHasAttacked(false));
+        Arrays.stream(board.getMonsterCards()).filter(Objects::nonNull).forEach(PlayableCard::resetPositionChangedInThisTurn);
+        Arrays.stream(board.getMonsterCards()).filter(Objects::nonNull).forEach(PlayableCard::resetEffectActivateCounterRound);
+        Arrays.stream(board.getMonsterCards()).filter(Objects::nonNull).forEach(card -> card.setMimicCard(null));
     }
 
     public GameStatus getGameStatus() {

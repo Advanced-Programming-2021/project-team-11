@@ -15,6 +15,11 @@ public class PlayerBoard {
     private final ArrayList<PlayableCard> hand = new ArrayList<>(6);
     private final ArrayList<Card> deck;
     private PlayableCard field;
+    /**
+     * The effect of {@link model.cards.spells.SwordsOfRevealingLight} stage
+     * 0 means not in effect, other values mean that the card is in effect and at nth round
+     */
+    private int effectOfSwordsOfRevealingLightStage = 0;
 
     public PlayerBoard(Player player, ArrayList<Card> cards) {
         this.player = player;
@@ -154,5 +159,20 @@ public class PlayerBoard {
                 spellCard[i] = null;
         card.sendToGraveyard();
         graveyard.add(card);
+    }
+
+    public void tryIncreaseSwordOfRevealingLightRound() {
+        if (this.effectOfSwordsOfRevealingLightStage != 0)
+            this.effectOfSwordsOfRevealingLightStage++;
+        if (this.effectOfSwordsOfRevealingLightStage > 3 * 2) // 3 rounds for this player and 3 for the other
+            this.effectOfSwordsOfRevealingLightStage = 0;
+    }
+
+    public boolean isEffectOfSwordOfRevealingLightActive() {
+        return this.effectOfSwordsOfRevealingLightStage != 0;
+    }
+
+    public void activateSwordOfRevealingLight() {
+        this.effectOfSwordsOfRevealingLightStage = 1;
     }
 }

@@ -36,6 +36,7 @@ public class HardcodedCardsLoader {
         HarpiesFeatherDuster.getInstance();
         ChangeOfHeart.getInstance();
         DarkHole.getInstance();
+        SwordsOfRevealingLight.getInstance();
     }
 
     private static void loadTraps() {
