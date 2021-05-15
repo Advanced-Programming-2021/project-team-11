@@ -365,7 +365,7 @@ public class DuelMenu extends Menu {
             handleActivateSpellCallBack(gameController.getRound().activeSpell(), selectedCard);
         } catch (OnlySpellCardsAllowedException | NoCardSelectedException | CardAlreadyAttackedException |
                 InvalidPhaseActionException | RitualSummonNotPossibleException | CantSpecialSummonException |
-                CantUseSpellException e) {
+                CantUseSpellException | SpellAlreadyActivatedException e) {
             System.out.println(e.getMessage());
         } catch (MonsterEffectMustBeHandledException e) {
             handleMonsterWithEffectCard(e.getCard());

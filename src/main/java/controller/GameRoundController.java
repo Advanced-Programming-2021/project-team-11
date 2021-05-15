@@ -5,6 +5,7 @@ import model.PlayerBoard;
 import model.cards.*;
 import model.cards.monsters.*;
 import model.cards.spells.AdvancedRitualArt;
+import model.cards.spells.MessengerOfPeace;
 import model.enums.*;
 import model.exceptions.*;
 import model.results.MonsterAttackResult;
@@ -44,7 +45,7 @@ public class GameRoundController {
         switch (phase) {
             case DRAW:
                 phase = GamePhase.STANDBY;
-                // TODO: Do something?
+                getPlayerBoard().tryApplyMessengerOfPeace();
                 break;
             case STANDBY:
                 phase = GamePhase.MAIN1;
@@ -143,8 +144,10 @@ public class GameRoundController {
         return result;
     }
 
-    private MonsterAttackResult processAttackToMonster(PlayableCard toAttackCard) {
+    private MonsterAttackResult processAttackToMonster(PlayableCard toAttackCard) throws CantAttackWithThisCardException {
         int myMonsterAttack = selectedCard.getAttackPower(getPlayerBoard());
+        if (isMessangerOfPeaceForbiddingTheAttack(myMonsterAttack))
+            throw new CantAttackWithThisCardException();
         if (toAttackCard.getCard() instanceof Suijin && toAttackCard.isEffectConditionMet(getPlayerBoard(), getRivalBoard(), true)) {
             toAttackCard.activateEffect(getPlayerBoard(), getRivalBoard(), selectedCard);
             myMonsterAttack = 0;
@@ -203,6 +206,8 @@ public class GameRoundController {
             throw new CantAttackToPlayerException();
 
         int attacked = selectedCard.getAttackPower(getPlayerBoard());
+        if (isMessangerOfPeaceForbiddingTheAttack(attacked))
+            throw new CantAttackWithThisCardException();
         getRivalBoard().getPlayer().decreaseHealth(attacked);
         selectedCard.setHasAttacked(true);
         return attacked;
@@ -335,7 +340,7 @@ public class GameRoundController {
         selectedCard.swapAttackMode();
     }
 
-    public ActivateSpellCallback activeSpell() throws NoCardSelectedException, OnlySpellCardsAllowedException, InvalidPhaseActionException, CardAlreadyAttackedException, MonsterEffectMustBeHandledException, RitualSummonNotPossibleException, CantSpecialSummonException, CantUseSpellException {
+    public ActivateSpellCallback activeSpell() throws NoCardSelectedException, OnlySpellCardsAllowedException, InvalidPhaseActionException, CardAlreadyAttackedException, MonsterEffectMustBeHandledException, RitualSummonNotPossibleException, CantSpecialSummonException, CantUseSpellException, SpellAlreadyActivatedException {
         if (selectedCard == null)
             throw new NoCardSelectedException();
         if (selectedCard.getCardPlace() == CardPlaceType.MONSTER && !selectedCard.hasEffectActivated())
@@ -345,8 +350,8 @@ public class GameRoundController {
             throw new OnlySpellCardsAllowedException();
         if (phase != GamePhase.BATTLE_PHASE)
             throw new InvalidPhaseActionException();
-        if (selectedCard.hasEffectActivated())
-            throw new CardAlreadyAttackedException();
+        if (selectedCard.hasEffectActivated() || !selectedCard.isHidden())
+            throw new SpellAlreadyActivatedException();
         return handleActivateSpellCard();
     }
 
@@ -483,5 +488,10 @@ public class GameRoundController {
         return getRivalBoard().getHand().stream().anyMatch(x -> x == card) || Arrays.stream(getRivalBoard().getMonsterCards()).anyMatch(x -> x == card)
                 || Arrays.stream(getRivalBoard().getSpellCards()).anyMatch(x -> x == card) || getRivalBoard().getGraveyard().stream().anyMatch(x -> x == card) ||
                 getRivalBoard().getField() == card;
+    }
+
+    private boolean isMessangerOfPeaceForbiddingTheAttack(int attackPoints) {
+        return getRivalBoard().getMonsterCardsList().stream().anyMatch(card -> !card.isHidden() && card.getCard() instanceof MessengerOfPeace)
+                && attackPoints >= MessengerOfPeace.getMaxAttack();
     }
 }

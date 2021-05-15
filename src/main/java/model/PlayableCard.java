@@ -4,6 +4,7 @@ import model.cards.Card;
 import model.cards.CardType;
 import model.cards.MonsterCard;
 import model.cards.monsters.*;
+import model.cards.spells.SpellAbsorption;
 import model.enums.CardPlaceType;
 
 public class PlayableCard {
@@ -135,6 +136,7 @@ public class PlayableCard {
         effectActivateCounterTotal++;
         spellActivated = true;
         getCard().activateEffect(myBoard, rivalBoard, this, rivalCard, 0);
+        checkSpellAbsorption(myBoard, rivalBoard);
     }
 
     public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard rivalCard, boolean isTotalTimeActivatedImportant) {
@@ -142,6 +144,7 @@ public class PlayableCard {
         effectActivateCounterTotal++;
         spellActivated = true;
         getCard().activateEffect(myBoard, rivalBoard, this, rivalCard, isTotalTimeActivatedImportant ? effectActivateCounterTotal : effectActivateCounterRound);
+        checkSpellAbsorption(myBoard, rivalBoard);
     }
 
     public boolean isEffectConditionMet(PlayerBoard myBoard, PlayerBoard rivalBoard) {
@@ -173,6 +176,13 @@ public class PlayableCard {
 
     public void resetSpellActivated() {
         this.spellActivated = false;
+    }
+
+    private void checkSpellAbsorption(PlayerBoard board1, PlayerBoard board2) {
+        if (board1.getSpellCardsList().stream().anyMatch(c -> !c.isHidden() && c.getCard() instanceof SpellAbsorption))
+            board1.getPlayer().increaseHealth(SpellAbsorption.getHealthAdded());
+        if (board2.getSpellCardsList().stream().anyMatch(c -> !c.isHidden() && c.getCard() instanceof SpellAbsorption))
+            board2.getPlayer().increaseHealth(SpellAbsorption.getHealthAdded());
     }
 
     /**

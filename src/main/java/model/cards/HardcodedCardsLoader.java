@@ -37,6 +37,9 @@ public class HardcodedCardsLoader {
         ChangeOfHeart.getInstance();
         DarkHole.getInstance();
         SwordsOfRevealingLight.getInstance();
+        SupplySquad.getInstance();
+        SpellAbsorption.getInstance();
+        MessengerOfPeace.getInstance();
     }
 
     private static void loadTraps() {

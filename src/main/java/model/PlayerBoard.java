@@ -1,8 +1,11 @@
 package model;
 
 import model.cards.Card;
+import model.cards.spells.MessengerOfPeace;
+import model.cards.spells.SupplySquad;
 import model.enums.CardPlaceType;
 import model.exceptions.BooAnException;
+import view.menus.Menu;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -79,12 +82,15 @@ public class PlayerBoard {
     }
 
     public void sendMonsterToGraveyard(int cardPosition) {
+        tryHandleSupplySquad();
         monsterCard[cardPosition].sendToGraveyard();
+        graveyard.add(monsterCard[cardPosition]);
         monsterCard[cardPosition] = null;
     }
 
     public void sendSpellToGraveyard(int cardPosition) {
         spellCard[cardPosition].sendToGraveyard();
+        graveyard.add(spellCard[cardPosition]);
         spellCard[cardPosition] = null;
     }
 
@@ -152,13 +158,20 @@ public class PlayerBoard {
 
     public void sendToGraveyard(PlayableCard card) {
         for (int i = 0; i < monsterCard.length; i++)
-            if (card == monsterCard[i])
+            if (card == monsterCard[i]) {
+                tryHandleSupplySquad();
                 monsterCard[i] = null;
+            }
         for (int i = 0; i < spellCard.length; i++)
             if (card == spellCard[i])
                 spellCard[i] = null;
         card.sendToGraveyard();
         graveyard.add(card);
+    }
+
+    private void tryHandleSupplySquad() {
+        Optional<PlayableCard> supplySquadCard = getSpellCardsList().stream().filter(c -> c.getCard() instanceof SupplySquad && !c.isHidden() && c.isEffectConditionMet(this, null, false)).findFirst();
+        supplySquadCard.ifPresent(playableCard -> playableCard.activateEffect(this, null, null));
     }
 
     public void tryIncreaseSwordOfRevealingLightRound() {
@@ -174,5 +187,10 @@ public class PlayerBoard {
 
     public void activateSwordOfRevealingLight() {
         this.effectOfSwordsOfRevealingLightStage = 1;
+    }
+
+    public void tryApplyMessengerOfPeace() {
+        getMonsterCardsList().stream().filter(card -> !card.isHidden() && card.getCard() instanceof MessengerOfPeace)
+                .findFirst().ifPresent(card -> card.activateEffect(this, null, null));
     }
 }
