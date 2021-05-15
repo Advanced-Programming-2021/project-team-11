@@ -40,6 +40,10 @@ public class HardcodedCardsLoader {
         SupplySquad.getInstance();
         SpellAbsorption.getInstance();
         MessengerOfPeace.getInstance();
+        Yami.getInstance();
+        Forest.getInstance();
+        ClosedForest.getInstance();
+        Umiiruka.getInstance();
     }
 
     private static void loadTraps() {

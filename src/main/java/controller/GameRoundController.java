@@ -5,6 +5,7 @@ import model.PlayerBoard;
 import model.cards.*;
 import model.cards.monsters.*;
 import model.cards.spells.AdvancedRitualArt;
+import model.cards.spells.FieldSpellCard;
 import model.cards.spells.MessengerOfPeace;
 import model.enums.*;
 import model.exceptions.*;
@@ -145,7 +146,7 @@ public class GameRoundController {
     }
 
     private MonsterAttackResult processAttackToMonster(PlayableCard toAttackCard) throws CantAttackWithThisCardException {
-        int myMonsterAttack = selectedCard.getAttackPower(getPlayerBoard());
+        int myMonsterAttack = selectedCard.getAttackPower(getPlayerBoard(), getField());
         if (isMessangerOfPeaceForbiddingTheAttack(myMonsterAttack))
             throw new CantAttackWithThisCardException();
         if (toAttackCard.getCard() instanceof Suijin && toAttackCard.isEffectConditionMet(getPlayerBoard(), getRivalBoard(), true)) {
@@ -153,7 +154,7 @@ public class GameRoundController {
             myMonsterAttack = 0;
         }
         if (toAttackCard.isAttacking()) {
-            int rivalAttack = toAttackCard.getAttackPower(getRivalBoard());
+            int rivalAttack = toAttackCard.getAttackPower(getRivalBoard(), getField());
             if (myMonsterAttack > rivalAttack) {
                 int damageReceived = myMonsterAttack - rivalAttack;
                 if (!(toAttackCard.getCard() instanceof Marshmallon))
@@ -179,7 +180,7 @@ public class GameRoundController {
                 getPlayerBoard().getPlayer().decreaseHealth(Marshmallon.getToReduceHp());
             boolean wasHidden = toAttackCard.isHidden();
             toAttackCard.makeVisible();
-            int rivalDefence = toAttackCard.getDefencePower(getRivalBoard());
+            int rivalDefence = toAttackCard.getDefencePower(getRivalBoard(), getField());
             if (myMonsterAttack > rivalDefence) {
                 if (!(toAttackCard.getCard() instanceof Marshmallon))
                     getRivalBoard().sendToGraveyard(toAttackCard);
@@ -205,7 +206,7 @@ public class GameRoundController {
         if (getPlayerBoard().isEffectOfSwordOfRevealingLightActive())
             throw new CantAttackToPlayerException();
 
-        int attacked = selectedCard.getAttackPower(getPlayerBoard());
+        int attacked = selectedCard.getAttackPower(getPlayerBoard(), getField());
         if (isMessangerOfPeaceForbiddingTheAttack(attacked))
             throw new CantAttackWithThisCardException();
         getRivalBoard().getPlayer().decreaseHealth(attacked);
@@ -247,7 +248,10 @@ public class GameRoundController {
     private void setSpellCard() throws SpellCardZoneFullException {
         if (getPlayerBoard().isSpellZoneFull())
             throw new SpellCardZoneFullException();
-        setSelectedSpellCard();
+        if (selectedCard.getCard() instanceof FieldSpellCard)
+            setFieldFromSelectedCard();
+        else
+            setSelectedSpellCard();
     }
 
     public void flipSummon() throws Exception {
@@ -346,7 +350,7 @@ public class GameRoundController {
         if (selectedCard.getCardPlace() == CardPlaceType.MONSTER && !selectedCard.hasEffectActivated())
             if (GameUtils.canMonsterCardEffectBeActivated(selectedCard.getCard()) && selectedCard.isEffectConditionMet(getPlayerBoard(), getPlayerBoard(), false))
                 throw new MonsterEffectMustBeHandledException(selectedCard);
-        if (selectedCard.getCardPlace() != CardPlaceType.SPELL)
+        if (selectedCard.getCardPlace() != CardPlaceType.SPELL && selectedCard.getCardPlace() != CardPlaceType.FIELD)
             throw new OnlySpellCardsAllowedException();
         if (phase != GamePhase.BATTLE_PHASE)
             throw new InvalidPhaseActionException();
@@ -356,6 +360,7 @@ public class GameRoundController {
     }
 
     private ActivateSpellCallback handleActivateSpellCard() throws RitualSummonNotPossibleException, CantSpecialSummonException, CantUseSpellException {
+        selectedCard.makeVisible();
         if (selectedCard.getCard() instanceof AdvancedRitualArt) {
             if (!AdvancedRitualArt.isRitualSummonPossible(getPlayerBoard()))
                 throw new RitualSummonNotPossibleException();
@@ -444,6 +449,18 @@ public class GameRoundController {
         if (getPlayer2Board().getField() != null)
             return getPlayer2Board().getField();
         return null;
+    }
+
+    private void setFieldFromSelectedCard() {
+        removeField();
+        getPlayerBoard().setField(selectedCard);
+        selectedCard.setCardPlace(CardPlaceType.FIELD);
+        selectedCard = null;
+    }
+
+    private void removeField() {
+        getPlayer1Board().setField(null);
+        getPlayer2Board().setField(null);
     }
 
     public boolean isPlayer1Turn() {

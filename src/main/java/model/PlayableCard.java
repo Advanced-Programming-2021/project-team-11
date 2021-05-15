@@ -4,6 +4,7 @@ import model.cards.Card;
 import model.cards.CardType;
 import model.cards.MonsterCard;
 import model.cards.monsters.*;
+import model.cards.spells.FieldSpellCard;
 import model.cards.spells.SpellAbsorption;
 import model.enums.CardPlaceType;
 
@@ -69,15 +70,15 @@ public class PlayableCard {
         return card;
     }
 
-    public int getAttackPower(PlayerBoard myBoard) {
+    public int getAttackPower(PlayerBoard myBoard, PlayableCard field) {
         if (getCard().getCardType() == CardType.MONSTER)
-            return ((MonsterCard) getCard()).getAttack() + getAttackDelta(myBoard);
+            return ((MonsterCard) getCard()).getAttack() + getAttackDelta(myBoard) + getFieldEffectForAttack(myBoard, field);
         return 0;
     }
 
-    public int getDefencePower(PlayerBoard myBoard) {
+    public int getDefencePower(PlayerBoard myBoard, PlayableCard field) {
         if (getCard().getCardType() == CardType.MONSTER)
-            return ((MonsterCard) getCard()).getDefence() + getDefenceDelta(myBoard);
+            return ((MonsterCard) getCard()).getDefence() + getDefenceDelta(myBoard) + getFieldEffectForDefence(myBoard, field);
         return 0;
     }
 
@@ -92,6 +93,18 @@ public class PlayableCard {
         if (getCard() instanceof TheCalculator)
             tempDelta += myBoard.getMonsterCardsList().stream().mapToInt(card -> ((MonsterCard) card.getCard()).getLevel()).sum() * TheCalculator.getAttackMultiplier();
         return getAttackDeltaRaw() + tempDelta;
+    }
+
+    private int getFieldEffectForAttack(PlayerBoard myBoard, PlayableCard field) {
+        if (field != null)
+            return ((FieldSpellCard) field.getCard()).getAttackDelta(this, myBoard);
+        return 0;
+    }
+
+    private int getFieldEffectForDefence(PlayerBoard myBoard, PlayableCard field) {
+        if (field != null)
+            return ((FieldSpellCard) field.getCard()).getDefenceDelta(this, myBoard);
+        return 0;
     }
 
     public int getDefenceDeltaRaw() {
@@ -179,9 +192,9 @@ public class PlayableCard {
     }
 
     private void checkSpellAbsorption(PlayerBoard board1, PlayerBoard board2) {
-        if (board1.getSpellCardsList().stream().anyMatch(c -> !c.isHidden() && c.getCard() instanceof SpellAbsorption))
+        if (board1 != null && board1.getSpellCardsList().stream().anyMatch(c -> !c.isHidden() && c.getCard() instanceof SpellAbsorption))
             board1.getPlayer().increaseHealth(SpellAbsorption.getHealthAdded());
-        if (board2.getSpellCardsList().stream().anyMatch(c -> !c.isHidden() && c.getCard() instanceof SpellAbsorption))
+        if (board2 != null && board2.getSpellCardsList().stream().anyMatch(c -> !c.isHidden() && c.getCard() instanceof SpellAbsorption))
             board2.getPlayer().increaseHealth(SpellAbsorption.getHealthAdded());
     }
 
