@@ -7,7 +7,7 @@ import view.menus.commands.CommandUtils;
 public class DeckShowCommand extends DeckCommands {
     @Parameter(names = {"--side", "-s"})
     private boolean isSide;
-    @Parameter(names = {"--side", "-s"}, required = true)
+    @Parameter(names = {"--deck-name", "-n"}, required = true)
     private String deckName;
 
     public String getDeckName() {

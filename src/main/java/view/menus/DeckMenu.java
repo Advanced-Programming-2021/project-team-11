@@ -8,6 +8,7 @@ import model.cards.Card;
 import model.cards.CardType;
 import model.exceptions.*;
 import model.results.GetDecksResult;
+import view.menus.commands.CommandUtils;
 import view.menus.commands.deck.*;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class DeckMenu extends Menu {
             }
             // Try other commands
             if (addDeck(command) || setActiveDeck(command) || deleteDeck(command) || addCardToDeck(command)
-                    || removeCardFromDeck(command) || showDeckCards(command))
+                    || removeCardFromDeck(command) || showDeckCards(command) || showCard(command))
                 continue;
             if (command.equals(SHOW_DECKS_COMMAND)) {
                 showAllDecks();
@@ -50,8 +51,6 @@ public class DeckMenu extends Menu {
                 deckUpCheat();
                 continue;
             }
-            if (showCard(command))
-                continue;
             System.out.println(MenuUtils.INVALID_COMMAND);
         }
     }
@@ -101,7 +100,7 @@ public class DeckMenu extends Menu {
             JCommander.newBuilder()
                     .addObject(addCardCommand)
                     .build()
-                    .parse(addCardCommand.removePrefix(command).split(" "));
+                    .parse(CommandUtils.translateCommandline(addCardCommand.removePrefix(command)));
             DeckMenuController.addCardToDeck(loggedInUser, addCardCommand.getDeckName(), addCardCommand.getCardName(), addCardCommand.isSide());
             System.out.println("card added to deck successfully");
             return true;
@@ -119,7 +118,7 @@ public class DeckMenu extends Menu {
             JCommander.newBuilder()
                     .addObject(removeCardCommand)
                     .build()
-                    .parse(removeCardCommand.removePrefix(command).split(" "));
+                    .parse(CommandUtils.translateCommandline(removeCardCommand.removePrefix(command)));
             DeckMenuController.removeCardFromDeck(loggedInUser, removeCardCommand.getDeckName(), removeCardCommand.getCardName(), removeCardCommand.isSide());
             System.out.println("card removed form deck successfully");
             return true;
@@ -148,7 +147,7 @@ public class DeckMenu extends Menu {
             JCommander.newBuilder()
                     .addObject(showDeckCommand)
                     .build()
-                    .parse(showDeckCommand.removePrefix(command).split(" "));
+                    .parse(CommandUtils.translateCommandline(showDeckCommand.removePrefix(command)));
             ArrayList<Card> cards = DeckMenuController.getDeckCards(loggedInUser, showDeckCommand.getDeckName(), showDeckCommand.isSide());
             System.out.printf("Deck: %s\n", showDeckCommand.getDeckName());
             showDeckCards(cards, showDeckCommand.isSide());

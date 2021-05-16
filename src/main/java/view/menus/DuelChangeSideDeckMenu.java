@@ -6,6 +6,7 @@ import controller.menucontrollers.DeckMenuController;
 import model.User;
 import model.exceptions.DeckCardNotExistsException;
 import model.exceptions.InvalidCommandException;
+import view.menus.commands.CommandUtils;
 import view.menus.commands.deck.DeckSwapCardCommand;
 
 public class DuelChangeSideDeckMenu extends Menu {
@@ -48,7 +49,7 @@ public class DuelChangeSideDeckMenu extends Menu {
             JCommander.newBuilder()
                     .addObject(swapCardCommand)
                     .build()
-                    .parse(swapCardCommand.removePrefix(command).split(" "));
+                    .parse(CommandUtils.translateCommandline(swapCardCommand.removePrefix(command)));
             DeckMenuController.swapCards(toChangeUser.getActiveDeck(), swapCardCommand.getMainDeckCardName(), swapCardCommand.getSideDeckCardName());
             System.out.println("Cards swapped!");
         } catch (InvalidCommandException | ParameterException e) {

@@ -68,7 +68,7 @@ class LoginMenuControllerTest {
             fail("nickname must be checked after username");
         }
         try {
-            LoginMenuController.register("1","2","1");
+            LoginMenuController.register("hirbod","2","1");
             fail("registering 1 user successful");
         } catch (UsernameExistsException e) {
             fail(e);

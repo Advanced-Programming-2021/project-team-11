@@ -18,6 +18,7 @@ import model.enums.GameStatus;
 import model.exceptions.*;
 import model.game.GameEndResults;
 import model.results.MonsterAttackResult;
+import view.menus.commands.CommandUtils;
 import view.menus.commands.game.SelectCommand;
 import view.menus.commands.game.SetCommand;
 
@@ -137,7 +138,7 @@ public class DuelMenu extends Menu {
             JCommander.newBuilder()
                     .addObject(selectCommand)
                     .build()
-                    .parse(selectCommand.removePrefix(command).split(" "));
+                    .parse(CommandUtils.translateCommandline(selectCommand.removePrefix(command)));
             if (!selectCommand.isValid())
                 throw new InvalidCommandException();
             // Check what command this is
@@ -253,7 +254,7 @@ public class DuelMenu extends Menu {
             JCommander.newBuilder()
                     .addObject(setCommand)
                     .build()
-                    .parse(setCommand.removePrefix(command + " ").split(" "));
+                    .parse(CommandUtils.translateCommandline(setCommand.removePrefix(command + " ")));
             if (!setCommand.isValid())
                 throw new InvalidCommandException();
             handleChangeCardPosition(setCommand.getPosition().equals("attack"));

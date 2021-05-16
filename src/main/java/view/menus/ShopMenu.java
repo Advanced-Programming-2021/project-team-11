@@ -40,6 +40,7 @@ public class ShopMenu extends Menu {
         try {
             String cardName = new ShopBuyItemCommand().removePrefix(command);
             ShopMenuController.buyCardForUser(loggedInUser, cardName);
+            System.out.println("card bought!");
             return true;
         } catch (InvalidCommandException e) {
             return false;
@@ -51,7 +52,7 @@ public class ShopMenu extends Menu {
 
     private boolean showAllCards(String command) {
         if (command.equals(SHOW_ALL_CARDS_COMMAND)) {
-            Card.getAllCards().forEach(x -> System.out.printf("%s:%d\n", x.getName(), x.getPrice()));
+            Card.getAllCards().stream().sorted().forEach(x -> System.out.printf("%s:%d\n", x.getName(), x.getPrice()));
             return true;
         }
         return false;

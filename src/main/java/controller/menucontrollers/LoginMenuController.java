@@ -16,7 +16,7 @@ public class LoginMenuController {
     public static void register(String username, String password, String nickname) throws UsernameExistsException, NicknameExistsException {
         if (User.getUserByUsername(username) != null)
             throw new UsernameExistsException(username);
-        if (User.getUserByNickname(username) != null)
+        if (User.getUserByNickname(nickname) != null)
             throw new NicknameExistsException(nickname);
         new User(username, password, nickname);
     }

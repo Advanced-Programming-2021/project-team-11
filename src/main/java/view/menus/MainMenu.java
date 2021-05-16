@@ -9,6 +9,7 @@ public class MainMenu extends Menu {
     MainMenu(User loggedInUser) {
         this.loggedInUser = loggedInUser;
         openMenu();
+        System.out.println("user logged out successfully!");
     }
 
     @Override
@@ -30,9 +31,6 @@ public class MainMenu extends Menu {
     @Override
     void enterMenu(MenuNames menu) {
         switch (menu) {
-            case MAIN:
-                System.out.println(MenuUtils.MENU_NAV_FAILED);
-                break;
             case LOGIN:
                 System.out.println("please use logout command");
                 break;
@@ -50,6 +48,12 @@ public class MainMenu extends Menu {
                 break;
             case SHOP:
                 new ShopMenu(loggedInUser);
+                break;
+            case IMPORT_EXPORT:
+                new ImportExportMenu();
+                break;
+            default:
+                System.out.println(MenuUtils.MENU_NAV_FAILED);
                 break;
         }
     }

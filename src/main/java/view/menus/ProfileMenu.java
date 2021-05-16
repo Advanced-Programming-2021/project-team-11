@@ -5,6 +5,7 @@ import com.beust.jcommander.ParameterException;
 import controller.menucontrollers.ProfileMenuController;
 import model.User;
 import model.exceptions.*;
+import view.menus.commands.CommandUtils;
 import view.menus.commands.profile.ProfileChangeCommand;
 
 public class ProfileMenu extends Menu {
@@ -37,7 +38,7 @@ public class ProfileMenu extends Menu {
             JCommander.newBuilder()
                     .addObject(profileChangeCommand)
                     .build()
-                    .parse(profileChangeCommand.removePrefix(command).split(" "));
+                    .parse(CommandUtils.translateCommandline(profileChangeCommand.removePrefix(command)));
             if (!profileChangeCommand.isValid())
                 throw new InvalidCommandException();
             if (profileChangeCommand.isNicknameChange()) {

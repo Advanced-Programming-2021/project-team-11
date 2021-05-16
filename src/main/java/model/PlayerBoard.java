@@ -171,6 +171,7 @@ public class PlayerBoard {
                 if (spellCard[i] != null && spellCard[i].getCard() == card.getEquippedCard()) {
                     spellCard[i].sendToGraveyard();
                     spellCard[i] = null;
+                    break;
                 }
         graveyard.add(card);
     }

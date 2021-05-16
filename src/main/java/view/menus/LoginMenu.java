@@ -8,6 +8,7 @@ import model.exceptions.InvalidCommandException;
 import model.exceptions.InvalidCredentialException;
 import model.exceptions.NicknameExistsException;
 import model.exceptions.UsernameExistsException;
+import view.menus.commands.CommandUtils;
 import view.menus.commands.user.UserLoginCommand;
 import view.menus.commands.user.UserRegisterCommand;
 
@@ -39,7 +40,7 @@ public class LoginMenu extends Menu {
             JCommander.newBuilder()
                     .addObject(userLoginCommand)
                     .build()
-                    .parse(userLoginCommand.removePrefix(command).split(" "));
+                    .parse(CommandUtils.translateCommandline(userLoginCommand.removePrefix(command)));
             User user = LoginMenuController.login(userLoginCommand.getUsername(), userLoginCommand.getPassword());
             System.out.println("user logged in successfully!");
             new MainMenu(user);
@@ -58,7 +59,7 @@ public class LoginMenu extends Menu {
             JCommander.newBuilder()
                     .addObject(userRegisterCommand)
                     .build()
-                    .parse(userRegisterCommand.removePrefix(command).split(" "));
+                    .parse(CommandUtils.translateCommandline(userRegisterCommand.removePrefix(command)));
             LoginMenuController.register(userRegisterCommand.getUsername(), userRegisterCommand.getPassword(), userRegisterCommand.getNickname());
             System.out.println("user created successfully!");
             return true;

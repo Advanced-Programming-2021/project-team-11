@@ -6,6 +6,7 @@ import model.Deck;
 import model.User;
 import model.enums.GameRounds;
 import model.exceptions.*;
+import view.menus.commands.CommandUtils;
 import view.menus.commands.duelstart.DuelStartCommand;
 
 public class DuelStartMenu extends Menu {
@@ -38,7 +39,7 @@ public class DuelStartMenu extends Menu {
             JCommander.newBuilder()
                     .addObject(duelStartCommand)
                     .build()
-                    .parse(duelStartCommand.removePrefix(command).split(" "));
+                    .parse(CommandUtils.translateCommandline(duelStartCommand.removePrefix(command)));
             if (!duelStartCommand.isValid())
                 return false;
             if (duelStartCommand.getRounds() != 3 && duelStartCommand.getRounds() != 1)
@@ -72,7 +73,7 @@ public class DuelStartMenu extends Menu {
     }
 
     private void startAiDuel(int rounds) {
-        // TODO :|
+        System.out.println("not this time...");
     }
 
     @Override

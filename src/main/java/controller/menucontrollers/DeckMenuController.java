@@ -19,7 +19,7 @@ public class DeckMenuController {
         Deck deck = user.getDeckByName(deckName);
         if (deck == null)
             throw new DeckDoesNotExistsException(deckName);
-        if (user.getActiveDeckName().equals(deckName)) // de-activate the active deck if needed
+        if (user.getActiveDeck() != null && user.getActiveDeckName().equals(deckName)) // de-activate the active deck if needed
             user.setActiveDeck(null);
         // Return cards to user
         deck.getMainDeck().forEach(user::addCardToPlayer);
