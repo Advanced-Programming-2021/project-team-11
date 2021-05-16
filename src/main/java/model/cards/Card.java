@@ -61,6 +61,14 @@ public abstract class Card implements Comparable<Card> {
         return name;
     }
 
+    public final int getSpeed() {
+        if (this instanceof TrapCard && ((TrapCard) this).getTrapCardType() == TrapCardType.COUNTER)
+            return 3;
+        if (this instanceof TrapCard || (this instanceof SpellCard && ((SpellCard) this).getSpellCardType() == SpellCardType.QUICK_PLAY))
+            return 2;
+        return 1;
+    }
+
     public abstract void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter);
 
     public abstract void deactivateEffect();

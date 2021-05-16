@@ -44,6 +44,10 @@ public class HardcodedCardsLoader {
         Forest.getInstance();
         ClosedForest.getInstance();
         Umiiruka.getInstance();
+        SwordOfDarkDestruction.getInstance();
+        BlackPendant.getInstance();
+        UnitedWeStand.getInstance();
+        MagnumShield.getInstance();
     }
 
     private static void loadTraps() {

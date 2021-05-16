@@ -7,5 +7,6 @@ public enum ActivateSpellCallback {
      * Done means that this had been handled in the game controller itself.
      * View doesn't have to do anything
      */
-    DONE
+    DONE,
+    EQUIP
 }

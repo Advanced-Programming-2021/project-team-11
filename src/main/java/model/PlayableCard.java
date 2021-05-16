@@ -4,6 +4,7 @@ import model.cards.Card;
 import model.cards.CardType;
 import model.cards.MonsterCard;
 import model.cards.monsters.*;
+import model.cards.spells.EquipSpellCard;
 import model.cards.spells.FieldSpellCard;
 import model.cards.spells.SpellAbsorption;
 import model.enums.CardPlaceType;
@@ -17,6 +18,7 @@ public class PlayableCard {
      * This is only a temp card to mimic for when the card is {@link model.cards.monsters.ScannerCard}
      */
     private Card mimicCard;
+    private EquipSpellCard equippedCard;
 
     public PlayableCard(Card card, CardPlaceType cardPlace) {
         this.card = card;
@@ -72,13 +74,15 @@ public class PlayableCard {
 
     public int getAttackPower(PlayerBoard myBoard, PlayableCard field) {
         if (getCard().getCardType() == CardType.MONSTER)
-            return ((MonsterCard) getCard()).getAttack() + getAttackDelta(myBoard) + getFieldEffectForAttack(myBoard, field);
+            return ((MonsterCard) getCard()).getAttack() + getAttackDelta(myBoard)
+                    + getFieldEffectForAttack(myBoard, field) + getEquippedCardAttackDiff(myBoard);
         return 0;
     }
 
     public int getDefencePower(PlayerBoard myBoard, PlayableCard field) {
         if (getCard().getCardType() == CardType.MONSTER)
-            return ((MonsterCard) getCard()).getDefence() + getDefenceDelta(myBoard) + getFieldEffectForDefence(myBoard, field);
+            return ((MonsterCard) getCard()).getDefence() + getDefenceDelta(myBoard)
+                    + getFieldEffectForDefence(myBoard, field) + getEquippedCardDefenceDiff(myBoard);
         return 0;
     }
 
@@ -104,6 +108,18 @@ public class PlayableCard {
     private int getFieldEffectForDefence(PlayerBoard myBoard, PlayableCard field) {
         if (field != null)
             return ((FieldSpellCard) field.getCard()).getDefenceDelta(this, myBoard);
+        return 0;
+    }
+
+    private int getEquippedCardAttackDiff(PlayerBoard myBoard) {
+        if (equippedCard != null)
+            return equippedCard.getAttackDelta(this, myBoard);
+        return 0;
+    }
+
+    private int getEquippedCardDefenceDiff(PlayerBoard myBoard) {
+        if (equippedCard != null)
+            return equippedCard.getDefenceDelta(this, myBoard);
         return 0;
     }
 
@@ -180,6 +196,7 @@ public class PlayableCard {
         this.changedPosition = false;
         this.defenceDelta = 0;
         this.attackDelta = 0;
+        this.equippedCard = null;
     }
 
     public void resetEffectActivateCounterRound() {
@@ -189,6 +206,14 @@ public class PlayableCard {
 
     public void resetSpellActivated() {
         this.spellActivated = false;
+    }
+
+    public void setEquippedCard(EquipSpellCard equipCard) {
+        this.equippedCard = equipCard;
+    }
+
+    public EquipSpellCard getEquippedCard() {
+        return this.equippedCard;
     }
 
     private void checkSpellAbsorption(PlayerBoard board1, PlayerBoard board2) {

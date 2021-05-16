@@ -8,6 +8,7 @@ import model.cards.*;
 import model.cards.monsters.BeastKingBarbaros;
 import model.cards.monsters.ManEaterBug;
 import model.cards.spells.AdvancedRitualArt;
+import model.cards.spells.EquipSpellCard;
 import model.enums.CardPlaceType;
 import model.exceptions.*;
 
@@ -306,5 +307,12 @@ public class CardSpecificMenus {
         int index = MenuUtils.readCardByIndex(monsters.size());
         roundController.changeOfHeartSwapOwner(monsters.get(index));
         roundController.getPlayerBoard().removeHandCard(thisCard);
+    }
+
+    public static void equip(GameRoundController roundController, PlayableCard thisCard) {
+        ArrayList<PlayableCard> monsters = roundController.getPlayerBoard().getMonsterCardsList();
+        DuelMenuUtils.printNumberedCardList(monsters);
+        int index = MenuUtils.readCardByIndex(monsters.size());
+        monsters.get(index).setEquippedCard((EquipSpellCard) thisCard.getCard());
     }
 }

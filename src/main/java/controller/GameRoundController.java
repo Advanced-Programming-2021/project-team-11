@@ -5,6 +5,7 @@ import model.PlayerBoard;
 import model.cards.*;
 import model.cards.monsters.*;
 import model.cards.spells.AdvancedRitualArt;
+import model.cards.spells.EquipSpellCard;
 import model.cards.spells.FieldSpellCard;
 import model.cards.spells.MessengerOfPeace;
 import model.enums.*;
@@ -147,7 +148,7 @@ public class GameRoundController {
 
     private MonsterAttackResult processAttackToMonster(PlayableCard toAttackCard) throws CantAttackWithThisCardException {
         int myMonsterAttack = selectedCard.getAttackPower(getPlayerBoard(), getField());
-        if (isMessangerOfPeaceForbiddingTheAttack(myMonsterAttack))
+        if (isMessengerOfPeaceForbiddingTheAttack(myMonsterAttack))
             throw new CantAttackWithThisCardException();
         if (toAttackCard.getCard() instanceof Suijin && toAttackCard.isEffectConditionMet(getPlayerBoard(), getRivalBoard(), true)) {
             toAttackCard.activateEffect(getPlayerBoard(), getRivalBoard(), selectedCard);
@@ -207,7 +208,7 @@ public class GameRoundController {
             throw new CantAttackToPlayerException();
 
         int attacked = selectedCard.getAttackPower(getPlayerBoard(), getField());
-        if (isMessangerOfPeaceForbiddingTheAttack(attacked))
+        if (isMessengerOfPeaceForbiddingTheAttack(attacked))
             throw new CantAttackWithThisCardException();
         getRivalBoard().getPlayer().decreaseHealth(attacked);
         selectedCard.setHasAttacked(true);
@@ -371,10 +372,10 @@ public class GameRoundController {
                 ((SpellCard) selectedCard.getCard()).throwConditionNotMadeException();
         if (selectedCard.getCard() instanceof SpellCard && ((SpellCard) selectedCard.getCard()).getUserNeedInteraction())
             return ActivateSpellCallback.NORMAL;
-        else {
-            selectedCard.activateEffect(getPlayerBoard(), getRivalBoard(), null);
-            return ActivateSpellCallback.DONE;
-        }
+        if (selectedCard.getCard() instanceof EquipSpellCard)
+            return ActivateSpellCallback.EQUIP;
+        selectedCard.activateEffect(getPlayerBoard(), getRivalBoard(), null);
+        return ActivateSpellCallback.DONE;
     }
 
     /**
@@ -507,7 +508,7 @@ public class GameRoundController {
                 getRivalBoard().getField() == card;
     }
 
-    private boolean isMessangerOfPeaceForbiddingTheAttack(int attackPoints) {
+    private boolean isMessengerOfPeaceForbiddingTheAttack(int attackPoints) {
         return getRivalBoard().getMonsterCardsList().stream().anyMatch(card -> !card.isHidden() && card.getCard() instanceof MessengerOfPeace)
                 && attackPoints >= MessengerOfPeace.getMaxAttack();
     }

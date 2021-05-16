@@ -386,6 +386,9 @@ public class DuelMenu extends Menu {
                 if (selectedCard.getCard() instanceof ChangeOfHeart)
                     CardSpecificMenus.handleChangeOfHeart(gameController.getRound(), selectedCard);
                 break;
+            case EQUIP:
+                CardSpecificMenus.equip(gameController.getRound(), selectedCard);
+                break;
         }
     }
 
