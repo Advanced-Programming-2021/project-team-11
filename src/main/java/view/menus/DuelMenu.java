@@ -37,9 +37,8 @@ public class DuelMenu extends Menu {
     DuelMenu(User player1, User player2, GameRounds rounds) {
         this.player1 = player1;
         this.player2 = player2;
-        System.out.printf("%s is the beginner!\n", player1.getUsername());
         gameController = new GameController(player1, player2, rounds);
-        System.out.printf("new card added to the hand: %s\n", gameController.getRound().getPlayerBoard().getHand().get(5).getCard().getName());
+        startNewRound();
         openMenu();
     }
 
@@ -53,9 +52,9 @@ public class DuelMenu extends Menu {
             }
             if (isRoundEnded) { // when we reach here, we must allow the users to change their decks
                 isRoundEnded = false;
-                new DuelChangeSideDeckMenu(player1).openMenu();
-                new DuelChangeSideDeckMenu(player2).openMenu();
-                // TODO Start a new round
+                new DuelChangeSideDeckMenu(player1);
+                new DuelChangeSideDeckMenu(player2);
+                startNewRound();
                 continue;
             }
             if (checkRoundEnd())
@@ -77,6 +76,12 @@ public class DuelMenu extends Menu {
         }
     }
 
+    private void startNewRound() {
+        gameController.setupNewRound();
+        System.out.printf("%s is the beginner!\n", gameController.getRound().getPlayerBoard().getPlayer().getUser().getUsername());
+        System.out.printf("new card added to the hand: %s\n", gameController.getRound().getPlayerBoard().getHand().get(5).getCard().getName());
+    }
+
     /**
      * Checks the round end status and does some stuff in controller in order to make
      *
@@ -92,7 +97,7 @@ public class DuelMenu extends Menu {
                 // Apply the results
                 System.out.printf("%s won the whole match with score: %d-%d\n",
                         results.didPlayer1Won() ? player1.getNickname() : player2.getNickname(),
-                        player1.getScore(), player2.getScore());
+                        results.getPlayer1Score(), results.getPlayer2Score());
                 player1.increaseScore(results.getPlayer1Score());
                 player1.increaseMoney(results.getPlayer1Money());
                 player2.increaseScore(results.getPlayer2Score());
@@ -412,6 +417,7 @@ public class DuelMenu extends Menu {
 
     private boolean nuke(String command) {
         if (command.equals(NUKE_COMMAND)) {
+            System.out.println("BOOM");
             gameController.getRound().nuke();
             return true;
         }

@@ -10,11 +10,11 @@ class MenuUtils {
     static final String MENU_NAV_FAILED = "menu navigation is not possible";
     static final String CHOOSE_CARD_BY_INDEX = "Choose a card by it's index: ";
     static final String CANCEL_COMMAND = "cancel";
-    private static final Scanner scanner = new Scanner(System.in);
+    private static final Scanner SCANNER = new Scanner(System.in);
     private static final String CARD_SHOW_PREFIX = "card show ";
 
     static String readLine() {
-        return scanner.nextLine().trim();
+        return SCANNER.nextLine().trim();
     }
 
     static boolean showCard(String command) {

@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public abstract class Card implements Comparable<Card> {
     private final String name;
@@ -77,9 +78,9 @@ public abstract class Card implements Comparable<Card> {
 
     public static ArrayList<Card> getAllCards() {
         ArrayList<Card> cards = new ArrayList<>();
-        cards.addAll(MonsterCard.getAllMonsterCards());
-        cards.addAll(TrapCard.getAllTrapCards());
-        cards.addAll(SpellCard.getAllSpellCards());
+        cards.addAll(MonsterCard.getAllMonsterCards().stream().filter(Card::isInitialized).collect(Collectors.toList()));
+        cards.addAll(TrapCard.getAllTrapCards().stream().filter(Card::isInitialized).collect(Collectors.toList()));
+        cards.addAll(SpellCard.getAllSpellCards().stream().filter(Card::isInitialized).collect(Collectors.toList()));
         return cards;
     }
 

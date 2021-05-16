@@ -1,5 +1,6 @@
 package model.database;
 
+import model.cards.Card;
 import model.cards.MonsterCard;
 import model.cards.SpellCard;
 import model.cards.TrapCard;
@@ -41,6 +42,6 @@ public class CardLoaderTest {
         } catch (IOException e) {
             Assertions.fail(e);
         }
-        Assertions.assertEquals(lines, MonsterCard.getAllMonsterCards().size());
+        Assertions.assertEquals(lines, MonsterCard.getAllMonsterCards().stream().filter(Card::isInitialized).count());
     }
 }

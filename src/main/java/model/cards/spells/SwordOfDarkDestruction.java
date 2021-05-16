@@ -5,7 +5,7 @@ import model.PlayerBoard;
 import model.cards.MonsterType;
 
 public class SwordOfDarkDestruction extends EquipSpellCard {
-    private final static String CARD_NAME = "Sword of Dark Destruction";
+    private final static String CARD_NAME = "Sword of dark destruction";
     private final static int ATTACK_DELTA = 500;
     private final static int DEFENCE_DELTA = -200;
     private final static MonsterType[] ATTACK_DEFENCE_TYPES = new MonsterType[]{MonsterType.FIEND, MonsterType.SPELLCASTER};

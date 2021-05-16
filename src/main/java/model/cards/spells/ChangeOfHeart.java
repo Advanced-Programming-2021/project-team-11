@@ -6,7 +6,7 @@ import model.cards.SpellCard;
 import model.cards.SpellCardType;
 
 public class ChangeOfHeart extends SpellCard {
-    private final static String CARD_NAME = "Harpie's Feather Duster";
+    private final static String CARD_NAME = "Change of Heart";
     private static ChangeOfHeart instance;
 
     private ChangeOfHeart() {

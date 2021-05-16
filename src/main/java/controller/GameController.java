@@ -24,7 +24,6 @@ public class GameController {
         this.rounds = rounds;
         this.player1 = player1;
         this.player2 = player2;
-        setupRound();
     }
 
     public GameRoundController getRound() {
@@ -83,7 +82,7 @@ public class GameController {
         player1Starting = !player1Starting;
     }
 
-    public void setupRound() {
+    public void setupNewRound() {
         PlayerBoard player1Board = new PlayerBoard(new Player(player1), new ArrayList<>(player1.getActiveDeck().getMainDeck()));
         player1Board.shuffleDeck();
         PlayerBoard player2Board = new PlayerBoard(new Player(player2), new ArrayList<>(player2.getActiveDeck().getMainDeck()));

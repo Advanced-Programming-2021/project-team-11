@@ -15,7 +15,8 @@ public class DuelChangeSideDeckMenu extends Menu {
 
     DuelChangeSideDeckMenu(User toChangeUser) {
         this.toChangeUser = toChangeUser;
-        System.out.printf("%s you can customize your deck now! Use \"menu exit\" to exit\n", toChangeUser.getNickname());
+        System.out.printf("%s, you can customize your deck now! Use \"menu exit\" to exit\n", toChangeUser.getNickname());
+        openMenu();
     }
 
     @Override
