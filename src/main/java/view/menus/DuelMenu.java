@@ -11,6 +11,7 @@ import model.cards.monsters.*;
 import model.cards.spells.ChangeOfHeart;
 import model.cards.spells.MonsterReborn;
 import model.cards.spells.Terraforming;
+import model.cards.traps.CallOfTheHaunted;
 import model.enums.ActivateSpellCallback;
 import model.enums.GamePhase;
 import model.enums.GameRounds;
@@ -172,14 +173,21 @@ public class DuelMenu extends Menu {
         if (!command.equals(NEXT_PHASE_COMMAND))
             return false;
         int oldHandSize = gameController.getRound().getPlayerBoard().getHand().size();
-        GamePhase nowPhase = gameController.getRound().advancePhase();
+        boolean isPlayerTimeSealed = false;
+        try {
+            gameController.getRound().advancePhase();
+        } catch (PlayerTimeSealedException ex) {
+            System.out.println(ex.getMessage());
+            isPlayerTimeSealed = true;
+        }
+        GamePhase nowPhase = gameController.getRound().getPhase();
         if (checkRoundEnd()) // check player lost on draw
             return true;
         // Otherwise process the data
         System.out.printf("phase: %s\n", nowPhase.toString());
         switch (nowPhase) {
             case DRAW:
-                if (oldHandSize != 6)
+                if (oldHandSize != 6 && !isPlayerTimeSealed)
                     System.out.printf("new card added to the hand: %s\n", gameController.getRound().getPlayerBoard().getHand().get(oldHandSize).getCard().getName());
                 break;
             case MAIN1:
@@ -406,6 +414,9 @@ public class DuelMenu extends Menu {
             case EQUIP:
                 CardSpecificMenus.equip(gameController.getRound(), selectedCard);
                 break;
+            case TRAP:
+                if (selectedCard.getCard() instanceof CallOfTheHaunted)
+                    CardSpecificMenus.callOfTheHunted(gameController.getRound().getPlayerBoard(), selectedCard);
         }
     }
 

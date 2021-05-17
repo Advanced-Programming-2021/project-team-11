@@ -3,8 +3,6 @@ package model.cards.monsters;
 import model.PlayableCard;
 import model.PlayerBoard;
 
-// TODO: when creating traps, check for this card
-
 public class MirageDragon extends InitializableEffectMonsters {
     private final static String CARD_NAME = "Mirage Dragon";
     private static MirageDragon instance;

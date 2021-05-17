@@ -8,14 +8,13 @@ import model.cards.spells.AdvancedRitualArt;
 import model.cards.spells.EquipSpellCard;
 import model.cards.spells.FieldSpellCard;
 import model.cards.spells.MessengerOfPeace;
+import model.cards.traps.CallOfTheHaunted;
+import model.cards.traps.TimeSeal;
 import model.enums.*;
 import model.exceptions.*;
 import model.results.MonsterAttackResult;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Stack;
+import java.util.*;
 
 public class GameRoundController {
     private final PlayerBoard player1Board;
@@ -40,10 +39,8 @@ public class GameRoundController {
 
     /**
      * Moves one phase forward and does anything if needed
-     *
-     * @return The current phase after advancing
      */
-    public GamePhase advancePhase() {
+    public void advancePhase() throws PlayerTimeSealedException {
         switch (phase) {
             case DRAW:
                 phase = GamePhase.STANDBY;
@@ -65,10 +62,14 @@ public class GameRoundController {
                 break;
             case END_PHASE:
                 phase = GamePhase.DRAW;
+                TimeSeal.getInstance().isPlayerSealed(getRivalBoard());
                 if (!getPlayerBoard().drawCard()) // player lost the round!
                     gameStatus = isPlayer1Turn() ? GameStatus.PLAYER2_WON : GameStatus.PLAYER1_WON;
                 break;
         }
+    }
+
+    public GamePhase getPhase() {
         return phase;
     }
 
@@ -354,6 +355,8 @@ public class GameRoundController {
         if (selectedCard.getCardPlace() == CardPlaceType.MONSTER && !selectedCard.hasEffectActivated())
             if (GameUtils.canMonsterCardEffectBeActivated(selectedCard.getCard()) && selectedCard.isEffectConditionMet(getPlayerBoard(), getPlayerBoard(), false))
                 throw new MonsterEffectMustBeHandledException(selectedCard);
+        if (selectedCard.getCardPlace() == CardPlaceType.SPELL && GameUtils.canTrapCardEffectBeActivated(selectedCard.getCard()))
+            return handleActivateTrapCard();
         if (!(selectedCard.getCardPlace() == CardPlaceType.SPELL || selectedCard.getCardPlace() == CardPlaceType.FIELD
                 || (selectedCard.getCardPlace() == CardPlaceType.HAND && selectedCard.getCard().getCardType() == CardType.SPELL)))
             throw new OnlySpellCardsAllowedException();
@@ -369,6 +372,18 @@ public class GameRoundController {
         } else if (selectedCard.hasEffectActivated() || !selectedCard.isHidden())
             throw new SpellAlreadyActivatedException();
         return handleActivateSpellCard();
+    }
+
+    private ActivateSpellCallback handleActivateTrapCard() throws CantUseSpellException {
+        if (getRivalBoard().getMonsterCardsList().stream().anyMatch(card -> card.getCard() instanceof MirageDragon))
+            throw new CantUseSpellException();
+        if (!selectedCard.isEffectConditionMet(getPlayerBoard(), getRivalBoard()))
+            throw new CantUseSpellException();
+        selectedCard.makeVisible();
+        if (selectedCard.getCard() instanceof CallOfTheHaunted)
+            return ActivateSpellCallback.TRAP;
+        else
+            return ActivateSpellCallback.DONE;
     }
 
     private ActivateSpellCallback handleActivateSpellCard() throws RitualSummonNotPossibleException, CantSpecialSummonException, CantUseSpellException {

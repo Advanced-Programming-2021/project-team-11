@@ -8,5 +8,6 @@ public enum ActivateSpellCallback {
      * View doesn't have to do anything
      */
     DONE,
-    EQUIP
+    EQUIP,
+    TRAP
 }

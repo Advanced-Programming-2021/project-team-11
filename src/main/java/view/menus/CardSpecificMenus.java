@@ -287,6 +287,8 @@ public class CardSpecificMenus {
         ArrayList<Card> list = DuelMenuUtils.printNumberedRawCardList(board.getDeck().stream()
                 .filter(card -> card instanceof SpellCard && ((SpellCard) card).getSpellCardType() == SpellCardType.FIELD));
         int index = MenuUtils.readCardByIndex(list.size());
+        if (index == -1)
+            return;
         // Remove that card from hand
         board.getDeck().remove(list.get(index));
         board.getHand().add(new PlayableCard(list.get(index), CardPlaceType.HAND));
@@ -298,6 +300,8 @@ public class CardSpecificMenus {
         ArrayList<PlayableCard> monsters = roundController.getRivalBoard().getMonsterCardsList();
         DuelMenuUtils.printNumberedCardList(monsters);
         int index = MenuUtils.readCardByIndex(monsters.size());
+        if (index == -1)
+            return;
         roundController.changeOfHeartSwapOwner(monsters.get(index));
         roundController.getPlayerBoard().removeHandCard(thisCard);
     }
@@ -306,6 +310,21 @@ public class CardSpecificMenus {
         ArrayList<PlayableCard> monsters = roundController.getPlayerBoard().getMonsterCardsList();
         DuelMenuUtils.printNumberedCardList(monsters);
         int index = MenuUtils.readCardByIndex(monsters.size());
+        if (index == -1)
+            return;
         monsters.get(index).setEquippedCard((EquipSpellCard) thisCard.getCard());
+    }
+
+    public static void callOfTheHunted(PlayerBoard board, PlayableCard thisCard) {
+        ArrayList<PlayableCard> monsters = DuelMenuUtils.printNumberedCardList(board.getGraveyard().stream()
+                .filter(card -> card.getCard().getCardType() == CardType.MONSTER));
+        int index = MenuUtils.readCardByIndex(monsters.size());
+        if (index == -1)
+            return;
+        board.sendToGraveyard(thisCard);
+        PlayableCard toSummon = new PlayableCard(monsters.get(index).getCard(), CardPlaceType.MONSTER);
+        toSummon.makeVisible();
+        toSummon.setAttacking();
+        board.addMonsterCard(toSummon);
     }
 }

@@ -2,6 +2,7 @@ package model.cards;
 
 import model.cards.monsters.*;
 import model.cards.spells.*;
+import model.cards.traps.*;
 
 public class HardcodedCardsLoader {
     public static void load() {
@@ -51,5 +52,7 @@ public class HardcodedCardsLoader {
     }
 
     private static void loadTraps() {
+        TimeSeal.getInstance();
+        CallOfTheHaunted.getInstance();
     }
 }
