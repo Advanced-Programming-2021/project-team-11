@@ -1,6 +1,5 @@
 package view.menus;
 
-import controller.GameController;
 import controller.GameRoundController;
 import model.PlayableCard;
 import model.PlayerBoard;
@@ -110,14 +109,8 @@ public class CardSpecificMenus {
      *
      * @param playerBoard The board of player who has this card
      * @param thisCard    This card
-     * @throws NotEnoughCardsToTributeException There is not enough cards in hand
-     * @throws NoSuitableCardFoundException     There no card which can be used from players graveyard
      */
-    public static void summonCardWithHeraldOfCreation(PlayerBoard playerBoard, PlayableCard thisCard) throws NotEnoughCardsToTributeException, NoSuitableCardFoundException {
-        if (playerBoard.getHand().size() == 0)
-            throw new NotEnoughCardsToTributeException(null);
-        if (playerBoard.getGraveyard().stream().noneMatch(card -> card.getCard().getCardType() == CardType.MONSTER && ((MonsterCard) card.getCard()).getLevel() >= 7))
-            throw new NoSuitableCardFoundException();
+    public static void summonCardWithHeraldOfCreation(PlayerBoard playerBoard, PlayableCard thisCard) {
         int handIndex, graveyardIndex;
         System.out.println("Your hand:");
         DuelMenuUtils.printNumberedCardList(playerBoard.getHand());

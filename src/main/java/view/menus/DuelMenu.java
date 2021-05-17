@@ -29,7 +29,7 @@ public class DuelMenu extends Menu {
             ATTACK_PREFIX_COMMAND = "attack ", ATTACK_DIRECT_COMMAND = "attack direct",
             ACTIVATE_EFFECT_COMMAND = "activate effect", SHOW_CARD_COMMAND = "card show --selected",
             SURRENDER_COMMAND = "surrender", CHEAT_HP = "PAINKILLER", NEXT_PHASE_COMMAND = "next phase",
-            SHOW_GRAVEYARD_COMMAND = "show graveyard", PRINT_BOARD_COMMAND = "print board", NUKE_COMMAND = "nuke";
+            SHOW_GRAVEYARD_COMMAND = "show graveyard", PRINT_BOARD_COMMAND = "print board", NUKE_COMMAND = "NUKE";
     private final GameController gameController;
     private final User player1, player2;
     private boolean isRoundEnded = false, isGameEnded = false;
@@ -70,7 +70,7 @@ public class DuelMenu extends Menu {
             if (painkiller(command) || selectCommandProcessor(command) || nextPhase(command) || selectCommandProcessor(command)
                     || summon(command) || setCard(command) || flipSummon(command) || directAttack(command) || attackToMonster(command)
                     || showGraveyard(command) || surrender(command) || showCard(command) || printBoard(command) || activateSpell(command)
-                    || nuke(command))
+                    || nuke(command) || MenuUtils.showCard(command))
                 continue;
             System.out.println(MenuUtils.INVALID_COMMAND);
         }
@@ -131,6 +131,7 @@ public class DuelMenu extends Menu {
 
     private boolean painkiller(String command) {
         if (command.equals(CHEAT_HP)) {
+            System.out.println("+++++");
             gameController.getRound().painkiller();
             return true;
         }
@@ -198,7 +199,8 @@ public class DuelMenu extends Menu {
         boolean success = false;
         Card spawnedCard = null;
         try {
-            spawnedCard = gameController.getRound().returnPlayableCard().getCard();
+            if (gameController.getRound().returnPlayableCard() != null)
+                spawnedCard = gameController.getRound().returnPlayableCard().getCard();
             gameController.getRound().summonCard();
             success = true;
         } catch (AlreadySummonedException | NoCardSelectedYetException | CantSummonCardException
@@ -212,6 +214,8 @@ public class DuelMenu extends Menu {
         } catch (NotEnoughCardsToTributeException e) {
             if (e.getCard() instanceof BeastKingBarbaros)
                 success = CardSpecificMenus.summonBeastKingBarbaros(gameController.getRound());
+            else
+                System.out.println(e.getMessage());
         } catch (SpecialSummonNeededException e) {
             if (e.getToSummonCard().getCard() instanceof TheTricky)
                 success = CardSpecificMenus.spawnTheTricky(gameController.getRound().getPlayerBoard(), e.getToSummonCard());
@@ -237,6 +241,7 @@ public class DuelMenu extends Menu {
      * @return True if we have successfully got all card. False if user have canceled it
      */
     private boolean summonWithTribute(int neededCardsToTribute) {
+        printBoard();
         ArrayList<Integer> cards = DuelMenuUtils.readCardsToTribute(neededCardsToTribute);
         if (cards == null)
             return false;
@@ -244,6 +249,7 @@ public class DuelMenu extends Menu {
         try {
             gameController.getRound().summonCard(cards);
         } catch (NoMonsterOnTheseAddressesException e) {
+            System.out.println(e.getMessage());
             return false;
         }
         return true;
@@ -276,6 +282,7 @@ public class DuelMenu extends Menu {
         try {
             gameController.getRound().setCard();
             System.out.println("set successfully");
+            printBoard();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -285,6 +292,7 @@ public class DuelMenu extends Menu {
         try {
             gameController.getRound().setCardPosition(isAttacking);
             System.out.println("monster card position changed successfully");
+            printBoard();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -299,6 +307,7 @@ public class DuelMenu extends Menu {
             if (selectedCard.getCard() instanceof ManEaterBug)
                 CardSpecificMenus.handleManEaterBugRemoval(gameController.getRound().getRivalBoard(), (ManEaterBug) selectedCard.getCard());
             System.out.println("flip summoned successfully");
+            printBoard();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -311,6 +320,7 @@ public class DuelMenu extends Menu {
         try {
             int damageReceived = gameController.getRound().attackToPlayer();
             System.out.printf("you opponent receives %d battle damage\n", damageReceived);
+            printBoard();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -331,6 +341,7 @@ public class DuelMenu extends Menu {
         try {
             MonsterAttackResult result = gameController.getRound().attackToMonster(positionToAttack);
             System.out.println(result.toString());
+            printBoard();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -371,7 +382,7 @@ public class DuelMenu extends Menu {
             handleActivateSpellCallBack(gameController.getRound().activeSpell(), selectedCard);
         } catch (OnlySpellCardsAllowedException | NoCardSelectedException | CardAlreadyAttackedException |
                 InvalidPhaseActionException | RitualSummonNotPossibleException | CantSpecialSummonException |
-                CantUseSpellException | SpellAlreadyActivatedException e) {
+                CantUseSpellException | SpellAlreadyActivatedException | SpellCardZoneFullException e) {
             System.out.println(e.getMessage());
         } catch (MonsterEffectMustBeHandledException e) {
             handleMonsterWithEffectCard(e.getCard());
@@ -406,13 +417,8 @@ public class DuelMenu extends Menu {
                 System.out.println(e.getMessage());
             }
         }
-        if (card.getCard() instanceof HeraldOfCreation) {
-            try {
-                CardSpecificMenus.summonCardWithHeraldOfCreation(gameController.getRound().getPlayerBoard(), card);
-            } catch (NoSuitableCardFoundException | NotEnoughCardsToTributeException e) {
-                System.out.println(e.getMessage());
-            }
-        }
+        if (card.getCard() instanceof HeraldOfCreation)
+            CardSpecificMenus.summonCardWithHeraldOfCreation(gameController.getRound().getPlayerBoard(), card);
     }
 
     private boolean nuke(String command) {

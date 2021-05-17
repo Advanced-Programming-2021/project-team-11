@@ -89,9 +89,13 @@ public class GameRoundController {
                 selectedCard = (fromOpponent ? getRivalBoard() : getPlayerBoard()).getMonsterCards()[index - 1];
                 break;
             case GRAVEYARD:
+                if (index - 1 >= (fromOpponent ? getRivalBoard() : getPlayerBoard()).getGraveyard().size())
+                    throw new NoCardFoundInPositionException();
                 selectedCard = (fromOpponent ? getRivalBoard() : getPlayerBoard()).getGraveyard().get(index - 1);
                 break;
             case HAND:
+                if (index - 1 >= (fromOpponent ? getRivalBoard() : getPlayerBoard()).getHand().size())
+                    throw new NoCardFoundInPositionException();
                 selectedCard = (fromOpponent ? getRivalBoard() : getPlayerBoard()).getHand().get(index - 1);
                 break;
             case FIELD:
@@ -267,7 +271,6 @@ public class GameRoundController {
         selectedCard.flipSummon();
     }
 
-
     public void summonCard() throws NoCardSelectedYetException, CantSummonCardException, InvalidPhaseActionException, MonsterCardZoneFullException, AlreadySummonedException, NotEnoughCardsToTributeException, TributeNeededException, SpecialSummonNeededException {
         if (selectedCard == null)
             throw new NoCardSelectedYetException();
@@ -300,10 +303,10 @@ public class GameRoundController {
      */
     public void summonCard(ArrayList<Integer> tributes) throws NoMonsterOnTheseAddressesException {
         // Check these places
-        if (tributes.stream().anyMatch(x -> getPlayerBoard().getMonsterCards()[x] == null))
+        if (tributes.stream().anyMatch(x -> getPlayerBoard().getMonsterCards()[x - 1] == null))
             throw new NoMonsterOnTheseAddressesException();
         // Remove them and add the card!
-        tributes.forEach(x -> getPlayerBoard().sendSpellToGraveyard(x));
+        tributes.forEach(x -> getPlayerBoard().sendMonsterToGraveyard(x - 1));
         summonSelectedCard();
     }
 
@@ -345,17 +348,25 @@ public class GameRoundController {
         selectedCard.swapAttackMode();
     }
 
-    public ActivateSpellCallback activeSpell() throws NoCardSelectedException, OnlySpellCardsAllowedException, InvalidPhaseActionException, CardAlreadyAttackedException, MonsterEffectMustBeHandledException, RitualSummonNotPossibleException, CantSpecialSummonException, CantUseSpellException, SpellAlreadyActivatedException {
+    public ActivateSpellCallback activeSpell() throws NoCardSelectedException, OnlySpellCardsAllowedException, InvalidPhaseActionException, CardAlreadyAttackedException, MonsterEffectMustBeHandledException, RitualSummonNotPossibleException, CantSpecialSummonException, CantUseSpellException, SpellAlreadyActivatedException, SpellCardZoneFullException {
         if (selectedCard == null)
             throw new NoCardSelectedException();
         if (selectedCard.getCardPlace() == CardPlaceType.MONSTER && !selectedCard.hasEffectActivated())
             if (GameUtils.canMonsterCardEffectBeActivated(selectedCard.getCard()) && selectedCard.isEffectConditionMet(getPlayerBoard(), getPlayerBoard(), false))
                 throw new MonsterEffectMustBeHandledException(selectedCard);
-        if (selectedCard.getCardPlace() != CardPlaceType.SPELL && selectedCard.getCardPlace() != CardPlaceType.FIELD)
+        if (!(selectedCard.getCardPlace() == CardPlaceType.SPELL || selectedCard.getCardPlace() == CardPlaceType.FIELD
+                || (selectedCard.getCardPlace() == CardPlaceType.HAND && selectedCard.getCard().getCardType() == CardType.SPELL)))
             throw new OnlySpellCardsAllowedException();
         if (phase != GamePhase.BATTLE_PHASE)
             throw new InvalidPhaseActionException();
-        if (selectedCard.hasEffectActivated() || !selectedCard.isHidden())
+        if (selectedCard.getCardPlace() == CardPlaceType.HAND && getPlayerBoard().isSpellZoneFull())
+            throw new SpellCardZoneFullException();
+        if (selectedCard.getCardPlace() == CardPlaceType.HAND) { // Move to spell zone
+            getPlayerBoard().removeHandCard(selectedCard);
+            selectedCard.setCardPlace(CardPlaceType.SPELL);
+            getPlayerBoard().addSpellCard(selectedCard);
+            selectedCard.makeVisible();
+        } else if (selectedCard.hasEffectActivated() || !selectedCard.isHidden())
             throw new SpellAlreadyActivatedException();
         return handleActivateSpellCard();
     }
@@ -484,6 +495,7 @@ public class GameRoundController {
 
     private void restoreChangeOfHeart() {
         ArrayList<PlayableCard> backup = new ArrayList<>(changeOfHeartCards);
+        backup.forEach(card -> card.setCardPlace(CardPlaceType.MONSTER)); // rival might have destroyed the card
         backup.forEach(this::changeOfHeartSwapOwner);
     }
 

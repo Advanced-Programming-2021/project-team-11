@@ -37,6 +37,6 @@ public class ScannerCard extends InitializableEffectMonsters {
 
     @Override
     public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, int activationCounter) {
-        return !(thisCard.getCard() instanceof ScannerCard);
+        return !(thisCard.getCard() instanceof ScannerCard) && !rivalBoard.getGraveyard().isEmpty();
     }
 }

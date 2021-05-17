@@ -2,6 +2,8 @@ package model.cards.monsters;
 
 import model.PlayableCard;
 import model.PlayerBoard;
+import model.cards.CardType;
+import model.cards.MonsterCard;
 
 public class HeraldOfCreation extends InitializableEffectMonsters {
     private static HeraldOfCreation instance;
@@ -28,6 +30,8 @@ public class HeraldOfCreation extends InitializableEffectMonsters {
 
     @Override
     public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, int activationCounter) {
-        return !thisCard.hasEffectActivated();
+        return !thisCard.hasEffectActivated()
+                && myBoard.getGraveyard().stream().noneMatch(card -> card.getCard().getCardType() == CardType.MONSTER && ((MonsterCard) card.getCard()).getLevel() >= 7)
+                && !myBoard.isMonsterZoneEmpty();
     }
 }
