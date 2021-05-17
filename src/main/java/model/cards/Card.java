@@ -50,7 +50,7 @@ public abstract class Card implements Comparable<Card> {
         return initialized;
     }
 
-    protected final void init() {
+    public final void init() {
         initialized = true;
     }
 
