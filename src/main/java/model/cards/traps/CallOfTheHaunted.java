@@ -6,7 +6,7 @@ import model.cards.TrapCard;
 import model.cards.TrapCardType;
 
 public class CallOfTheHaunted extends TrapCard {
-    private final static String CARD_NAME = "Call of the Haunted";
+    private final static String CARD_NAME = "Call of The Haunted";
     private static CallOfTheHaunted instance;
 
     private CallOfTheHaunted() {

@@ -1,5 +1,6 @@
 package controller.menucontrollers;
 
+import model.Deck;
 import model.User;
 import model.cards.monsters.TerratigerTheEmpoweredWarrior;
 import model.cards.monsters.YomiShip;
@@ -256,5 +257,34 @@ public class DeckMenuControllerTest {
         } catch (DeckCardNotExistsException ex) {
             Assertions.fail(ex);
         }
+    }
+
+    @Test
+    void validDeckTest() {
+        deckupTest();
+        user.setActiveDeck(null);
+        try {
+            user.validateUserActiveDeck();
+            Assertions.fail("user should not have a valid deck");
+        } catch (UserHaveNoActiveDeckException ignored) {
+        } catch (UserDeckIsInvalidException e) {
+            Assertions.fail(e);
+        }
+        user.setActiveDeck(deckUpDeckName);
+        try {
+            user.validateUserActiveDeck();
+        } catch (UserDeckIsInvalidException | UserHaveNoActiveDeckException e) {
+            Assertions.fail(e);
+        }
+        user.addDeck("wgkowgkpw", new Deck());
+        user.setActiveDeck("wgkowgkpw");
+        try {
+            user.validateUserActiveDeck();
+            Assertions.fail("user should not have a valid deck");
+        } catch (UserHaveNoActiveDeckException e) {
+            Assertions.fail(e);
+        } catch (UserDeckIsInvalidException ignored) {
+        }
+        user.setActiveDeck(null);
     }
 }

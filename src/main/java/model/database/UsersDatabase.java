@@ -7,6 +7,7 @@ import model.cards.Card;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class UsersDatabase {
     private static Connection connection;
@@ -122,12 +123,8 @@ public class UsersDatabase {
         preparedStatement.setString(7, cardsToJsonArrayString(user.getAvailableCards()));
         preparedStatement.executeUpdate();
         preparedStatement.close();
-        user.getDecks().forEach((name, deck) -> {
-            try {
-                saveDeck(user, name, deck);
-            } catch (SQLException ignored) {
-            }
-        });
+        for (Map.Entry<String, Deck> deck : user.getDecks().entrySet())
+            saveDeck(user, deck.getKey(), deck.getValue());
     }
 
     private static void saveDeck(User owner, String name, Deck deck) throws SQLException {

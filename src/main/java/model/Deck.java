@@ -5,8 +5,13 @@ import model.cards.Card;
 import java.util.ArrayList;
 
 public class Deck {
-    private final ArrayList<Card> mainDeck = new ArrayList<>();
-    private final ArrayList<Card> sideDeck = new ArrayList<>();
+    private final ArrayList<Card> mainDeck;
+    private final ArrayList<Card> sideDeck;
+
+    public Deck() {
+        mainDeck = new ArrayList<>();
+        sideDeck = new ArrayList<>();
+    }
 
     public void addCardToMainDeck(Card card) {
         mainDeck.add(card);
