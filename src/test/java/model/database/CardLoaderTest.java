@@ -14,10 +14,18 @@ public class CardLoaderTest {
     private static final String monsterCardsLocation = "config/Monster.csv";
     private static final String spellCardsLocation = "config/Spell.csv";
 
+    public static void setupCards() {
+        try {
+            MonsterCard.getAllMonsterCards().removeIf(x -> x instanceof SimpleMonster || x instanceof RitualMonster);
+            CardLoader.loadCards(monsterCardsLocation, spellCardsLocation);
+        } catch (Exception ex) {
+            // cards might be loaded from another function
+        }
+    }
+
     @BeforeAll
-    static void setup() {
-        MonsterCard.getAllMonsterCards().removeIf(x -> x instanceof SimpleMonster || x instanceof RitualMonster);
-        CardLoader.loadCards(monsterCardsLocation, spellCardsLocation);
+    public static void setup() {
+        setupCards();
     }
 
     @Test

@@ -1,15 +1,12 @@
 package controller.menucontrollers;
 
 import model.User;
-import model.cards.MonsterAttributeType;
-import model.cards.MonsterCard;
-import model.cards.MonsterType;
-import model.cards.SimpleMonster;
 import model.cards.monsters.TerratigerTheEmpoweredWarrior;
 import model.cards.monsters.YomiShip;
 import model.cards.spells.MonsterReborn;
 import model.cards.spells.Yami;
 import model.cards.traps.TimeSeal;
+import model.database.CardLoaderTest;
 import model.exceptions.*;
 import model.results.GetDecksResult;
 import org.junit.jupiter.api.AfterAll;
@@ -21,21 +18,18 @@ import java.util.Optional;
 
 public class DeckMenuControllerTest {
     private static User user;
-    private static SimpleMonster monster;
     private static final String deckUpDeckName = "deckup-deck";
 
     @BeforeAll
-    static void createUser() {
+    static void setup() {
+        CardLoaderTest.setupCards();
         user = new User("1", "1", "1");
-        monster = new SimpleMonster("whwehew", "wgwgw", 3, 3, 53, 53, MonsterType.AQUA, MonsterAttributeType.WATER);
     }
 
     @AfterAll
-    static void clearUser() {
+    static void cleanup() {
         User.getUsers().remove(user);
         user = null;
-        MonsterCard.getAllMonsterCards().remove(monster);
-        monster = null;
     }
 
     @Test
