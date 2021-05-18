@@ -30,6 +30,10 @@ public class User {
         return this.username;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public String getNickname() {
         return this.nickname;
     }
@@ -62,8 +66,16 @@ public class User {
         this.money += delta;
     }
 
+    public void setMoney(int money) {
+        this.money = money;
+    }
+
     public void addDeck(String deckName) {
         decks.put(deckName, new Deck());
+    }
+
+    public void addDeck(String deckName, Deck deck) {
+        decks.put(deckName, deck);
     }
 
     public void deleteDeck(String deckName) {

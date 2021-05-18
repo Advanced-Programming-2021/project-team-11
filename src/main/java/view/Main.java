@@ -2,13 +2,16 @@ package view;
 
 import com.beust.jcommander.JCommander;
 import model.database.CardLoader;
+import model.database.UsersDatabase;
 import view.menus.LoginMenu;
+
+import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) {
         loader(parseCommandLineArgs(args)); // preload info we need in the program
         new LoginMenu(); // load the actual game
-        // TODO save everything before exiting
+        saver(); // save users
     }
 
     private static CommandLineArguments parseCommandLineArgs(String[] args) {
@@ -22,5 +25,21 @@ public class Main {
 
     private static void loader(CommandLineArguments args) {
         CardLoader.loadCards(args.getMonstersConfigName(), args.getSpellConfigName());
+        try {
+            UsersDatabase.connectToDatabase(args.getDatabase());
+            UsersDatabase.loadUsers();
+        } catch (SQLException ex) {
+            System.out.println("Cannot connect/read database: " + ex.getMessage());
+            System.exit(1);
+        }
+    }
+
+    private static void saver() {
+        try {
+            UsersDatabase.saveUsers();
+            UsersDatabase.closeDatabase();
+        } catch (SQLException ex) {
+            System.out.println("Cannot save the database: " + ex.getMessage());
+        }
     }
 }
