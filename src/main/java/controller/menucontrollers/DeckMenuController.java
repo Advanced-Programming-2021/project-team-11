@@ -113,7 +113,7 @@ public class DeckMenuController {
         final String deckName = "deckup-deck";
         try {
             addDeck(user, deckName);
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
         ArrayList<Card> cards = new ArrayList<>(Card.getAllCards());
         Collections.shuffle(cards);

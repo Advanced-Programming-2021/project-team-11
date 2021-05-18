@@ -7,7 +7,6 @@ import model.cards.spells.Yami;
 import model.cards.traps.TimeSeal;
 import model.exceptions.InvalidCardToImportException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class ImportExportMenuControllerTest {
