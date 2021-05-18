@@ -2,6 +2,7 @@ package view.menus;
 
 import model.cards.Card;
 
+import java.io.InputStream;
 import java.util.Scanner;
 
 class MenuUtils {
@@ -10,14 +11,21 @@ class MenuUtils {
     static final String MENU_NAV_FAILED = "menu navigation is not possible";
     static final String CHOOSE_CARD_BY_INDEX = "Choose a card by it's index: ";
     static final String CANCEL_COMMAND = "cancel";
-    private static final Scanner SCANNER = new Scanner(System.in);
+    private static Scanner scanner = new Scanner(System.in);
     private static final String CARD_SHOW_PREFIX = "card show ";
 
     static String readLine() {
-        return SCANNER.nextLine().trim();
+        return scanner.nextLine().trim();
     }
 
-    static boolean showCard(String command) {
+    /**
+     * This function must be only called from unit tests for testing
+     */
+    public static void setScanner(InputStream inputStream) {
+        scanner = new Scanner(inputStream);
+    }
+
+    public static boolean showCard(String command) {
         if (!command.startsWith(CARD_SHOW_PREFIX))
             return false;
         Card card = Card.getCardByName(command.substring(CARD_SHOW_PREFIX.length()));
@@ -34,7 +42,7 @@ class MenuUtils {
      * @param size The max index allowed (exclusive). Just pass the array size
      * @return The index chosen. -1 if canceled
      */
-    static int readCardByIndex(int size) {
+    public static int readCardByIndex(int size) {
         int index;
         while (true) {
             System.out.print(MenuUtils.CHOOSE_CARD_BY_INDEX);

@@ -47,8 +47,6 @@ public class ProfileMenu extends Menu {
             } else if (profileChangeCommand.isPasswordChange()) {
                 ProfileMenuController.changePassword(loggedInUser, profileChangeCommand.getPassword(), profileChangeCommand.getNewPassword());
                 System.out.println("password changed successfully!");
-            } else {
-                throw new BooAnException("profile not change password, not change nickname and not invalid!");
             }
             return true;
         } catch (InvalidCommandException | ParameterException ignored) {

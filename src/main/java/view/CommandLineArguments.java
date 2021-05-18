@@ -3,7 +3,7 @@ package view;
 import com.beust.jcommander.Parameter;
 
 class CommandLineArguments {
-    @Parameter(names = {"--monsters", "-m"})
+    @Parameter(names = {"--monster", "-m"})
     private String monsters = "Monster.csv";
     @Parameter(names = {"--spell", "-s"})
     private String spell = "Spell.csv";
