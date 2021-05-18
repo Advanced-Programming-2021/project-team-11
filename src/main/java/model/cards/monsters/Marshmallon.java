@@ -18,10 +18,6 @@ public class Marshmallon extends InitializableEffectMonsters {
         return instance;
     }
 
-    public static String getCardName() {
-        return CARD_NAME;
-    }
-
     /**
      * When this card is faced down (hidden) and it's attacked to, we must reduce some amount of HP
      * from the person who has attacked

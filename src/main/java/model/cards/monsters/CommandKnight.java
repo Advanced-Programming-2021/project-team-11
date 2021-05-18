@@ -18,10 +18,6 @@ public class CommandKnight extends InitializableEffectMonsters {
         return instance;
     }
 
-    public static String getCardName() {
-        return CARD_NAME;
-    }
-
     /**
      * The damage to add to all monsters
      *

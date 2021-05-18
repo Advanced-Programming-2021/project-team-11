@@ -17,10 +17,6 @@ public class ManEaterBug extends InitializableEffectMonsters {
         return instance;
     }
 
-    public static String getCardName() {
-        return CARD_NAME;
-    }
-
     /**
      * Removes specified card from rival deck
      *

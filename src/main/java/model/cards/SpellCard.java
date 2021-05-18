@@ -60,11 +60,6 @@ public abstract class SpellCard extends Card {
         return card.orElse(null);
     }
 
-    public static SpellCard getSpellCardByName(String name) {
-        Optional<SpellCard> card = getAllSpellCards().stream().filter(x -> x.getName().equals(name) && x.isInitialized()).findFirst();
-        return card.orElse(null);
-    }
-
     @Override
     public final String toString() {
         return String.format("Name: %s\n" +

@@ -6,6 +6,8 @@ import model.exceptions.InvalidCardToImportException;
 
 public class ImportExportMenuController {
     public static void handleImport(ExportedCard exportedCard) throws InvalidCardToImportException {
+        if (exportedCard.getCardType() == null)
+            throw new InvalidCardToImportException();
         switch (exportedCard.getCardType()) {
             case MONSTER:
                 handleMonsterImport(exportedCard);
@@ -16,12 +18,12 @@ public class ImportExportMenuController {
             case TRAP:
                 handleTrapImport(exportedCard);
                 break;
-            default:
-                throw new InvalidCardToImportException();
         }
     }
 
     private static void handleMonsterImport(ExportedCard exportedCard) throws InvalidCardToImportException {
+        if (exportedCard.getMonsterCardType() == null)
+            throw new InvalidCardToImportException("Monster card type is not valid");
         switch (exportedCard.getMonsterCardType()) {
             case EFFECT:
                 handleEffectMonsterCard(exportedCard);
@@ -32,8 +34,6 @@ public class ImportExportMenuController {
             case NORMAL:
                 handleNormalMonsterCard(exportedCard);
                 break;
-            default:
-                throw new InvalidCardToImportException("Monster card type is not valid");
         }
     }
 

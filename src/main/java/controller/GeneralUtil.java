@@ -1,7 +1,5 @@
 package controller;
 
-import java.util.Locale;
-
 public class GeneralUtil {
     /**
      * Formats an enum name like "BRO_SUP" to "Bro Sup"

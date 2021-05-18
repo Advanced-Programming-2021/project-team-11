@@ -20,18 +20,12 @@ public class DuelMenuTest {
     @BeforeEach
     void setUp() {
         User.getUsers().clear();
-        MonsterCard.getAllMonsterCards().clear();
-        SpellCard.getAllSpellCards().clear();
-        TrapCard.getAllTrapCards().clear();
         Setuper.reset();
     }
 
     @AfterAll
     static void cleanUp() {
         User.getUsers().clear();
-        MonsterCard.getAllMonsterCards().clear();
-        SpellCard.getAllSpellCards().clear();
-        TrapCard.getAllTrapCards().clear();
         Setuper.restore();
     }
 
@@ -57,6 +51,7 @@ public class DuelMenuTest {
                 "\tE \tE \tE \tE \tE \n" +
                 "\t\t\t\t\t\t35\n" +
                 "c\tc\tc\tc\tc\t\n", Setuper.getOutputString());
+        MonsterCard.getAllMonsterCards().remove(monster);
     }
 
     @Test

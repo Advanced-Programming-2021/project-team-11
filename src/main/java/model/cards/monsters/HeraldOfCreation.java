@@ -19,10 +19,6 @@ public class HeraldOfCreation extends InitializableEffectMonsters {
         return instance;
     }
 
-    public static String getCardName() {
-        return CARD_NAME;
-    }
-
     @Override
     public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {
 

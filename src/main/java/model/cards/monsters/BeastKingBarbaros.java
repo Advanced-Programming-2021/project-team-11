@@ -18,10 +18,6 @@ public class BeastKingBarbaros extends InitializableEffectMonsters {
         return instance;
     }
 
-    public static String getCardName() {
-        return CARD_NAME;
-    }
-
     public static int getToReduceAttack() {
         return REDUCED_ATTACK - instance.getAttack();
     }

@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class GameUtils {
-    private static final String[] ACTIVATED_MONSTER_CARDS = {ScannerCard.getCardName(), HeraldOfCreation.getCardName()};
+    private static final String[] ACTIVATED_MONSTER_CARDS = {ScannerCard.getInstance().getName(), HeraldOfCreation.getInstance().getName()};
     private static final String[] ACTIVATED_TRAP_CARDS = {TimeSeal.getInstance().getName(), CallOfTheHaunted.getInstance().getName()};
     public static final Random random = new Random();
 
