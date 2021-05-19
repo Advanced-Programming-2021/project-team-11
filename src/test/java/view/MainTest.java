@@ -31,6 +31,11 @@ class MainTest {
             fail("read cards from the thin air :|");
         } catch (Exception ignored) {
         }
+        try {
+            Main.main(new String[]{"--monster", "wfipwprw"});
+            fail("read cards from the thin air :|");
+        } catch (Exception ignored) {
+        }
         Setuper.setInput("menu exit\n");
         try {
             Main.main(new String[]{"--database", "test.db", "--monster", "config/monster.csv", "--spell", "config/spell.csv"});

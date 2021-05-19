@@ -3,6 +3,7 @@ package view;
 import com.beust.jcommander.JCommander;
 import model.database.CardLoader;
 import model.database.UsersDatabase;
+import model.exceptions.BooAnException;
 import view.menus.LoginMenu;
 
 import java.sql.SQLException;
@@ -24,7 +25,10 @@ public class Main {
     }
 
     private static void loader(CommandLineArguments args) {
-        CardLoader.loadCards(args.getMonstersConfigName(), args.getSpellConfigName());
+        try {
+            CardLoader.loadCards(args.getMonstersConfigName(), args.getSpellConfigName());
+        } catch (BooAnException ignored) {
+        }
         try {
             UsersDatabase.connectToDatabase(args.getDatabase());
             UsersDatabase.loadUsers();
