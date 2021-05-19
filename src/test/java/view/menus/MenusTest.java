@@ -6,6 +6,7 @@ import model.cards.MonsterCard;
 import model.cards.MonsterType;
 import model.cards.SimpleMonster;
 import org.junit.jupiter.api.*;
+import view.menus.commands.deck.*;
 import view.menus.commands.shop.ShopBuyItemCommand;
 import view.menus.commands.user.UserLoginCommand;
 import view.menus.commands.user.UserRegisterCommand;
@@ -33,6 +34,13 @@ public class MenusTest {
         Assertions.assertTrue(new UserLoginCommand().isValid());
         Assertions.assertTrue(new UserRegisterCommand().isValid());
         Assertions.assertTrue(new ShopBuyItemCommand().isValid());
+        Assertions.assertTrue(new DeckShowCommand().isValid());
+        Assertions.assertTrue(new DeckSwapCardCommand().isValid());
+        Assertions.assertTrue(new DeckSetActiveCommand().isValid());
+        Assertions.assertTrue(new DeckRemoveCardCommand().isValid());
+        Assertions.assertTrue(new DeckDeleteCommand().isValid());
+        Assertions.assertTrue(new DeckCreateCommand().isValid());
+        Assertions.assertTrue(new DeckAddCardCommand().isValid());
     }
 
     @Test
@@ -46,8 +54,11 @@ public class MenusTest {
                 "user create -u 2 -p 2 -n 2\n" +
                 "user login -u 2 -p 1\n" +
                 "user login -u 2 -p 2\n" +
+                "menu enter Main\n" +
+                "gewgwehewhewhwe\n" +
+                "menu enter Login\n" +
                 "menu show-current\n" +
-                "menu exit\n" +
+                "logout\n" +
                 "menu exit\n");
         new LoginMenu();
         Assertions.assertEquals("menu navigation is not possible\n" +
@@ -59,6 +70,9 @@ public class MenusTest {
                 "user with username 2 already exists\n" +
                 "Username and password didn't match!\n" +
                 "user logged in successfully!\n" +
+                "menu navigation is not possible\n" +
+                "invalid command\n" +
+                "please use logout command\n" +
                 "Main Menu\n" +
                 "user logged out successfully!\n", Setuper.getOutputString());
     }
@@ -170,5 +184,113 @@ public class MenusTest {
                 "invalid command\n" +
                 "1- 1: 0\n" +
                 "user logged out successfully!\n", Setuper.getOutputString());
+    }
+
+    @Test
+    void importExportTest() {
+        MonsterCard card = new SimpleMonster("1", "1", 1, 1, 1, 1, MonsterType.AQUA, MonsterAttributeType.WATER);
+        Setuper.setInput("user create -u 1 -p 1 -n 1\n" +
+                "user login -u 1 -p 1\n" +
+                "menu enter Import/Export\n" +
+                "menu show-current\n" +
+                "menu enter Main\n" +
+                "wgopwgpw\n" +
+                "import card ejgwpg\n" +
+                "export card ejgwpg\n" +
+                "export card 1\n" +
+                "import card 1\n" +
+                "menu exit\n" +
+                "menu exit\n" +
+                "menu exit\n");
+        new LoginMenu();
+        Assertions.assertEquals("user created successfully!\n" +
+                "user logged in successfully!\n" +
+                "Import/Export Menu\n" +
+                "menu navigation is not possible\n" +
+                "invalid command\n" +
+                "ejgwpg.json\n" +
+                "Card does not exists!\n" +
+                "Saved in 1.json\n" +
+                "1 imported!\n" +
+                "user logged out successfully!\n", Setuper.getOutputString());
+        MonsterCard.getAllMonsterCards().remove(card);
+    }
+
+    @Test
+    void deckTest() {
+        MonsterCard card = new SimpleMonster("1", "1", 1, 1, 1, 1, MonsterType.AQUA, MonsterAttributeType.WATER);
+        Setuper.setInput("user create -u 1 -p 1 -n 1\n" +
+                "user login -u 1 -p 1\n" +
+                "menu enter Shop\n" +
+                "shop buy 1\n" +
+                "menu exit\n" +
+                "menu enter Deck\n" +
+                "menu show-current\n" +
+                "menu enter Main\n" +
+                "wgopwgpw\n" +
+                "deck create 1\n" +
+                "deck create 1\n" +
+                "deck add-card --card 1 -d 1 -s\n" +
+                "deck add-card --card 1 -d 1 -s\n" +
+                "deck rm-card -c 1 -d 1\n" +
+                "deck rm-card -c 1 -d 1 -s\n" +
+                "deck show -n 2 -s\n" +
+                "deck show -n 1 -s\n" +
+                "deck show -n 1\n" +
+                "deck show --all\n" +
+                "deck delete 2\n" +
+                "deck set-activate 1\n" +
+                "deck show --all\n" +
+                "deck delete 1\n" +
+                "deck set-activate 1\n" +
+                "deck show --cards\n" +
+                "deck show --all\n" +
+                "DECKUP\n" +
+                "deck set-activate deckup-deck\n" +
+                "menu exit\n" +
+                "menu exit\n" +
+                "menu exit\n");
+        new LoginMenu();
+        Assertions.assertEquals("user created successfully!\n" +
+                "user logged in successfully!\n" +
+                "card bought!\n" +
+                "Deck Menu\n" +
+                "menu navigation is not possible\n" +
+                "invalid command\n" +
+                "deck created successfully!\n" +
+                "deck with name 1 already exists\n" +
+                "card added to deck successfully\n" +
+                "card with name 1 does not exist\n" +
+                "card with name 1 does not exist in main deck\n" +
+                "card removed form deck successfully\n" +
+                "deck with name 2 does not exist\n" +
+                "Deck: 1\n" +
+                "Side deck:\n" +
+                "Monsters:\n" +
+                "Spell and Traps:\n" +
+                "Deck: 1\n" +
+                "Main deck:\n" +
+                "Monsters:\n" +
+                "Spell and Traps:\n" +
+                "Decks:\n" +
+                "Active deck:\n" +
+                "Other decks:\n" +
+                "1: main deck 0, side deck 0, invalid\n" +
+                "deck with name 2 does not exist\n" +
+                "deck activated successfully\n" +
+                "Decks:\n" +
+                "Active deck:\n" +
+                "1: main deck 0, side deck 0, invalid\n" +
+                "Other decks:\n" +
+                "deck deleted successfully\n" +
+                "deck with name 1 does not exist\n" +
+                "1:1\n" +
+                "Decks:\n" +
+                "Active deck:\n" +
+                "Other decks:\n" +
+                "Added a deck with name of deckup-deck :D\n" +
+                "deck activated successfully\n" +
+                "user logged out successfully!\n", Setuper.getOutputString());
+        MonsterCard.getAllMonsterCards().remove(card);
     }
 }

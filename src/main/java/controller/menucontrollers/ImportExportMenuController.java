@@ -4,7 +4,24 @@ import model.cards.*;
 import model.cards.export.ExportedCard;
 import model.exceptions.InvalidCardToImportException;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 public class ImportExportMenuController {
+    public static String readFile(String filename) throws IOException {
+        StringBuilder fileLines = new StringBuilder();
+        Files.readAllLines(Paths.get(filename)).forEach(line -> fileLines.append(line).append('\n'));
+        return fileLines.toString();
+    }
+
+    public static void writeFile(String filename, String content) throws IOException {
+        FileWriter writer = new FileWriter(filename);
+        writer.append(content);
+        writer.close();
+    }
+
     public static void handleImport(ExportedCard exportedCard) throws InvalidCardToImportException {
         if (exportedCard.getCardType() == null)
             throw new InvalidCardToImportException();
