@@ -4,10 +4,7 @@ import model.PlayableCard;
 import model.PlayerBoard;
 import model.cards.*;
 import model.cards.monsters.*;
-import model.cards.spells.AdvancedRitualArt;
-import model.cards.spells.EquipSpellCard;
-import model.cards.spells.FieldSpellCard;
-import model.cards.spells.MessengerOfPeace;
+import model.cards.spells.*;
 import model.cards.traps.*;
 import model.enums.*;
 import model.exceptions.*;
@@ -18,7 +15,6 @@ import java.util.*;
 public class GameRoundController {
     private final PlayerBoard player1Board;
     private final PlayerBoard player2Board;
-    private final Stack<PlayableCard> chainLink;
     private final ArrayList<PlayableCard> changeOfHeartCards;
     private PlayableCard selectedCard;
     private boolean player1Turn, playerAlreadySummoned = false, isFirstBattle = true;
@@ -29,7 +25,6 @@ public class GameRoundController {
         this.player1Board = player1Board;
         this.player2Board = player2Board;
         player1Turn = player1Starting;
-        chainLink = new Stack<>();
         gameStatus = GameStatus.ONGOING;
         phase = GamePhase.DRAW;
         changeOfHeartCards = new ArrayList<>();
@@ -297,7 +292,7 @@ public class GameRoundController {
         selectedCard.flipSummon();
     }
 
-    public void summonCard() throws NoCardSelectedYetException, CantSummonCardException, InvalidPhaseActionException, MonsterCardZoneFullException, AlreadySummonedException, NotEnoughCardsToTributeException, TributeNeededException, SpecialSummonNeededException {
+    public void summonCard() throws NoCardSelectedYetException, CantSummonCardException, InvalidPhaseActionException, MonsterCardZoneFullException, AlreadySummonedException, NotEnoughCardsToTributeException, TributeNeededException, SpecialSummonNeededException, TrapCanBeActivatedException {
         if (selectedCard == null)
             throw new NoCardSelectedYetException();
         if (selectedCard.getCardPlace() != CardPlaceType.HAND || selectedCard.getCard().getCardType() != CardType.MONSTER
@@ -313,7 +308,7 @@ public class GameRoundController {
             throw new SpecialSummonNeededException(selectedCard);
         int cardsToTribute = ((MonsterCard) selectedCard.getCard()).getCardsNeededToTribute();
         if (cardsToTribute == 0) { // GG! summon the card
-            summonSelectedCard();
+            summonSelectedCard(false);
             return;
         }
         if (cardsToTribute > getPlayerBoard().countActiveMonsterCards())
@@ -327,16 +322,33 @@ public class GameRoundController {
      *
      * @param tributes The positions of cards to tribute
      */
-    public void summonCard(ArrayList<Integer> tributes) throws NoMonsterOnTheseAddressesException {
+    public void summonCard(ArrayList<Integer> tributes, boolean forced) throws NoMonsterOnTheseAddressesException, TrapCanBeActivatedException {
         // Check these places
         if (tributes.stream().anyMatch(x -> getPlayerBoard().getMonsterCards()[x - 1] == null))
             throw new NoMonsterOnTheseAddressesException();
         // Remove them and add the card!
         tributes.forEach(x -> getPlayerBoard().sendMonsterToGraveyard(x - 1));
-        summonSelectedCard();
+        summonSelectedCard(forced);
     }
 
-    private void summonSelectedCard() {
+    public void forceSummonCard() {
+        try {
+            summonSelectedCard(true);
+        } catch (TrapCanBeActivatedException e) {
+            throw new BooAnException(e.getMessage());
+        }
+    }
+
+    private void summonSelectedCard(boolean forced) throws TrapCanBeActivatedException {
+        if (!forced) {
+            ArrayList<String> trapCards = new ArrayList<>();
+            if (TorrentialTribute.getInstance().isConditionMade(null, getRivalBoard(), null, 0))
+                trapCards.add(TorrentialTribute.getInstance().getName());
+            if (TrapHole.getInstance().isConditionMade(null, getRivalBoard(), selectedCard, 0))
+                trapCards.add(TrapHole.getInstance().getName());
+            if (trapCards.size() != 0)
+                throw new TrapCanBeActivatedException(trapCards.toArray(new String[0]));
+        }
         selectedCard.makeVisible();
         selectedCard.setAttacking();
         getPlayerBoard().addMonsterCard(selectedCard);
@@ -437,7 +449,7 @@ public class GameRoundController {
      */
     public void specialSummon(MonsterCard card, boolean isForPlayer) {
         PlayerBoard board = isForPlayer ? getPlayerBoard() : getRivalBoard();
-        board.addMonsterCard(new PlayableCard(card, CardPlaceType.HAND));
+        board.addMonsterCard(new PlayableCard(card, CardPlaceType.MONSTER));
     }
 
     public Card getSelectedCard() throws NoCardSelectedYetException, CardHiddenException {

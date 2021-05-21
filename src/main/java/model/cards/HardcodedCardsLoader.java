@@ -58,5 +58,7 @@ public class HardcodedCardsLoader {
         MindCrush.getInstance();
         MagicCylinder.getInstance();
         NegateAttack.getInstance();
+        TrapHole.getInstance();
+        TorrentialTribute.getInstance();
     }
 }

@@ -97,8 +97,8 @@ public class CardSpecificMenus {
         if (tributes == 0)
             gameRoundController.returnSelectedCard().addAttackDelta(BeastKingBarbaros.getToReduceAttack());
         try {
-            gameRoundController.summonCard(cards);
-        } catch (NoMonsterOnTheseAddressesException e) {
+            gameRoundController.summonCard(cards, true);
+        } catch (NoMonsterOnTheseAddressesException | TrapCanBeActivatedException e) {
             System.out.println(e.getMessage());
             return false;
         }
@@ -332,14 +332,14 @@ public class CardSpecificMenus {
     }
 
     public static boolean activateTrap(GameRoundController roundController, String[] cards, PlayableCard rivalCard) {
-        System.out.println("do you want to activate your trap and spell? (y/n)");
+        System.out.println("Do you want to activate your trap or spell? (y/n)");
         if (!MenuUtils.readLine().equals("y"))
             return false;
         int index = DuelMenuUtils.printAndGetListOfCardToChooseWithCancel(cards);
         if (index == -1)
             return false;
         TrapCard card = TrapCard.getTrapCardByName(cards[index]);
-        card.activateEffect(roundController.getRivalBoard(), roundController.getPlayerBoard(), null, null, 0);
+        card.activateEffect(roundController.getRivalBoard(), roundController.getPlayerBoard(), null, rivalCard, 0);
         if (card instanceof NegateAttack) {
             try {
                 roundController.advancePhase();

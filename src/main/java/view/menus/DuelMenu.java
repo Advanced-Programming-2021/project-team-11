@@ -232,6 +232,10 @@ public class DuelMenu extends Menu {
         } catch (SpecialSummonNeededException e) {
             if (e.getToSummonCard().getCard() instanceof TheTricky)
                 success = CardSpecificMenus.spawnTheTricky(gameController.getRound().getPlayerBoard(), e.getToSummonCard());
+        } catch (TrapCanBeActivatedException ex) {
+            success = !prepareTrap(ex.getAllowedCards());
+            if (success)
+                gameController.getRound().forceSummonCard();
         }
         if (success) {
             System.out.println("summoned successfully");
@@ -260,10 +264,14 @@ public class DuelMenu extends Menu {
             return false;
         // Try to tribute
         try {
-            gameController.getRound().summonCard(cards);
+            gameController.getRound().summonCard(cards, false);
         } catch (NoMonsterOnTheseAddressesException e) {
             System.out.println(e.getMessage());
             return false;
+        } catch (TrapCanBeActivatedException ex) {
+            if (!prepareTrap(ex.getAllowedCards()))
+                gameController.getRound().forceSummonCard();
+            return true;
         }
         return true;
     }
@@ -356,12 +364,7 @@ public class DuelMenu extends Menu {
             System.out.println(result.toString());
             printBoard();
         } catch (TrapCanBeActivatedException ex) {
-            System.out.printf("now it will be %s's turn\n", gameController.getRound().getRivalBoard().getPlayer().getUser().getUsername());
-            printBoard(gameController.getRound().getPlayerBoard(), gameController.getRound().getRivalBoard());
-            boolean trapActivated = CardSpecificMenus.activateTrap(gameController.getRound(), ex.getAllowedCards(), gameController.getRound().returnSelectedCard());
-            System.out.printf("now it will be %s's turn\n", gameController.getRound().getPlayerBoard().getPlayer().getUser().getUsername());
-            printBoard();
-            if (trapActivated) {
+            if (prepareTrap(ex.getAllowedCards())) {
                 MonsterAttackResult result = gameController.getRound().attackToMonsterForced(positionToAttack);
                 System.out.println(result.toString());
                 printBoard();
@@ -457,6 +460,15 @@ public class DuelMenu extends Menu {
             return true;
         }
         return false;
+    }
+
+    private boolean prepareTrap(String[] cards) {
+        System.out.printf("now it will be %s's turn\n", gameController.getRound().getRivalBoard().getPlayer().getUser().getUsername());
+        printBoard(gameController.getRound().getPlayerBoard(), gameController.getRound().getRivalBoard());
+        boolean trapActivated = CardSpecificMenus.activateTrap(gameController.getRound(), cards, gameController.getRound().returnSelectedCard());
+        System.out.printf("now it will be %s's turn\n", gameController.getRound().getPlayerBoard().getPlayer().getUser().getUsername());
+        printBoard();
+        return trapActivated;
     }
 
     @Override
