@@ -8,9 +8,7 @@ import model.PlayerBoard;
 import model.User;
 import model.cards.Card;
 import model.cards.monsters.*;
-import model.cards.spells.ChangeOfHeart;
-import model.cards.spells.MonsterReborn;
-import model.cards.spells.Terraforming;
+import model.cards.spells.*;
 import model.cards.traps.CallOfTheHaunted;
 import model.cards.traps.MindCrush;
 import model.enums.ActivateSpellCallback;
@@ -429,6 +427,10 @@ public class DuelMenu extends Menu {
                     CardSpecificMenus.handleTerraforming(gameController.getRound().getPlayerBoard(), selectedCard);
                 if (selectedCard.getCard() instanceof ChangeOfHeart)
                     CardSpecificMenus.handleChangeOfHeart(gameController.getRound(), selectedCard);
+                if (selectedCard.getCard() instanceof TwinTwisters)
+                    CardSpecificMenus.handleTwinTwisters(gameController.getRound(), selectedCard);
+                if (selectedCard.getCard() instanceof MysticalSpaceTyphoon)
+                    CardSpecificMenus.handleMysticalSpaceTyphoon(gameController.getRound(), selectedCard);
                 break;
             case EQUIP:
                 CardSpecificMenus.equip(gameController.getRound(), selectedCard);

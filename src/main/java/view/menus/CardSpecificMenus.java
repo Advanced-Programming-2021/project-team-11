@@ -2,6 +2,7 @@ package view.menus;
 
 import com.sun.org.apache.xpath.internal.operations.Neg;
 import controller.GameRoundController;
+import controller.GameUtils;
 import model.PlayableCard;
 import model.PlayerBoard;
 import model.cards.*;
@@ -363,5 +364,28 @@ public class CardSpecificMenus {
             gameRoundController.getPlayerBoard().sendToGraveyard(thisCard);
             break;
         }
+    }
+
+    public static void handleTwinTwisters(GameRoundController round, PlayableCard thisCard) {
+        ArrayList<PlayableCard> cards = round.getRivalBoard().getSpellCardsList();
+        DuelMenuUtils.printNumberedCardList(cards);
+        int index = MenuUtils.readCardByIndex(cards.size());
+        if (index == -1)
+            return;
+        round.getRivalBoard().sendToGraveyard(cards.get(index));
+        round.getPlayerBoard().sendToGraveyard(thisCard);
+    }
+
+    public static void handleMysticalSpaceTyphoon(GameRoundController roundController, PlayableCard thisCard) {
+        ArrayList<PlayableCard> cards = roundController.getRivalBoard().getSpellCardsList();
+        DuelMenuUtils.printNumberedCardList(cards);
+        System.out.println("Select two cards (use cancel to dont select a card)");
+        int index1 = MenuUtils.readCardByIndex(cards.size());
+        int index2 = MenuUtils.readCardByIndex(cards.size());
+        if (index1 != -1)
+            roundController.getRivalBoard().sendToGraveyard(cards.get(index1));
+        if (index1 != index2 && index2 != -1)
+            roundController.getRivalBoard().sendToGraveyard(cards.get(index1));
+        roundController.getPlayerBoard().getHand().remove(GameUtils.random.nextInt(roundController.getPlayerBoard().getHand().size()));
     }
 }

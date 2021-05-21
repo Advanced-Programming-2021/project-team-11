@@ -49,6 +49,8 @@ public class HardcodedCardsLoader {
         BlackPendant.getInstance();
         UnitedWeStand.getInstance();
         MagnumShield.getInstance();
+        TwinTwisters.getInstance();
+        MysticalSpaceTyphoon.getInstance();
     }
 
     private static void loadTraps() {
@@ -60,5 +62,6 @@ public class HardcodedCardsLoader {
         NegateAttack.getInstance();
         TrapHole.getInstance();
         TorrentialTribute.getInstance();
+        MagicJammer.getInstance();
     }
 }
