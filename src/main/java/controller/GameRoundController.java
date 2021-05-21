@@ -9,6 +9,7 @@ import model.cards.spells.EquipSpellCard;
 import model.cards.spells.FieldSpellCard;
 import model.cards.spells.MessengerOfPeace;
 import model.cards.traps.CallOfTheHaunted;
+import model.cards.traps.MirrorForce;
 import model.cards.traps.TimeSeal;
 import model.enums.*;
 import model.exceptions.*;
@@ -143,6 +144,26 @@ public class GameRoundController {
                 || getPlayerBoard().isEffectOfSwordOfRevealingLightActive())
             throw new CantAttackWithThisCardException();
         // Check the attack possibilities
+        return prepareAttackToMonster(toAttackCard, false);
+    }
+
+    public MonsterAttackResult attackToMonsterForced(int index) {
+        try {
+            return prepareAttackToMonster(getRivalBoard().getMonsterCards()[index - 1], true);
+        } catch (TrapCanBeActivatedException | CantAttackWithThisCardException e) {
+            throw new BooAnException("TrapCanBeActivatedException with forced: " + e.getMessage());
+        }
+    }
+
+    private MonsterAttackResult prepareAttackToMonster(PlayableCard toAttackCard, boolean forced) throws CantAttackWithThisCardException, TrapCanBeActivatedException {
+        // Check this shit which I don't know what is it
+        if (!forced)
+            if (isMessengerOfPeaceForbiddingTheAttack(selectedCard.getAttackPower(getPlayerBoard(), getField())))
+                throw new CantAttackWithThisCardException();
+        // Check traps
+        if (!forced)
+            if (MirrorForce.getInstance().isConditionMade(null, getRivalBoard(), null, 0))
+                throw new TrapCanBeActivatedException(new String[]{MirrorForce.getInstance().getName()});
         selectedCard.setHasAttacked(true);
         MonsterAttackResult result = processAttackToMonster(toAttackCard);
         if (result.getBattleResult() == AttackResult.RIVAL_DESTROYED && toAttackCard.getCard() instanceof YomiShip)
@@ -151,10 +172,8 @@ public class GameRoundController {
         return result;
     }
 
-    private MonsterAttackResult processAttackToMonster(PlayableCard toAttackCard) throws CantAttackWithThisCardException {
+    private MonsterAttackResult processAttackToMonster(PlayableCard toAttackCard) {
         int myMonsterAttack = selectedCard.getAttackPower(getPlayerBoard(), getField());
-        if (isMessengerOfPeaceForbiddingTheAttack(myMonsterAttack))
-            throw new CantAttackWithThisCardException();
         if (toAttackCard.getCard() instanceof Suijin && toAttackCard.isEffectConditionMet(getPlayerBoard(), getRivalBoard(), true)) {
             toAttackCard.activateEffect(getPlayerBoard(), getRivalBoard(), selectedCard);
             myMonsterAttack = 0;

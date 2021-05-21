@@ -12,6 +12,7 @@ import model.cards.spells.ChangeOfHeart;
 import model.cards.spells.MonsterReborn;
 import model.cards.spells.Terraforming;
 import model.cards.traps.CallOfTheHaunted;
+import model.cards.traps.MindCrush;
 import model.enums.ActivateSpellCallback;
 import model.enums.GamePhase;
 import model.enums.GameRounds;
@@ -120,12 +121,16 @@ public class DuelMenu extends Menu {
 
     private void printBoard() {
         PlayerBoard rivalBoard = gameController.getRound().getRivalBoard();
+        PlayerBoard myBoard = gameController.getRound().getPlayerBoard();
+        printBoard(rivalBoard, myBoard);
+    }
+
+    private void printBoard(PlayerBoard rivalBoard, PlayerBoard myBoard) {
         System.out.printf("%s:%d\n", rivalBoard.getPlayer().getUser().getNickname(), rivalBoard.getPlayer().getHealth());
         DuelMenuUtils.printRivalBoard(rivalBoard);
         System.out.println();
         System.out.println("--------------------------");
         System.out.println();
-        PlayerBoard myBoard = gameController.getRound().getPlayerBoard();
         DuelMenuUtils.printMyBoard(myBoard);
         System.out.printf("%s:%d\n", myBoard.getPlayer().getUser().getNickname(), myBoard.getPlayer().getHealth());
     }
@@ -350,6 +355,17 @@ public class DuelMenu extends Menu {
             MonsterAttackResult result = gameController.getRound().attackToMonster(positionToAttack);
             System.out.println(result.toString());
             printBoard();
+        } catch (TrapCanBeActivatedException ex) {
+            System.out.printf("now it will be %s's turn\n", gameController.getRound().getRivalBoard().getPlayer().getUser().getUsername());
+            printBoard(gameController.getRound().getPlayerBoard(), gameController.getRound().getRivalBoard());
+            boolean trapActivated = CardSpecificMenus.activateTrap(gameController.getRound(), ex.getAllowedCards());
+            System.out.printf("now it will be %s's turn\n", gameController.getRound().getPlayerBoard().getPlayer().getUser().getUsername());
+            printBoard();
+            if (trapActivated) {
+                MonsterAttackResult result = gameController.getRound().attackToMonsterForced(positionToAttack);
+                System.out.println(result.toString());
+                printBoard();
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -417,6 +433,8 @@ public class DuelMenu extends Menu {
             case TRAP:
                 if (selectedCard.getCard() instanceof CallOfTheHaunted)
                     CardSpecificMenus.callOfTheHunted(gameController.getRound().getPlayerBoard(), selectedCard);
+                if (selectedCard.getCard() instanceof MindCrush)
+                    CardSpecificMenus.getMindCrushCard(gameController.getRound(), selectedCard);
         }
     }
 

@@ -1,6 +1,7 @@
 package model;
 
 import model.cards.Card;
+import model.cards.TrapCard;
 import model.cards.spells.MessengerOfPeace;
 import model.cards.spells.SupplySquad;
 import model.enums.CardPlaceType;
@@ -199,5 +200,13 @@ public class PlayerBoard {
     public void tryApplyMessengerOfPeace() {
         getMonsterCardsList().stream().filter(card -> !card.isHidden() && card.getCard() instanceof MessengerOfPeace)
                 .findFirst().ifPresent(card -> card.activateEffect(this, null, null));
+    }
+
+    public void removeSpellTrapCard(TrapCard card) {
+        for (PlayableCard playableCard : getSpellCardsList())
+            if (card.getName().equals(playableCard.getCard().getName())) {
+                sendToGraveyard(playableCard);
+                return;
+            }
     }
 }

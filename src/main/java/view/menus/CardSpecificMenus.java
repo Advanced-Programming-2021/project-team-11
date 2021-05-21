@@ -8,6 +8,7 @@ import model.cards.monsters.BeastKingBarbaros;
 import model.cards.monsters.ManEaterBug;
 import model.cards.spells.AdvancedRitualArt;
 import model.cards.spells.EquipSpellCard;
+import model.cards.traps.MindCrush;
 import model.enums.CardPlaceType;
 import model.exceptions.*;
 
@@ -326,5 +327,30 @@ public class CardSpecificMenus {
         toSummon.makeVisible();
         toSummon.setAttacking();
         board.addMonsterCard(toSummon);
+    }
+
+    public static boolean activateTrap(GameRoundController roundController, String[] cards) {
+        System.out.println("do you want to activate your trap and spell? (y/n)");
+        if (!MenuUtils.readLine().equals("y"))
+            return false;
+        int index = DuelMenuUtils.printAndGetListOfCardToChooseWithCancel(cards);
+        if (index == -1)
+            return false;
+        TrapCard.getTrapCardByName(cards[index]).activateEffect(roundController.getRivalBoard(), roundController.getPlayerBoard(), null, null, 0);
+        return true;
+    }
+
+    public static void getMindCrushCard(GameRoundController gameRoundController, PlayableCard thisCard) {
+        while (true) {
+            System.out.println("Choose a card by it's name.");
+            Card card = Card.getCardByName(MenuUtils.readLine());
+            if (card == null) {
+                System.out.println("This card does not exists!");
+                continue;
+            }
+            MindCrush.getInstance().activateEffect(gameRoundController.getPlayerBoard(), gameRoundController.getRivalBoard(), null, new PlayableCard(card, CardPlaceType.HAND), 0);
+            gameRoundController.getPlayerBoard().sendToGraveyard(thisCard);
+            break;
+        }
     }
 }

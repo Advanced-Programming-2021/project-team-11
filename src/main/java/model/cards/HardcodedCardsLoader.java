@@ -54,5 +54,7 @@ public class HardcodedCardsLoader {
     private static void loadTraps() {
         TimeSeal.getInstance();
         CallOfTheHaunted.getInstance();
+        MirrorForce.getInstance();
+        MindCrush.getInstance();
     }
 }

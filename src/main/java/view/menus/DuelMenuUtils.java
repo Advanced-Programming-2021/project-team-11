@@ -136,4 +136,21 @@ class DuelMenuUtils {
         for (int i = 0; i < cards.size(); i++)
             System.out.printf("%d. %s -> level %d\n", i + 1, cards.get(i).getCard().getName(), ((MonsterCard) cards.get(i).getCard()).getLevel());
     }
+
+    /**
+     * Prints a numbered list of cards with the last element being "cancel the activation"
+     *
+     * @param cards The list of cards
+     * @return The index in the array if a card is selected. Returns -1 if canceled
+     */
+    public static int printAndGetListOfCardToChooseWithCancel(String[] cards) {
+        System.out.println("Select a card:");
+        for (int i = 0; i < cards.length; i++)
+            System.out.printf("%d. %s\n", i + 1, cards[i]);
+        System.out.printf("%d. %s\n", cards.length + 1, "cancel the activation");
+        int index = MenuUtils.readCardByIndex(cards.length + 1);
+        if (index == -1 || index == cards.length + 1)
+            return -1;
+        return index;
+    }
 }
