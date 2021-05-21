@@ -212,8 +212,8 @@ public class DuelMenu extends Menu {
         boolean success = false;
         Card spawnedCard = null;
         try {
-            if (gameController.getRound().returnPlayableCard() != null)
-                spawnedCard = gameController.getRound().returnPlayableCard().getCard();
+            if (gameController.getRound().returnSelectedCard() != null)
+                spawnedCard = gameController.getRound().returnSelectedCard().getCard();
             gameController.getRound().summonCard();
             success = true;
         } catch (AlreadySummonedException | NoCardSelectedYetException | CantSummonCardException
@@ -315,7 +315,7 @@ public class DuelMenu extends Menu {
         if (!command.equals(FLIP_SUMMON_COMMAND))
             return false;
         try {
-            PlayableCard selectedCard = gameController.getRound().returnPlayableCard();
+            PlayableCard selectedCard = gameController.getRound().returnSelectedCard();
             gameController.getRound().flipSummon();
             if (selectedCard.getCard() instanceof ManEaterBug)
                 CardSpecificMenus.handleManEaterBugRemoval(gameController.getRound().getRivalBoard(), (ManEaterBug) selectedCard.getCard());
@@ -358,7 +358,7 @@ public class DuelMenu extends Menu {
         } catch (TrapCanBeActivatedException ex) {
             System.out.printf("now it will be %s's turn\n", gameController.getRound().getRivalBoard().getPlayer().getUser().getUsername());
             printBoard(gameController.getRound().getPlayerBoard(), gameController.getRound().getRivalBoard());
-            boolean trapActivated = CardSpecificMenus.activateTrap(gameController.getRound(), ex.getAllowedCards());
+            boolean trapActivated = CardSpecificMenus.activateTrap(gameController.getRound(), ex.getAllowedCards(), gameController.getRound().returnSelectedCard());
             System.out.printf("now it will be %s's turn\n", gameController.getRound().getPlayerBoard().getPlayer().getUser().getUsername());
             printBoard();
             if (trapActivated) {
@@ -402,7 +402,7 @@ public class DuelMenu extends Menu {
         if (!command.equals(ACTIVATE_EFFECT_COMMAND))
             return false;
         try {
-            PlayableCard selectedCard = gameController.getRound().returnPlayableCard();
+            PlayableCard selectedCard = gameController.getRound().returnSelectedCard();
             handleActivateSpellCallBack(gameController.getRound().activeSpell(), selectedCard);
         } catch (OnlySpellCardsAllowedException | NoCardSelectedException | CardAlreadyAttackedException |
                 InvalidPhaseActionException | RitualSummonNotPossibleException | CantSpecialSummonException |

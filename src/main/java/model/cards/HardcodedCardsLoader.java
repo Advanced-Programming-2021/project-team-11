@@ -56,5 +56,7 @@ public class HardcodedCardsLoader {
         CallOfTheHaunted.getInstance();
         MirrorForce.getInstance();
         MindCrush.getInstance();
+        MagicCylinder.getInstance();
+        NegateAttack.getInstance();
     }
 }

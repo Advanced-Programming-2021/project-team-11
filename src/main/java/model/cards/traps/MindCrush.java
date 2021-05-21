@@ -48,6 +48,6 @@ public class MindCrush extends TrapCard {
 
     @Override
     public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, int activationCounter) {
-        return false;
+        return true;
     }
 }

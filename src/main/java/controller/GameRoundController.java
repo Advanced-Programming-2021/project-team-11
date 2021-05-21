@@ -8,9 +8,7 @@ import model.cards.spells.AdvancedRitualArt;
 import model.cards.spells.EquipSpellCard;
 import model.cards.spells.FieldSpellCard;
 import model.cards.spells.MessengerOfPeace;
-import model.cards.traps.CallOfTheHaunted;
-import model.cards.traps.MirrorForce;
-import model.cards.traps.TimeSeal;
+import model.cards.traps.*;
 import model.enums.*;
 import model.exceptions.*;
 import model.results.MonsterAttackResult;
@@ -161,9 +159,17 @@ public class GameRoundController {
             if (isMessengerOfPeaceForbiddingTheAttack(selectedCard.getAttackPower(getPlayerBoard(), getField())))
                 throw new CantAttackWithThisCardException();
         // Check traps
-        if (!forced)
+        if (!forced) {
+            ArrayList<String> allowedCards = new ArrayList<>();
             if (MirrorForce.getInstance().isConditionMade(null, getRivalBoard(), null, 0))
-                throw new TrapCanBeActivatedException(new String[]{MirrorForce.getInstance().getName()});
+                allowedCards.add(MirrorForce.getInstance().getName());
+            if (NegateAttack.getInstance().isConditionMade(null, getRivalBoard(), null, 0))
+                allowedCards.add(NegateAttack.getInstance().getName());
+            if (MagicCylinder.getInstance().isConditionMade(null, getRivalBoard(), null, 0))
+                allowedCards.add(MagicCylinder.getInstance().getName());
+            if (allowedCards.size() != 0)
+                throw new TrapCanBeActivatedException(allowedCards.toArray(new String[0]));
+        }
         selectedCard.setHasAttacked(true);
         MonsterAttackResult result = processAttackToMonster(toAttackCard);
         if (result.getBattleResult() == AttackResult.RIVAL_DESTROYED && toAttackCard.getCard() instanceof YomiShip)
@@ -442,7 +448,7 @@ public class GameRoundController {
         return selectedCard.getCard();
     }
 
-    public PlayableCard returnPlayableCard() {
+    public PlayableCard returnSelectedCard() {
         return selectedCard;
     }
 
