@@ -5,8 +5,8 @@ import model.PlayerBoard;
 
 public class BeastKingBarbaros extends InitializableEffectMonsters {
     private final static String CARD_NAME = "Beast King Barbaros";
-    private static BeastKingBarbaros instance;
     private final static int REDUCED_ATTACK = 1900;
+    private static BeastKingBarbaros instance;
 
     private BeastKingBarbaros() {
         super(CARD_NAME);

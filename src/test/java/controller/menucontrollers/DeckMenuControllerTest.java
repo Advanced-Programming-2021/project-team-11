@@ -18,8 +18,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Optional;
 
 public class DeckMenuControllerTest {
-    private static User user;
     private static final String deckUpDeckName = "deckup-deck";
+    private static User user;
 
     @BeforeAll
     static void setup() {

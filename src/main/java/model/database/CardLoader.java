@@ -9,10 +9,6 @@ import model.exceptions.ConfigLoadingException;
 import java.io.FileReader;
 
 public class CardLoader {
-    private interface Loader {
-        void load(String[] args);
-    }
-
     private static boolean firstLoad = true;
 
     public static void loadCards(String monsterFilename, String spellFilename) {
@@ -86,5 +82,9 @@ public class CardLoader {
         if (card == null)
             return;
         card.init(data[3], Integer.parseInt(data[5]));
+    }
+
+    private interface Loader {
+        void load(String[] args);
     }
 }

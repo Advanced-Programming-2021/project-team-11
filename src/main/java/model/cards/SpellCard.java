@@ -24,6 +24,15 @@ public abstract class SpellCard extends Card {
         allSpellCards.add(this);
     }
 
+    public static ArrayList<SpellCard> getAllSpellCards() {
+        return allSpellCards;
+    }
+
+    public static SpellCard getAllSpellCardByName(String name) {
+        Optional<SpellCard> card = getAllSpellCards().stream().filter(x -> x.getName().equals(name)).findFirst();
+        return card.orElse(null);
+    }
+
     public SpellCardType getSpellCardType() {
         return spellCardType;
     }
@@ -50,15 +59,6 @@ public abstract class SpellCard extends Card {
      * @throws CantUseSpellException      Can't use this spell. Might contain a message in it
      */
     public abstract void throwConditionNotMadeException() throws CantSpecialSummonException, CantUseSpellException;
-
-    public static ArrayList<SpellCard> getAllSpellCards() {
-        return allSpellCards;
-    }
-
-    public static SpellCard getAllSpellCardByName(String name) {
-        Optional<SpellCard> card = getAllSpellCards().stream().filter(x -> x.getName().equals(name)).findFirst();
-        return card.orElse(null);
-    }
 
     @Override
     public final String toString() {

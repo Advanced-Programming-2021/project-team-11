@@ -8,14 +8,14 @@ public class MenuUtilsTest {
         Setuper.setup();
     }
 
-    @BeforeEach
-    void setUp() {
-        Setuper.reset();
-    }
-
     @AfterAll
     static void cleanUp() {
         Setuper.restore();
+    }
+
+    @BeforeEach
+    void setUp() {
+        Setuper.reset();
     }
 
     @Test

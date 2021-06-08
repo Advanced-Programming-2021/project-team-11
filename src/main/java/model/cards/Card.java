@@ -10,9 +10,9 @@ import java.util.stream.Collectors;
 
 public abstract class Card implements Comparable<Card> {
     private final String name;
+    private final CardType cardType;
     private int price;
     private String description;
-    private final CardType cardType;
     private boolean initialized = false;
 
     /**
@@ -30,6 +30,19 @@ public abstract class Card implements Comparable<Card> {
         this.price = price;
     }
 
+    public static ArrayList<Card> getAllCards() {
+        ArrayList<Card> cards = new ArrayList<>();
+        cards.addAll(MonsterCard.getAllMonsterCards().stream().filter(Card::isInitialized).collect(Collectors.toList()));
+        cards.addAll(TrapCard.getAllTrapCards().stream().filter(Card::isInitialized).collect(Collectors.toList()));
+        cards.addAll(SpellCard.getAllSpellCards().stream().filter(Card::isInitialized).collect(Collectors.toList()));
+        return cards;
+    }
+
+    public static Card getCardByName(String name) {
+        Optional<Card> card = getAllCards().stream().filter(x -> x.getName().equals(name) && x.isInitialized()).findFirst();
+        return card.orElse(null);
+    }
+
     public final CardType getCardType() {
         return cardType;
     }
@@ -42,10 +55,6 @@ public abstract class Card implements Comparable<Card> {
         this.price = price;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public final boolean isInitialized() {
         return initialized;
     }
@@ -56,6 +65,10 @@ public abstract class Card implements Comparable<Card> {
 
     public final String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public final String getName() {
@@ -75,19 +88,6 @@ public abstract class Card implements Comparable<Card> {
     public abstract void deactivateEffect();
 
     public abstract boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, int activationCounter);
-
-    public static ArrayList<Card> getAllCards() {
-        ArrayList<Card> cards = new ArrayList<>();
-        cards.addAll(MonsterCard.getAllMonsterCards().stream().filter(Card::isInitialized).collect(Collectors.toList()));
-        cards.addAll(TrapCard.getAllTrapCards().stream().filter(Card::isInitialized).collect(Collectors.toList()));
-        cards.addAll(SpellCard.getAllSpellCards().stream().filter(Card::isInitialized).collect(Collectors.toList()));
-        return cards;
-    }
-
-    public static Card getCardByName(String name) {
-        Optional<Card> card = getAllCards().stream().filter(x -> x.getName().equals(name) && x.isInitialized()).findFirst();
-        return card.orElse(null);
-    }
 
     @Override
     public final boolean equals(Object o) {

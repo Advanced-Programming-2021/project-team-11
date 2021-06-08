@@ -11,9 +11,9 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class GameUtils {
+    public static final Random random = new Random();
     private static final String[] ACTIVATED_MONSTER_CARDS = {ScannerCard.getInstance().getName(), HeraldOfCreation.getInstance().getName()};
     private static final String[] ACTIVATED_TRAP_CARDS = {TimeSeal.getInstance().getName(), CallOfTheHaunted.getInstance().getName()};
-    public static final Random random = new Random();
 
     public static CoinFlipResult flipCoin() {
         return random.nextBoolean() ? CoinFlipResult.HEAD : CoinFlipResult.TAIL;

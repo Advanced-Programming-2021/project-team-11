@@ -4,8 +4,8 @@ import model.PlayableCard;
 import model.PlayerBoard;
 
 public class ScannerCard extends InitializableEffectMonsters {
-    private static ScannerCard instance;
     private final static String CARD_NAME = "Scanner";
+    private static ScannerCard instance;
 
     private ScannerCard() {
         super(CARD_NAME);

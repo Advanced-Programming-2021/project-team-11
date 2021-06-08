@@ -5,8 +5,8 @@ import java.util.Optional;
 
 public abstract class MonsterCard extends Card {
     private static final ArrayList<MonsterCard> allMonsterCards = new ArrayList<>();
-    private int level, defence, attack;
     private final MonsterCardType monsterCardType;
+    private int level, defence, attack;
     private MonsterType monsterType;
     private MonsterAttributeType monsterAttributeType;
 
@@ -26,54 +26,6 @@ public abstract class MonsterCard extends Card {
         this.monsterType = monsterType;
         allMonsterCards.add(this);
         init();
-    }
-
-    public final int getLevel() {
-        return level;
-    }
-
-    public final int getAttack() {
-        return attack;
-    }
-
-    public final int getDefence() {
-        return defence;
-    }
-
-    public final MonsterAttributeType getMonsterAttributeType() {
-        return monsterAttributeType;
-    }
-
-    public final void setMonsterAttributeType(MonsterAttributeType monsterAttributeType) {
-        this.monsterAttributeType = monsterAttributeType;
-    }
-
-    public final MonsterCardType getMonsterCardType() {
-        return monsterCardType;
-    }
-
-    public final MonsterType getMonsterType() {
-        return monsterType;
-    }
-
-    public final void setMonsterType(MonsterType monsterType) {
-        this.monsterType = monsterType;
-    }
-
-    public final void setAttack(int attack) {
-        this.attack = attack;
-    }
-
-    public final void setDefence(int defence) {
-        this.defence = defence;
-    }
-
-    public final void setLevel(int level) {
-        this.level = level;
-    }
-
-    public final int getCardsNeededToTribute() {
-        return getCardsNeededToTribute(getLevel());
     }
 
     public static int getCardsNeededToTribute(int level) {
@@ -98,6 +50,54 @@ public abstract class MonsterCard extends Card {
     public static MonsterCard getMonsterCardByName(String name) {
         Optional<MonsterCard> card = getAllMonsterCards().stream().filter(x -> x.getName().equals(name) && x.isInitialized()).findFirst();
         return card.orElse(null);
+    }
+
+    public final int getLevel() {
+        return level;
+    }
+
+    public final void setLevel(int level) {
+        this.level = level;
+    }
+
+    public final int getAttack() {
+        return attack;
+    }
+
+    public final void setAttack(int attack) {
+        this.attack = attack;
+    }
+
+    public final int getDefence() {
+        return defence;
+    }
+
+    public final void setDefence(int defence) {
+        this.defence = defence;
+    }
+
+    public final MonsterAttributeType getMonsterAttributeType() {
+        return monsterAttributeType;
+    }
+
+    public final void setMonsterAttributeType(MonsterAttributeType monsterAttributeType) {
+        this.monsterAttributeType = monsterAttributeType;
+    }
+
+    public final MonsterCardType getMonsterCardType() {
+        return monsterCardType;
+    }
+
+    public final MonsterType getMonsterType() {
+        return monsterType;
+    }
+
+    public final void setMonsterType(MonsterType monsterType) {
+        this.monsterType = monsterType;
+    }
+
+    public final int getCardsNeededToTribute() {
+        return getCardsNeededToTribute(getLevel());
     }
 
     @Override

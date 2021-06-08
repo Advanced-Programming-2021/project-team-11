@@ -4,11 +4,11 @@ import com.beust.jcommander.Parameter;
 
 class CommandLineArguments {
     @Parameter(names = {"--monster", "-m"})
-    private String monsters = "Monster.csv";
+    private final String monsters = "Monster.csv";
     @Parameter(names = {"--spell", "-s"})
-    private String spell = "Spell.csv";
+    private final String spell = "Spell.csv";
     @Parameter(names = {"--database", "-d"})
-    private String database = "database.db";
+    private final String database = "database.db";
 
     public String getMonstersConfigName() {
         return monsters;

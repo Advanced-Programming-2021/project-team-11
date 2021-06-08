@@ -19,16 +19,6 @@ public abstract class TrapCard extends Card {
         allTrapCards.add(this);
     }
 
-    public void init(String description, int price) {
-        setDescription(description);
-        setPrice(price);
-        init();
-    }
-
-    public TrapCardType getTrapCardType() {
-        return trapCardType;
-    }
-
     public static ArrayList<TrapCard> getAllTrapCards() {
         return allTrapCards;
     }
@@ -41,6 +31,16 @@ public abstract class TrapCard extends Card {
     public static TrapCard getTrapCardByName(String name) {
         Optional<TrapCard> card = getAllTrapCards().stream().filter(x -> x.getName().equals(name) && x.isInitialized()).findFirst();
         return card.orElse(null);
+    }
+
+    public void init(String description, int price) {
+        setDescription(description);
+        setPrice(price);
+        init();
+    }
+
+    public TrapCardType getTrapCardType() {
+        return trapCardType;
     }
 
     @Override

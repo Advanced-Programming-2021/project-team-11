@@ -4,8 +4,8 @@ import model.PlayableCard;
 import model.PlayerBoard;
 
 public class ExploderDragon extends InitializableEffectMonsters {
-    private static ExploderDragon instance;
     private final static String CARD_NAME = "Exploder Dragon";
+    private static ExploderDragon instance;
 
     private ExploderDragon() {
         super(CARD_NAME);

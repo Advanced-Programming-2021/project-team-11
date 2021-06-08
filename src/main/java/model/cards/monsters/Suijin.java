@@ -4,8 +4,8 @@ import model.PlayableCard;
 import model.PlayerBoard;
 
 public class Suijin extends InitializableEffectMonsters {
-    private static Suijin instance;
     private final static String CARD_NAME = "Suijin";
+    private static Suijin instance;
 
     private Suijin() {
         super(CARD_NAME);

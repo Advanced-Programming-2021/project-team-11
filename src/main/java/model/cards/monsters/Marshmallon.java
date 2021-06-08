@@ -4,9 +4,9 @@ import model.PlayableCard;
 import model.PlayerBoard;
 
 public class Marshmallon extends InitializableEffectMonsters {
-    private static Marshmallon instance;
     private final static String CARD_NAME = "Marshmallon";
     private final static int TO_REDUCE_HP = 1000;
+    private static Marshmallon instance;
 
     private Marshmallon() {
         super(CARD_NAME);

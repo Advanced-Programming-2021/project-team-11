@@ -57,8 +57,6 @@ public class ProfileChangeCommand implements Command {
             return false;
         if (nickname != null && !nickname.equals("") && password != null && !password.equals(""))
             return false;
-        if (password != null && !password.equals("") && (newPassword == null || newPassword.equals("")))
-            return false;
-        return true;
+        return password == null || password.equals("") || (newPassword != null && !newPassword.equals(""));
     }
 }

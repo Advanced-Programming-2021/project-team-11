@@ -4,8 +4,8 @@ import model.PlayableCard;
 import model.PlayerBoard;
 
 public class Texchanger extends InitializableEffectMonsters {
-    private static Texchanger instance;
     private final static String CARD_NAME = "Texchanger";
+    private static Texchanger instance;
 
     private Texchanger() {
         super(CARD_NAME);

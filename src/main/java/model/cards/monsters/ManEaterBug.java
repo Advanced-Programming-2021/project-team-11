@@ -4,8 +4,8 @@ import model.PlayableCard;
 import model.PlayerBoard;
 
 public class ManEaterBug extends InitializableEffectMonsters {
-    private static ManEaterBug instance;
     private static final String CARD_NAME = "Man-Eater Bug";
+    private static ManEaterBug instance;
 
     private ManEaterBug() {
         super(CARD_NAME);

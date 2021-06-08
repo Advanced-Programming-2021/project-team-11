@@ -4,9 +4,9 @@ import model.PlayableCard;
 import model.PlayerBoard;
 
 public class CommandKnight extends InitializableEffectMonsters {
-    private static CommandKnight instance;
     private final static String CARD_NAME = "Command Knight";
     private final static int ATTACK_DELTA = 400;
+    private static CommandKnight instance;
 
     private CommandKnight() {
         super(CARD_NAME);

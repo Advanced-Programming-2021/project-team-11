@@ -138,6 +138,10 @@ public class PlayableCard {
         return cardPlace;
     }
 
+    public void setCardPlace(CardPlaceType cardPlace) {
+        this.cardPlace = cardPlace;
+    }
+
     public boolean hasAttacked() {
         return hasAttacked;
     }
@@ -152,10 +156,6 @@ public class PlayableCard {
 
     public void addAttackDelta(int delta) {
         attackDelta += delta;
-    }
-
-    public void setCardPlace(CardPlaceType cardPlace) {
-        this.cardPlace = cardPlace;
     }
 
     public void setHasAttacked(boolean hasAttacked) {
@@ -210,12 +210,12 @@ public class PlayableCard {
         this.spellActivated = false;
     }
 
-    public void setEquippedCard(EquipSpellCard equipCard) {
-        this.equippedCard = equipCard;
-    }
-
     public EquipSpellCard getEquippedCard() {
         return this.equippedCard;
+    }
+
+    public void setEquippedCard(EquipSpellCard equipCard) {
+        this.equippedCard = equipCard;
     }
 
     private void checkSpellAbsorption(PlayerBoard board1, PlayerBoard board2) {

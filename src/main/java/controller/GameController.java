@@ -11,10 +11,10 @@ import java.util.ArrayList;
 
 public class GameController {
     private final User player1, player2;
+    private final GameRounds rounds;
     private int player1RoundsWon, player2RoundsWon;
     private int player1MaxHealth, player2MaxHealth;
     private GameRoundController round;
-    private final GameRounds rounds;
     /**
      * On each round we swap this
      */

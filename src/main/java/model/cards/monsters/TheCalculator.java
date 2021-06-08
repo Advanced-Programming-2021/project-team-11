@@ -4,9 +4,9 @@ import model.PlayableCard;
 import model.PlayerBoard;
 
 public class TheCalculator extends InitializableEffectMonsters {
-    private static TheCalculator instance;
     private final static String CARD_NAME = "The Calculator";
     private final static int DAMAGE_MULTIPLIER = 300;
+    private static TheCalculator instance;
 
     private TheCalculator() {
         super(CARD_NAME);

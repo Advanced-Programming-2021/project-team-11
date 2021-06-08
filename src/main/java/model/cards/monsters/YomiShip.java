@@ -4,8 +4,8 @@ import model.PlayableCard;
 import model.PlayerBoard;
 
 public class YomiShip extends InitializableEffectMonsters {
-    private static YomiShip instance;
     private static final String CARD_NAME = "Yomi Ship";
+    private static YomiShip instance;
 
     private YomiShip() {
         super(CARD_NAME);
