@@ -4,8 +4,8 @@ import model.PlayableCard;
 import model.PlayerBoard;
 
 public class TerratigerTheEmpoweredWarrior extends InitializableEffectMonsters {
-    private static TerratigerTheEmpoweredWarrior instance;
     private final static String CARD_NAME = "Terratiger, the Empowered Warrior";
+    private static TerratigerTheEmpoweredWarrior instance;
 
     private TerratigerTheEmpoweredWarrior() {
         super(CARD_NAME);

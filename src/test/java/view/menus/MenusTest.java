@@ -17,16 +17,16 @@ public class MenusTest {
         Setuper.setup();
     }
 
-    @BeforeEach
-    void setUp() {
-        User.getUsers().clear();
-        Setuper.reset();
-    }
-
     @AfterAll
     static void cleanUp() {
         User.getUsers().clear();
         Setuper.restore();
+    }
+
+    @BeforeEach
+    void setUp() {
+        User.getUsers().clear();
+        Setuper.reset();
     }
 
     @Test

@@ -30,35 +30,6 @@ public class UsersDatabaseTest {
         User.getUsers().clear();
     }
 
-    @Test
-    void databaseTest() {
-        try {
-            UsersDatabase.connectToDatabase("test.db");
-            UsersDatabase.saveUsers();
-        } catch (SQLException ex) {
-            Assertions.fail(ex);
-        }
-        User.getUsers().clear();
-        try {
-            UsersDatabase.loadUsers();
-            UsersDatabase.closeDatabase();
-        } catch (SQLException ex) {
-            Assertions.fail(ex);
-        }
-        // check the data
-        User user1 = User.getUserByUsername("1");
-        User user2 = User.getUserByUsername("2");
-        Assertions.assertNotNull(user1);
-        Assertions.assertNotNull(user2);
-        Assertions.assertEquals("deck2", user1.getActiveDeckName());
-        Assertions.assertNotNull(user1.getDeckByName("deck1"));
-        Assertions.assertTrue(user1.getActiveDeck().getSideDeck().stream().anyMatch(x -> x instanceof CallOfTheHaunted));
-        Assertions.assertNotNull(user2.getDeckByName("deck1"));
-        Assertions.assertNull(user2.getActiveDeck());
-        Assertions.assertEquals(1, user1.getAvailableCards().size());
-        Assertions.assertTrue(user1.getAvailableCards().get(0) instanceof ScannerCard);
-    }
-
     private static void createUsers() {
         User.getUsers().clear();
         User user1 = new User("1", "1", "1");
@@ -86,5 +57,34 @@ public class UsersDatabaseTest {
             deck.addCardToMainDeck(TimeSeal.getInstance());
             user2.addDeck("deck1", deck);
         }
+    }
+
+    @Test
+    void databaseTest() {
+        try {
+            UsersDatabase.connectToDatabase("test.db");
+            UsersDatabase.saveUsers();
+        } catch (SQLException ex) {
+            Assertions.fail(ex);
+        }
+        User.getUsers().clear();
+        try {
+            UsersDatabase.loadUsers();
+            UsersDatabase.closeDatabase();
+        } catch (SQLException ex) {
+            Assertions.fail(ex);
+        }
+        // check the data
+        User user1 = User.getUserByUsername("1");
+        User user2 = User.getUserByUsername("2");
+        Assertions.assertNotNull(user1);
+        Assertions.assertNotNull(user2);
+        Assertions.assertEquals("deck2", user1.getActiveDeckName());
+        Assertions.assertNotNull(user1.getDeckByName("deck1"));
+        Assertions.assertTrue(user1.getActiveDeck().getSideDeck().stream().anyMatch(x -> x instanceof CallOfTheHaunted));
+        Assertions.assertNotNull(user2.getDeckByName("deck1"));
+        Assertions.assertNull(user2.getActiveDeck());
+        Assertions.assertEquals(1, user1.getAvailableCards().size());
+        Assertions.assertTrue(user1.getAvailableCards().get(0) instanceof ScannerCard);
     }
 }

@@ -17,6 +17,35 @@ public class ExportedCard {
     // For traps
     private TrapCardType trapCardType;
 
+    public static String cardToJson(Card card) {
+        Gson gson = new Gson();
+        ExportedCard exportedCard = new ExportedCard();
+        exportedCard.cardType = card.getCardType();
+        exportedCard.description = card.getDescription();
+        exportedCard.name = card.getName();
+        exportedCard.price = card.getPrice();
+        // Check monster
+        if (card instanceof MonsterCard) {
+            MonsterCard monsterCard = (MonsterCard) card;
+            exportedCard.attack = monsterCard.getAttack();
+            exportedCard.defence = monsterCard.getDefence();
+            exportedCard.level = monsterCard.getLevel();
+            exportedCard.monsterCardType = monsterCard.getMonsterCardType();
+            exportedCard.monsterAttributeType = monsterCard.getMonsterAttributeType();
+            exportedCard.monsterType = monsterCard.getMonsterType();
+        } else if (card instanceof SpellCard) {
+            exportedCard.spellCardType = ((SpellCard) card).getSpellCardType();
+        } else if (card instanceof TrapCard) {
+            exportedCard.trapCardType = ((TrapCard) card).getTrapCardType();
+        }
+        return gson.toJson(exportedCard);
+    }
+
+    public static ExportedCard jsonToExportedCard(String json) {
+        Gson gson = new Gson();
+        return gson.fromJson(json, ExportedCard.class);
+    }
+
     public String getName() {
         return name;
     }
@@ -63,35 +92,5 @@ public class ExportedCard {
 
     public TrapCardType getTrapCardType() {
         return trapCardType;
-    }
-
-
-    public static String cardToJson(Card card) {
-        Gson gson = new Gson();
-        ExportedCard exportedCard = new ExportedCard();
-        exportedCard.cardType = card.getCardType();
-        exportedCard.description = card.getDescription();
-        exportedCard.name = card.getName();
-        exportedCard.price = card.getPrice();
-        // Check monster
-        if (card instanceof MonsterCard) {
-            MonsterCard monsterCard = (MonsterCard) card;
-            exportedCard.attack = monsterCard.getAttack();
-            exportedCard.defence = monsterCard.getDefence();
-            exportedCard.level = monsterCard.getLevel();
-            exportedCard.monsterCardType = monsterCard.getMonsterCardType();
-            exportedCard.monsterAttributeType = monsterCard.getMonsterAttributeType();
-            exportedCard.monsterType = monsterCard.getMonsterType();
-        } else if (card instanceof SpellCard) {
-            exportedCard.spellCardType = ((SpellCard) card).getSpellCardType();
-        } else if (card instanceof TrapCard) {
-            exportedCard.trapCardType = ((TrapCard) card).getTrapCardType();
-        }
-        return gson.toJson(exportedCard);
-    }
-
-    public static ExportedCard jsonToExportedCard(String json) {
-        Gson gson = new Gson();
-        return gson.fromJson(json, ExportedCard.class);
     }
 }

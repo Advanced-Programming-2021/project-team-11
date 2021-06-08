@@ -25,6 +25,16 @@ public class DeckMenu extends Menu {
         openMenu();
     }
 
+    public static void showDeckCards(ArrayList<Card> cards, boolean isSide) {
+        System.out.printf("%s deck:\n", isSide ? "Side" : "Main");
+        System.out.println("Monsters:");
+        cards.stream().filter(x -> x.getCardType() == CardType.MONSTER).sorted()
+                .forEach(x -> System.out.printf("%s: %s\n", x.getName(), x.getDescription()));
+        System.out.println("Spell and Traps:");
+        cards.stream().filter(x -> x.getCardType() != CardType.MONSTER).sorted()
+                .forEach(x -> System.out.printf("%s: %s\n", x.getName(), x.getDescription()));
+    }
+
     @Override
     void openMenu() {
         while (true) {
@@ -166,16 +176,6 @@ public class DeckMenu extends Menu {
     private void deckUpCheat() {
         String deckName = DeckMenuController.addAllCardsToNewDeck(loggedInUser);
         System.out.println("Added a deck with name of " + deckName + " :D");
-    }
-
-    public static void showDeckCards(ArrayList<Card> cards, boolean isSide) {
-        System.out.printf("%s deck:\n", isSide ? "Side" : "Main");
-        System.out.println("Monsters:");
-        cards.stream().filter(x -> x.getCardType() == CardType.MONSTER).sorted()
-                .forEach(x -> System.out.printf("%s: %s\n", x.getName(), x.getDescription()));
-        System.out.println("Spell and Traps:");
-        cards.stream().filter(x -> x.getCardType() != CardType.MONSTER).sorted()
-                .forEach(x -> System.out.printf("%s: %s\n", x.getName(), x.getDescription()));
     }
 
     private void showAllCards() {

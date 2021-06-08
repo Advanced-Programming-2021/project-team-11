@@ -4,8 +4,8 @@ import model.PlayableCard;
 import model.PlayerBoard;
 
 public class TheTricky extends InitializableEffectMonsters {
-    private static TheTricky instance;
     private final static String CARD_NAME = "The Tricky";
+    private static TheTricky instance;
 
     private TheTricky() {
         super(CARD_NAME);

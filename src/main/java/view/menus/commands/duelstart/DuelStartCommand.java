@@ -37,8 +37,6 @@ public class DuelStartCommand implements Command {
         // Check the round in view
         if (!ai && (secondPlayer == null || secondPlayer.equals("")))
             return false;
-        if (ai && (secondPlayer != null && !secondPlayer.equals("")))
-            return false;
-        return true;
+        return !ai || (secondPlayer == null || secondPlayer.equals(""));
     }
 }

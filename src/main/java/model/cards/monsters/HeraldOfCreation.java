@@ -6,8 +6,8 @@ import model.cards.CardType;
 import model.cards.MonsterCard;
 
 public class HeraldOfCreation extends InitializableEffectMonsters {
-    private static HeraldOfCreation instance;
     private final static String CARD_NAME = "Herald of Creation";
+    private static HeraldOfCreation instance;
 
     private HeraldOfCreation() {
         super(CARD_NAME);

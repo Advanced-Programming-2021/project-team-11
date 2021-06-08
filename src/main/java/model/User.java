@@ -26,6 +26,24 @@ public class User {
         users.add(this);
     }
 
+    public static User getUserByUsername(String username) {
+        for (User user : users)
+            if (user.getUsername().equals(username))
+                return user;
+        return null;
+    }
+
+    public static User getUserByNickname(String nickname) {
+        for (User user : users)
+            if (user.getNickname().equals(nickname))
+                return user;
+        return null;
+    }
+
+    public static ArrayList<User> getUsers() {
+        return users;
+    }
+
     public String getUsername() {
         return this.username;
     }
@@ -34,16 +52,16 @@ public class User {
         return password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getNickname() {
         return this.nickname;
     }
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public boolean checkPassword(String password) {
@@ -58,16 +76,16 @@ public class User {
         return this.money;
     }
 
+    public void setMoney(int money) {
+        this.money = money;
+    }
+
     public void decreaseMoney(int delta) {
         this.money -= delta;
     }
 
     public void increaseMoney(int delta) {
         this.money += delta;
-    }
-
-    public void setMoney(int money) {
-        this.money = money;
     }
 
     public void addDeck(String deckName) {
@@ -126,23 +144,5 @@ public class User {
             throw new UserHaveNoActiveDeckException(this);
         if (!deck.isValid())
             throw new UserDeckIsInvalidException(this);
-    }
-
-    public static User getUserByUsername(String username) {
-        for (User user : users)
-            if (user.getUsername().equals(username))
-                return user;
-        return null;
-    }
-
-    public static User getUserByNickname(String nickname) {
-        for (User user : users)
-            if (user.getNickname().equals(nickname))
-                return user;
-        return null;
-    }
-
-    public static ArrayList<User> getUsers() {
-        return users;
     }
 }
