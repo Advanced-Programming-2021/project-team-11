@@ -1,8 +1,8 @@
 package view.menus;
 
 import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
 import controller.GameUtils;
-import model.Deck;
 import model.User;
 import model.enums.GameRounds;
 import model.exceptions.*;
@@ -52,7 +52,7 @@ public class DuelStartMenu extends Menu {
         } catch (InvalidCommandException e) {
             return false;
         } catch (InvalidRoundNumbersException | UsernameNotExistsException | UserHaveNoActiveDeckException
-                | UserDeckIsInvalidException | PlayedYourselfException e) {
+                | UserDeckIsInvalidException | PlayedYourselfException | ParameterException e) {
             System.out.println(e.getMessage());
             return true;
         }

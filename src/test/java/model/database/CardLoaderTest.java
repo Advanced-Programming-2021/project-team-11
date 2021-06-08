@@ -1,14 +1,9 @@
 package model.database;
 
-import model.cards.*;
 import model.exceptions.BooAnException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class CardLoaderTest {
     private static final String monsterCardsLocation = "config/Monster.csv";

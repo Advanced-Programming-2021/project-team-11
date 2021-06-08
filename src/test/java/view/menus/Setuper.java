@@ -3,7 +3,6 @@ package view.menus;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.Scanner;
 
 public class Setuper {
     private static final ByteArrayOutputStream outContent = new ByteArrayOutputStream();

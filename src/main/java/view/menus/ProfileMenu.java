@@ -4,7 +4,10 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import controller.menucontrollers.ProfileMenuController;
 import model.User;
-import model.exceptions.*;
+import model.exceptions.CurrentPasswordInvalidException;
+import model.exceptions.InvalidCommandException;
+import model.exceptions.NicknameExistsException;
+import model.exceptions.SameNewPasswordException;
 import view.menus.commands.CommandUtils;
 import view.menus.commands.profile.ProfileChangeCommand;
 

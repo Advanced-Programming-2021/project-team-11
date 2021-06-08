@@ -1,13 +1,17 @@
 package controller.menucontrollers;
 
 import model.User;
-import model.cards.*;
+import model.cards.Card;
+import model.cards.MonsterAttributeType;
+import model.cards.MonsterType;
+import model.cards.SimpleMonster;
 import model.exceptions.CardNotExistsException;
 import model.exceptions.InsufficientBalanceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ShopMenuControllerTest {
     @BeforeEach

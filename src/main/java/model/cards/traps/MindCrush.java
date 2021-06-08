@@ -3,7 +3,6 @@ package model.cards.traps;
 import controller.GameUtils;
 import model.PlayableCard;
 import model.PlayerBoard;
-import model.cards.Card;
 import model.cards.TrapCard;
 import model.cards.TrapCardType;
 

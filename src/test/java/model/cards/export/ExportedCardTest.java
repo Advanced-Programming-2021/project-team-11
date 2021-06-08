@@ -1,7 +1,10 @@
 package model.cards.export;
 
 import com.google.gson.JsonParseException;
-import model.cards.*;
+import model.cards.MonsterAttributeType;
+import model.cards.MonsterCard;
+import model.cards.MonsterType;
+import model.cards.SimpleMonster;
 import model.cards.spells.ChangeOfHeart;
 import model.cards.traps.TimeSeal;
 import org.junit.jupiter.api.Assertions;
