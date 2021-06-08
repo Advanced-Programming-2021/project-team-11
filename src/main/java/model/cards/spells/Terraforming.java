@@ -33,7 +33,7 @@ public class Terraforming extends SpellCard {
     @Override
     public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, int activationCounter) {
         return myBoard.getHand().size() != 6 && myBoard.getDeck().stream()
-                .anyMatch(card -> card instanceof SpellCard && ((SpellCard)card).getSpellCardType() == SpellCardType.FIELD);
+                .anyMatch(card -> card instanceof SpellCard && ((SpellCard) card).getSpellCardType() == SpellCardType.FIELD);
     }
 
     @Override

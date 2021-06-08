@@ -1,6 +1,5 @@
 package view.menus;
 
-import com.sun.org.apache.xpath.internal.operations.Neg;
 import controller.GameRoundController;
 import controller.GameUtils;
 import model.PlayableCard;
@@ -387,5 +386,6 @@ public class CardSpecificMenus {
         if (index1 != index2 && index2 != -1)
             roundController.getRivalBoard().sendToGraveyard(cards.get(index1));
         roundController.getPlayerBoard().getHand().remove(GameUtils.random.nextInt(roundController.getPlayerBoard().getHand().size()));
+        roundController.getPlayerBoard().sendToGraveyard(thisCard);
     }
 }

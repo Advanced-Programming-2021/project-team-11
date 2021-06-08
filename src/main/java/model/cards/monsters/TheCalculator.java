@@ -17,6 +17,7 @@ public class TheCalculator extends InitializableEffectMonsters {
             instance = new TheCalculator();
         return instance;
     }
+
     public static int getAttackMultiplier() {
         return DAMAGE_MULTIPLIER;
     }

@@ -6,7 +6,6 @@ import model.cards.spells.MessengerOfPeace;
 import model.cards.spells.SupplySquad;
 import model.enums.CardPlaceType;
 import model.exceptions.BooAnException;
-import view.menus.Menu;
 
 import java.util.*;
 import java.util.stream.Collectors;

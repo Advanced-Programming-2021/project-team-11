@@ -16,6 +16,7 @@ public class ScannerCard extends InitializableEffectMonsters {
             instance = new ScannerCard();
         return instance;
     }
+
     /**
      * Mimics rival card to this card
      *

@@ -7,7 +7,8 @@ import model.exceptions.UsernameExistsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class LoginMenuControllerTest {
 
@@ -54,21 +55,21 @@ class LoginMenuControllerTest {
             fail(e);
         }
         try {
-            LoginMenuController.register("hirbod","hirbod","1");
+            LoginMenuController.register("hirbod", "hirbod", "1");
             fail("registering hirbod user successful");
         } catch (UsernameExistsException ignored) {
         } catch (NicknameExistsException e) {
             fail("nickname must be checked after username");
         }
         try {
-            LoginMenuController.register("hirbod","hirbod","1");
+            LoginMenuController.register("hirbod", "hirbod", "1");
             fail("registering hirbod user successful");
         } catch (UsernameExistsException ignored) {
         } catch (NicknameExistsException e) {
             fail("nickname must be checked after username");
         }
         try {
-            LoginMenuController.register("hirbodwtrwtw","2","1");
+            LoginMenuController.register("hirbodwtrwtw", "2", "1");
             fail("registering 1 user successful");
         } catch (UsernameExistsException e) {
             fail(e);
