@@ -1,15 +1,31 @@
 package view.menus;
 
 enum MenuNames {
-    LOGIN,
-    MAIN,
-    DUEL,
-    DECK,
-    SCOREBOARD,
-    PROFILE,
-    SHOP,
-    IMPORT_EXPORT,
-    INVALID;
+    ROOT("root"),
+    LOGIN("login"),
+    REGISTER("register"),
+    MAIN("main"),
+    DUEL("duel"),
+    DECK("deck"),
+    DECK_DETAILS("deck_details"),
+    SCOREBOARD("scoreboard"),
+    PROFILE("profile"),
+    SHOP("shop"),
+    IMPORT_EXPORT("import_export"),
+    INVALID("");
+
+    private final String fxmlName;
+
+    MenuNames(String fxmlName) {
+        this.fxmlName = "/view/" + fxmlName + "_menu.fxml";
+    }
+
+    /**
+     * @return Fxml resource path name of this menu
+     */
+    public String getFxmlPath() {
+        return fxmlName;
+    }
 
     /**
      * Parses {@link MenuNames} from menu
