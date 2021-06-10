@@ -1,43 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
+
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
-
-
-<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.menus.RootMenu">
-   <children>
-      <ImageView fitHeight="600.0" fitWidth="800.0">
-         <image>
-            <Image url="@../assets/root-background.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="300.0" fitWidth="400.0" layoutX="200.0" layoutY="300.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../assets/title.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="loginButton" fitHeight="60.0" fitWidth="200.0" layoutX="175.0" layoutY="480.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../assets/button.png" />
-         </image>
-      </ImageView>
-      <Label alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="175.0" layoutY="480.0" onMouseClicked="#clickedLoginButton" onMouseEntered="#enteredLoginButton" onMouseExited="#exitedLoginButton" prefHeight="60.0" prefWidth="200.0" text="Login" textAlignment="CENTER" textFill="#151b37" wrapText="true">
-         <font>
-            <Font name="Times Roman" size="45.0" />
-         </font>
-      </Label>
-      <ImageView fx:id="registerButton" fitHeight="60.0" fitWidth="200.0" layoutX="425.0" layoutY="480.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../assets/button.png" />
-         </image>
-      </ImageView>
-      <Label alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="425.0" layoutY="480.0" onMouseClicked="#clickedRegisterButton" onMouseEntered="#enteredRegisterButton" onMouseExited="#exitedRegisterButton" prefHeight="60.0" prefWidth="200.0" text="Sign up" textAlignment="CENTER" textFill="#151b37" wrapText="true">
-         <font>
-            <Font name="Times Roman" size="46.0" />
-         </font>
-      </Label>
-   </children>
+<?import view.components.HoverButton?>
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="view.menus.RootMenu">
+    <children>
+        <ImageView fitHeight="600.0" fitWidth="800.0">
+            <image>
+                <Image url="@../assets/root-background.png"/>
+            </image>
+        </ImageView>
+        <ImageView fitHeight="300.0" fitWidth="400.0" layoutX="200.0" layoutY="300.0" pickOnBounds="true"
+                   preserveRatio="true">
+            <image>
+                <Image url="@../assets/title.png"/>
+            </image>
+        </ImageView>
+        <HoverButton initialHeight="60.0" initialWidth="200.0" hoverHeight="70" hoverWidth="210"
+                     layoutX="175.0" layoutY="480.0" text="Login"
+                     onMouseClicked="#clickedLoginButton"/>
+        <HoverButton initialHeight="60.0" initialWidth="200.0" hoverHeight="70" hoverWidth="210"
+                     layoutX="425.0" layoutY="480.0" text="Sign up"
+                     onMouseClicked="#clickedRegisterButton"/>
+    </children>
 </AnchorPane>

@@ -1,23 +1,15 @@
 package view.menus;
 
 import javafx.application.Application;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import view.components.Assets;
 
 import java.util.Objects;
 
 public class RootMenu extends Application {
-    @FXML
-    ImageView loginButton;
-    @FXML
-    ImageView registerButton;
-
     // Default constructor; DO NOT REMOVE
     public RootMenu() {
     }
@@ -39,25 +31,10 @@ public class RootMenu extends Application {
     }
 
     public void clickedLoginButton(MouseEvent mouseEvent) {
-    }
-
-    public void enteredLoginButton(MouseEvent mouseEvent) {
-        loginButton.setImage(Assets.SELECTED_BUTTON_IMAGE);
-    }
-
-    public void exitedLoginButton(MouseEvent mouseEvent) {
-        loginButton.setImage(Assets.BUTTON_IMAGE);
+        SceneChanger.changeScene(MenuNames.LOGIN);
     }
 
     public void clickedRegisterButton(MouseEvent mouseEvent) {
 
-    }
-
-    public void enteredRegisterButton(MouseEvent mouseEvent) {
-        registerButton.setImage(Assets.SELECTED_BUTTON_IMAGE);
-    }
-
-    public void exitedRegisterButton(MouseEvent mouseEvent) {
-        registerButton.setImage(Assets.BUTTON_IMAGE);
     }
 }

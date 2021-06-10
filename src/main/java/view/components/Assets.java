@@ -1,8 +1,6 @@
 package view.components;
 
 import javafx.scene.image.Image;
-import javafx.scene.media.Media;
-import javafx.scene.paint.Color;
 import view.menus.RootMenu;
 
 import java.util.Objects;
