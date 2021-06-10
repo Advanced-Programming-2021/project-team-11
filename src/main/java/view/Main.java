@@ -1,26 +1,21 @@
 package view;
 
-import com.beust.jcommander.JCommander;
 import model.database.CardLoader;
 import model.database.UsersDatabase;
 import model.exceptions.BooAnException;
-import view.menus.LoginMenu;
+import view.menus.RootMenu;
 
 import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) {
         loader(parseCommandLineArgs(args)); // preload info we need in the program
-        new LoginMenu(); // load the actual game
-        saver(); // save users
+        new RootMenu(args); // load the actual game
+        //saver(); // save users
     }
 
     private static CommandLineArguments parseCommandLineArgs(String[] args) {
         CommandLineArguments arguments = new CommandLineArguments();
-        JCommander.newBuilder()
-                .addObject(arguments)
-                .build()
-                .parse(args);
         return arguments;
     }
 
