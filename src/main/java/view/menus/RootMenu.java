@@ -38,19 +38,26 @@ public class RootMenu extends Application {
         SceneChanger.setScene(scene);
     }
 
-    public void enterLoginButton(MouseEvent mouseEvent) {
+    public void clickedLoginButton(MouseEvent mouseEvent) {
+    }
+
+    public void enteredLoginButton(MouseEvent mouseEvent) {
         loginButton.setImage(Assets.SELECTED_BUTTON_IMAGE);
     }
 
-    public void exitLoginButton(MouseEvent mouseEvent) {
+    public void exitedLoginButton(MouseEvent mouseEvent) {
         loginButton.setImage(Assets.BUTTON_IMAGE);
     }
 
-    public void enterRegisterButton(MouseEvent mouseEvent) {
+    public void clickedRegisterButton(MouseEvent mouseEvent) {
+
+    }
+
+    public void enteredRegisterButton(MouseEvent mouseEvent) {
         registerButton.setImage(Assets.SELECTED_BUTTON_IMAGE);
     }
 
-    public void exitRegisterButton(MouseEvent mouseEvent) {
+    public void exitedRegisterButton(MouseEvent mouseEvent) {
         registerButton.setImage(Assets.BUTTON_IMAGE);
     }
 }

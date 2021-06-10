@@ -14,7 +14,7 @@
             <Image url="@../assets/root-background.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="225.0" fitWidth="300.0" layoutX="250.0" layoutY="350.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="300.0" fitWidth="400.0" layoutX="200.0" layoutY="300.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../assets/title.png" />
          </image>
@@ -24,7 +24,7 @@
             <Image url="@../assets/button.png" />
          </image>
       </ImageView>
-      <Label alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="175.0" layoutY="480.0" onMouseEntered="#enterLoginButton" onMouseExited="#exitLoginButton" prefHeight="60.0" prefWidth="200.0" text="Login" textAlignment="CENTER" textFill="#151b37" wrapText="true">
+      <Label alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="175.0" layoutY="480.0" onMouseClicked="#clickedLoginButton" onMouseEntered="#enteredLoginButton" onMouseExited="#exitedLoginButton" prefHeight="60.0" prefWidth="200.0" text="Login" textAlignment="CENTER" textFill="#151b37" wrapText="true">
          <font>
             <Font name="Times Roman" size="45.0" />
          </font>
@@ -34,7 +34,7 @@
             <Image url="@../assets/button.png" />
          </image>
       </ImageView>
-      <Label alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="425.0" layoutY="480.0" onMouseEntered="#enterRegisterButton" onMouseExited="#exitRegisterButton" prefHeight="60.0" prefWidth="200.0" text="Sign up" textAlignment="CENTER" textFill="#151b37" wrapText="true">
+      <Label alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="425.0" layoutY="480.0" onMouseClicked="#clickedRegisterButton" onMouseEntered="#enteredRegisterButton" onMouseExited="#exitedRegisterButton" prefHeight="60.0" prefWidth="200.0" text="Sign up" textAlignment="CENTER" textFill="#151b37" wrapText="true">
          <font>
             <Font name="Times Roman" size="46.0" />
          </font>
