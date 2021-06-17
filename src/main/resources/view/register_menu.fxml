@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.*?>
 <?import view.components.HoverButton?>
 <BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.menus.LoginMenu" fx:id="rootPane">
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.menus.RegisterMenu" fx:id="rootPane">
     <center>
         <VBox alignment="CENTER">
             <TextField promptText="Username" maxWidth="200" fx:id="username">
@@ -19,8 +18,18 @@
                     <Insets bottom="20"/>
                 </VBox.margin>
             </PasswordField>
+            <PasswordField promptText="Confirm Password" maxWidth="200" fx:id="passwordConfirm">
+                <VBox.margin>
+                    <Insets bottom="20"/>
+                </VBox.margin>
+            </PasswordField>
+            <TextField promptText="Nickname" maxWidth="200" fx:id="nickname">
+                <VBox.margin>
+                    <Insets bottom="20"/>
+                </VBox.margin>
+            </TextField>
             <HoverButton initialHeight="50.0" initialWidth="170.0" hoverHeight="60" hoverWidth="180"
-                         text="Login" onMouseClicked="#clickedLoginButton">
+                         text="Login" onMouseClicked="#clickedRegisterButton" fontSize="30">
                 <VBox.margin>
                     <Insets bottom="15"/>
                 </VBox.margin>
@@ -30,3 +39,4 @@
         </VBox>
     </center>
 </BorderPane>
+

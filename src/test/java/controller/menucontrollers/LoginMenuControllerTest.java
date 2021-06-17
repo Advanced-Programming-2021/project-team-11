@@ -3,6 +3,7 @@ package controller.menucontrollers;
 import model.User;
 import model.exceptions.InvalidCredentialException;
 import model.exceptions.NicknameExistsException;
+import model.exceptions.PasswordsDontMatchException;
 import model.exceptions.UsernameExistsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,8 +46,8 @@ class LoginMenuControllerTest {
     @Test
     void register() {
         try {
-            LoginMenuController.register("hirbod1", "hirbod1", "1");
-        } catch (UsernameExistsException | NicknameExistsException e) {
+            LoginMenuController.register("hirbod1", "hirbod1", "hirbod1", "1");
+        } catch (UsernameExistsException | NicknameExistsException | PasswordsDontMatchException e) {
             fail(e);
         }
         try {
@@ -55,25 +56,25 @@ class LoginMenuControllerTest {
             fail(e);
         }
         try {
-            LoginMenuController.register("hirbod", "hirbod", "1");
+            LoginMenuController.register("hirbod", "hirbod", "hirbod", "1");
             fail("registering hirbod user successful");
-        } catch (UsernameExistsException ignored) {
+        } catch (UsernameExistsException | PasswordsDontMatchException ignored) {
         } catch (NicknameExistsException e) {
             fail("nickname must be checked after username");
         }
         try {
-            LoginMenuController.register("hirbod", "hirbod", "1");
+            LoginMenuController.register("hirbod", "hirbod", "hirbod", "1");
             fail("registering hirbod user successful");
-        } catch (UsernameExistsException ignored) {
+        } catch (UsernameExistsException | PasswordsDontMatchException ignored) {
         } catch (NicknameExistsException e) {
             fail("nickname must be checked after username");
         }
         try {
-            LoginMenuController.register("hirbodwtrwtw", "2", "1");
+            LoginMenuController.register("hirbodwtrwtw", "2", "2", "1");
             fail("registering 1 user successful");
         } catch (UsernameExistsException e) {
             fail(e);
-        } catch (NicknameExistsException ignored) {
+        } catch (NicknameExistsException | PasswordsDontMatchException ignored) {
         }
     }
 }

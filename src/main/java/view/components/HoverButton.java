@@ -22,6 +22,7 @@ import java.util.ResourceBundle;
 public class HoverButton extends StackPane implements Initializable {
     private static final int HOVER_DURATION = 200;
     private double initialHeight, initialWidth, hoverHeight, hoverWidth;
+    private int fontSize = 44;
     @FXML
     private ImageView imageView;
     @FXML
@@ -96,7 +97,7 @@ public class HoverButton extends StackPane implements Initializable {
         setOnMouseEntered(x -> onMouseEntered());
         setOnMouseExited(x -> onMouseExited());
         imageView.setPreserveRatio(true);
-        text.setFont(new Font("Times Roman", 44));
+        text.setFont(new Font("Times Roman", fontSize));
         text.setFill(Color.valueOf("#151b37"));
     }
 
@@ -134,5 +135,15 @@ public class HoverButton extends StackPane implements Initializable {
         };
         animation.play();
         SceneChanger.getScene().setCursor(Cursor.DEFAULT);
+    }
+
+    public int getFontSize() {
+        return fontSize;
+    }
+
+    public void setFontSize(int fontSize) {
+        if (fontSize == 0)
+            fontSize = 44;
+        this.fontSize = fontSize;
     }
 }

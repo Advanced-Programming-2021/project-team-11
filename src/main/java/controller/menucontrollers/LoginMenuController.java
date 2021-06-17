@@ -3,6 +3,7 @@ package controller.menucontrollers;
 import model.User;
 import model.exceptions.InvalidCredentialException;
 import model.exceptions.NicknameExistsException;
+import model.exceptions.PasswordsDontMatchException;
 import model.exceptions.UsernameExistsException;
 
 public class LoginMenuController {
@@ -13,7 +14,9 @@ public class LoginMenuController {
         return user;
     }
 
-    public static void register(String username, String password, String nickname) throws UsernameExistsException, NicknameExistsException {
+    public static void register(String username, String password, String passwordConfirm, String nickname) throws UsernameExistsException, NicknameExistsException, PasswordsDontMatchException {
+        if (!password.equals(passwordConfirm))
+            throw new PasswordsDontMatchException();
         if (User.getUserByUsername(username) != null)
             throw new UsernameExistsException(username);
         if (User.getUserByNickname(nickname) != null)
