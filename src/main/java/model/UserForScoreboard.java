@@ -3,18 +3,27 @@ package model;
 public class UserForScoreboard implements Comparable<UserForScoreboard> {
     private final String nickname;
     private final int score;
+    private int rank;
 
     public UserForScoreboard(User user) {
         this.score = user.getScore();
         this.nickname = user.getNickname();
     }
 
-    public int getScore() {
-        return score;
+    public String getNickname() {
+        return nickname;
     }
 
-    public String formatWithRank(int rank) {
-        return "" + rank + this;
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
+
+    public int getScore() {
+        return score;
     }
 
     @Override

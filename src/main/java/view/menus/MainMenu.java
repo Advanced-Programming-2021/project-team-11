@@ -18,6 +18,10 @@ public class MainMenu implements Initializable {
         Assets.setMenuBackgroundImage(rootPane);
     }
 
+    public void clickedScoreboardButton(MouseEvent mouseEvent) {
+        SceneChanger.changeScene(MenuNames.SCOREBOARD);
+    }
+
     public void clickedLogoutButton(MouseEvent mouseEvent) {
         MainMenu.loggedInUser = null;
         SceneChanger.changeScene(MenuNames.LOGIN);

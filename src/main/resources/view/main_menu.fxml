@@ -35,7 +35,7 @@
                 </VBox.margin>
             </HoverButton>
             <HoverButton initialHeight="70.0" initialWidth="230.0" hoverHeight="80" hoverWidth="240"
-                         text="Scoreboard" fontSize="30">
+                         text="Scoreboard" fontSize="30" onMouseClicked="#clickedScoreboardButton">
                 <VBox.margin>
                     <Insets bottom="15"/>
                 </VBox.margin>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<?import view.components.HoverButton?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:id="tableContainer"
+      fx:controller="view.menus.ScoreboardMenu"
+      prefHeight="600.0" prefWidth="800.0">
+    <HBox alignment="CENTER" prefHeight="-Infinity">
+        <HoverButton initialHeight="100" initialWidth="130" hoverHeight="120" hoverWidth="150"
+                     onMouseClicked="#clickedBackButton" text="Back" fontSize="20" />
+        <VBox.margin>
+            <Insets top="10" bottom="10" />
+        </VBox.margin>
+    </HBox>
+</VBox>

@@ -1,42 +1,53 @@
 package view.menus;
 
 import controller.menucontrollers.ScoreboardMenuController;
-import model.exceptions.InvalidCommandException;
+import javafx.collections.ObservableList;
+import javafx.fxml.Initializable;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import model.UserForScoreboard;
 
-public class ScoreboardMenu extends Menu {
-    ScoreboardMenu() {
-        openMenu();
-    }
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class ScoreboardMenu implements Initializable {
+    public VBox tableContainer;
 
     @Override
-    void openMenu() {
-        while (true) {
-            String command = MenuUtils.readLine();
-            try {
-                if (processMenuCommands(command))
-                    return;
-                continue;
-            } catch (InvalidCommandException ignored) {
+    public void initialize(URL location, ResourceBundle resources) {
+        ObservableList<UserForScoreboard> scoreboard = ScoreboardMenuController.getScoreboardRows();
+        TableView<UserForScoreboard> table = new TableView<>();
+        table.setRowFactory(tv -> new TableRow<UserForScoreboard>() {
+            @Override
+            public void updateItem(UserForScoreboard item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item != null && item.getNickname().equals(MainMenu.loggedInUser.getNickname()))
+                    setStyle(getStyle() + "; -fx-background-color: #81C784;");
             }
-            if (command.equals("scoreboard show")) {
-                showScoreboard();
-                continue;
-            }
-            System.out.println(MenuUtils.INVALID_COMMAND);
-        }
+        });
+        TableColumn<UserForScoreboard, Integer> rankColumn = new TableColumn<>("Rank");
+        rankColumn.setCellValueFactory(new PropertyValueFactory<>("rank"));
+        TableColumn<UserForScoreboard, String> usernameColumn = new TableColumn<>("Nickname");
+        usernameColumn.setCellValueFactory(new PropertyValueFactory<>("nickname"));
+        usernameColumn.setPrefWidth(200);
+        TableColumn<UserForScoreboard, Integer> highscoreColumn = new TableColumn<>("Score");
+        highscoreColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
+        table.setItems(scoreboard);
+        table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        table.getColumns().add(rankColumn);
+        table.getColumns().add(usernameColumn);
+        table.getColumns().add(highscoreColumn);
+        table.setPrefSize(600, 600);
+        tableContainer.getChildren().add(0, table);
     }
 
-    @Override
-    void enterMenu(MenuNames menu) {
-        System.out.println(MenuUtils.MENU_NAV_FAILED);
-    }
-
-    @Override
-    void printMenu() {
-        System.out.println("Scoreboard Menu");
-    }
-
-    private void showScoreboard() {
-        ScoreboardMenuController.getScoreboardLines().forEach(System.out::println);
+    public void clickedBackButton(MouseEvent mouseEvent) {
+        SceneChanger.changeScene(MenuNames.MAIN);
     }
 }
