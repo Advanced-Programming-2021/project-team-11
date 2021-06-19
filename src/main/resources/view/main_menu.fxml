@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<?import view.components.HoverButton?>
+<?import javafx.geometry.Insets?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="view.menus.MainMenu"
+            prefHeight="600.0" prefWidth="800.0" fx:id="rootPane">
+    <center>
+        <VBox alignment="CENTER">
+            <HoverButton initialHeight="70.0" initialWidth="230.0" hoverHeight="80" hoverWidth="240"
+                         text="Duel!" fontSize="30">
+                <VBox.margin>
+                    <Insets bottom="15"/>
+                </VBox.margin>
+            </HoverButton>
+            <HoverButton initialHeight="70.0" initialWidth="230.0" hoverHeight="80" hoverWidth="240"
+                         text="Your Decks" fontSize="30">
+                <VBox.margin>
+                    <Insets bottom="15"/>
+                </VBox.margin>
+            </HoverButton>
+            <HoverButton initialHeight="70.0" initialWidth="230.0" hoverHeight="80" hoverWidth="240"
+                         text="Shop" fontSize="30">
+                <VBox.margin>
+                    <Insets bottom="15"/>
+                </VBox.margin>
+            </HoverButton>
+            <HoverButton initialHeight="70.0" initialWidth="230.0" hoverHeight="80" hoverWidth="240"
+                         text="Profile" fontSize="30">
+                <VBox.margin>
+                    <Insets bottom="15"/>
+                </VBox.margin>
+            </HoverButton>
+            <HoverButton initialHeight="70.0" initialWidth="230.0" hoverHeight="80" hoverWidth="240"
+                         text="Scoreboard" fontSize="30">
+                <VBox.margin>
+                    <Insets bottom="15"/>
+                </VBox.margin>
+            </HoverButton>
+            <HoverButton initialHeight="70.0" initialWidth="230.0" hoverHeight="80" hoverWidth="240"
+                         text="Import/Export" fontSize="30">
+                <VBox.margin>
+                    <Insets bottom="15"/>
+                </VBox.margin>
+            </HoverButton>
+            <HoverButton initialHeight="70.0" initialWidth="230.0" hoverHeight="80" hoverWidth="240"
+                         text="Logout" fontSize="30" onMouseClicked="#clickedLogoutButton"/>
+        </VBox>
+    </center>
+</BorderPane>

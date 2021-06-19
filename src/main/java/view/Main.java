@@ -11,12 +11,11 @@ public class Main {
     public static void main(String[] args) {
         loader(parseCommandLineArgs(args)); // preload info we need in the program
         new RootMenu(args); // load the actual game
-        //saver(); // save users
+        saver(); // save users
     }
 
     private static CommandLineArguments parseCommandLineArgs(String[] args) {
-        CommandLineArguments arguments = new CommandLineArguments();
-        return arguments;
+        return new CommandLineArguments();
     }
 
     private static void loader(CommandLineArguments args) {

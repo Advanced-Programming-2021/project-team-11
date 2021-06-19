@@ -1,65 +1,25 @@
 package view.menus;
 
+import javafx.fxml.Initializable;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import model.User;
-import model.exceptions.InvalidCommandException;
+import view.components.Assets;
 
-public class MainMenu extends Menu {
-    private final User loggedInUser;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-    MainMenu(User loggedInUser) {
-        this.loggedInUser = loggedInUser;
-        openMenu();
-        System.out.println("user logged out successfully!");
-    }
+public class MainMenu implements Initializable {
+    public static User loggedInUser = null;
+    public BorderPane rootPane;
 
     @Override
-    void openMenu() {
-        while (true) {
-            String command = MenuUtils.readLine();
-            try {
-                if (processMenuCommands(command))
-                    return;
-                continue;
-            } catch (InvalidCommandException ignored) {
-            }
-            if (command.equals("logout"))
-                return;
-            System.out.println(MenuUtils.INVALID_COMMAND);
-        }
+    public void initialize(URL location, ResourceBundle resources) {
+        Assets.setMenuBackgroundImage(rootPane);
     }
 
-    @Override
-    void enterMenu(MenuNames menu) {
-        switch (menu) {
-            case LOGIN:
-                System.out.println("please use logout command");
-                break;
-            case DUEL:
-                new DuelStartMenu(loggedInUser);
-                break;
-            case SCOREBOARD:
-                new ScoreboardMenu();
-                break;
-            case PROFILE:
-                new ProfileMenu(loggedInUser);
-                break;
-            case DECK:
-                new DeckMenu(loggedInUser);
-                break;
-            case SHOP:
-                new ShopMenu(loggedInUser);
-                break;
-            case IMPORT_EXPORT:
-                new ImportExportMenu();
-                break;
-            default:
-                System.out.println(MenuUtils.MENU_NAV_FAILED);
-                break;
-        }
-    }
-
-    @Override
-    void printMenu() {
-        System.out.println("Main Menu");
+    public void clickedLogoutButton(MouseEvent mouseEvent) {
+        MainMenu.loggedInUser = null;
+        SceneChanger.changeScene(MenuNames.LOGIN);
     }
 }

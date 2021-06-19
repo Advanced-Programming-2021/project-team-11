@@ -145,5 +145,6 @@ public class HoverButton extends StackPane implements Initializable {
         if (fontSize == 0)
             fontSize = 44;
         this.fontSize = fontSize;
+        this.text.setFont(new Font("Times Roman", fontSize));
     }
 }

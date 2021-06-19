@@ -29,8 +29,8 @@ public class LoginMenu implements Initializable {
 
     public void clickedLoginButton(MouseEvent mouseEvent) {
         try {
-            LoginMenuController.login(username.getText(), password.getText());
-            // TODO: Login
+            MainMenu.loggedInUser = LoginMenuController.login(username.getText(), password.getText());
+            SceneChanger.changeScene(MenuNames.MAIN);
         } catch (InvalidCredentialException e) {
             AlertsUtil.showError(e);
         }
