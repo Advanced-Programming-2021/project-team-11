@@ -1,0 +1,217 @@
+/**
+* @Author Panduka Nandara
+* https://gist.github.com/PandukaNandara/b0963bf3acb0a1b53aa4a4d52b62aa22
+*/
+
+/*******************************************************************************
+ *                                                                             *
+ * ScrollBar		                                 						   *
+ *                                                                             *
+ ******************************************************************************/
+* {
+    -fx-def-color: #2196F3;
+}
+
+.scroll-bar {
+    -fx-background-color: white;
+}
+
+.scroll-bar:horizontal .track,
+.scroll-bar:vertical .track {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0em;
+}
+
+.scroll-bar:vertical .track-background,
+.scroll-bar:horizontal .track-background {
+    -fx-background-color: white;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0em;
+}
+
+.scroll-bar:horizontal .thumb {
+    -fx-background-color: rgb(205, 205, 205);
+    -fx-background-insets: 2 0 2 0;
+    -fx-background-radius: 0em;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: rgb(205, 205, 205);
+    -fx-background-insets: 0 2 0 2;
+    -fx-background-radius: 0em;
+}
+
+.scroll-bar:horizontal .thumb:hover,
+.scroll-bar:vertical .thumb:hover {
+    -fx-background-color: rgb(215, 215, 215);
+}
+
+.scroll-bar:horizontal .thumb:pressed,
+.scroll-bar:vertical .thumb:pressed {
+    -fx-background-color: rgb(96, 96, 96);
+}
+
+.scroll-bar:vertical .increment-button, .scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0em;
+    -fx-padding: 5 5 5 5;
+}
+
+.scroll-bar:horizontal .increment-button, .scroll-bar:horizontal .decrement-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0em;
+    -fx-padding: 5 5 5 5;
+}
+
+.scroll-bar:horizontal .increment-arrow {
+    -fx-shape: "M4,17v-2.889l4.124-3.86l4.125,3.86V17l-4.125-3.375L4,17z";
+    -fx-padding: 0.25em;
+    -fx-rotate: 90;
+}
+
+.scroll-bar:vertical .increment-arrow {
+    -fx-shape: "M4,17v-2.889l4.124-3.86l4.125,3.86V17l-4.125-3.375L4,17z";
+    -fx-padding: 0.25em;
+    -fx-rotate: 180;
+}
+
+.scroll-bar:horizontal .decrement-arrow {
+    -fx-shape: "M4,17v-2.889l4.124-3.86l4.125,3.86V17l-4.125-3.375L4,17z";
+    -fx-padding: 0.25em;
+    -fx-rotate: -90;
+}
+
+.scroll-bar:vertical .decrement-arrow {
+    -fx-shape: "M4,17v-2.889l4.124-3.86l4.125,3.86V17l-4.125-3.375L4,17z";
+    -fx-padding: 0.25em;
+}
+
+.scroll-bar:vertical:focused,
+.scroll-bar:horizontal:focused {
+    -fx-background-color: -fx-box-border, -fx-box-border, transparent;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * TableView                                                                   *
+ *                                                                             *
+ ******************************************************************************/
+.table-cell {
+    -fx-padding: 0.5em;
+    -fx-border-color: transparent -fx-box-border transparent transparent;
+    -fx-font: 13px "Arial";
+    -fx-text-fill: #212121;
+}
+
+.table-cell :focused {
+    -fx-border-color: transparent -fx-box-border transparent transparent;
+    -fx-font: 13px "Arial";
+    -fx-text-fill: green;
+}
+
+
+.table-view {
+    -fx-table-header-border-color: #959595;
+    -fx-table-cell-border-color: -fx-box-border;
+}
+
+.table-view:focused {
+    -fx-background-color: -fx-box-border, -fx-box-border, white;
+}
+
+.table-row-cell {
+    -fx-background-color: transparent;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #F9F9F9;
+    -fx-background-insets: 0, 0 0 1 0;
+}
+
+.table-row-cell:even {
+    -fx-background-color: white;
+    -fx-background-insets: 0, 0 0 1 0;
+}
+
+.table-view:focused .table-row-cell:focused, .table-view:focused .table-row-cell:focused:odd {
+    -fx-background-color: -fx-box-border, #F9F9F9;
+    -fx-background-insets: 0, 1, 2;
+}
+
+.table-view:focused .table-row-cell:focused, .table-view:focused .table-row-cell:focused:even {
+    -fx-background-color: -fx-box-border, white;
+    -fx-background-insets: 0, 1, 2;
+}
+
+.table-view:focused .table-row-cell:filled:focused:selected {
+    -fx-background-color: -fx-box-border, rgb(205, 205, 205);
+}
+
+.table-view:focused .table-row-cell:filled:selected, .table-view:row-selection .table-row-cell:filled:hover:selected {
+    -fx-background-color: rgb(205, 205, 205);
+    -fx-background-insets: 0, 1 1 1 1 0;
+}
+
+.table-view:focused .table-row-cell:filled:focused:selected:hover {
+    -fx-background-color: -fx-box-border, rgb(205, 205, 205);
+    -fx-background-insets: 0, 1 1 1 1 0;
+}
+
+.table-row-cell:filled:selected:focused, .table-row-cell:filled:selected {
+    -fx-background-color: rgb(205, 205, 205);
+}
+
+.table-view:row-selection .table-row-cell:filled:hover {
+    -fx-background-color: rgb(231, 231, 231);
+}
+
+.table-view:row-selection .table-row-cell:filled:focused:hover {
+    -fx-background-color: rgb(205, 205, 205);
+}
+
+.table-view:focused .table-row-cell:filled:focused:hover {
+    -fx-background-color: -fx-box-border, rgb(231, 231, 231);
+}
+
+.table-view .column-header-background {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: black;
+    /*-fx-background-color: -fx-box-border, #F7F7F7;*/
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: #F7F7F7;
+    -fx-size: 35px;
+    -fx-border-color: -fx-box-border;
+    -fx-border-insets: -1 0 0 -1;
+    -fx-padding: 0 5 0 0;
+}
+
+.table-view .show-hide-columns-button {
+    -fx-background-color: white;
+    -fx-border-color: -fx-box-border;
+    -fx-border-insets: -1 -1 0 0;
+}
+
+.table-view .column-drag-header {
+    -fx-background-color: -fx-def-color;
+    -fx-opacity: 0.6;
+}
+
+.table-view .column-resize-line {
+    -fx-background-color: -fx-def-color;
+}
+
+.table-view .column-overlay {
+    -fx-background-color: darkgray;
+    -fx-opacity: 0.2;
+}
+
+.table-view .arrow {
+    -fx-padding: 0.2em;
+    -fx-shape: "M4,17v-2.889l4.124-3.86l4.125,3.86V17l-4.125-3.375L4,17z";
+}

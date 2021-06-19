@@ -29,7 +29,7 @@
                 </VBox.margin>
             </HoverButton>
             <HoverButton initialHeight="70.0" initialWidth="230.0" hoverHeight="80" hoverWidth="240"
-                         text="Profile" fontSize="30">
+                         text="Profile" fontSize="30" onMouseClicked="#clickedProfileButton">
                 <VBox.margin>
                     <Insets bottom="15"/>
                 </VBox.margin>

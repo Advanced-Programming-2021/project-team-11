@@ -25,6 +25,7 @@ public class RootMenu extends Application {
         Pane root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(MenuNames.ROOT.getFxmlPath())));
         Scene scene = new Scene(root, 800, 600);
         scene.getStylesheets().add("/style/global.css");
+        scene.getStylesheets().add("/style/tables.css");
         primaryStage.setScene(scene);
         primaryStage.show();
         SceneChanger.setScene(scene);

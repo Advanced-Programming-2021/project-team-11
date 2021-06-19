@@ -1,72 +1,17 @@
 package view.menus;
 
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.ParameterException;
-import controller.menucontrollers.ProfileMenuController;
-import model.User;
-import model.exceptions.CurrentPasswordInvalidException;
-import model.exceptions.InvalidCommandException;
-import model.exceptions.NicknameExistsException;
-import model.exceptions.SameNewPasswordException;
-import view.menus.commands.CommandUtils;
-import view.menus.commands.profile.ProfileChangeCommand;
+import javafx.fxml.Initializable;
+import javafx.scene.layout.BorderPane;
+import view.components.Assets;
 
-public class ProfileMenu extends Menu {
-    private final User loggedInUser;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-    ProfileMenu(User loggedInUser) {
-        this.loggedInUser = loggedInUser;
-        openMenu();
-    }
+public class ProfileMenu implements Initializable {
+    public BorderPane rootPane;
 
     @Override
-    void openMenu() {
-        while (true) {
-            String command = MenuUtils.readLine();
-            try {
-                if (processMenuCommands(command))
-                    return;
-                continue;
-            } catch (InvalidCommandException ignored) {
-            }
-            if (processCommand(command))
-                continue;
-            System.out.println(MenuUtils.INVALID_COMMAND);
-        }
-    }
-
-    private boolean processCommand(String command) {
-        try {
-            ProfileChangeCommand profileChangeCommand = new ProfileChangeCommand();
-            JCommander.newBuilder()
-                    .addObject(profileChangeCommand)
-                    .build()
-                    .parse(CommandUtils.translateCommandline(profileChangeCommand.removePrefix(command)));
-            if (!profileChangeCommand.isValid())
-                throw new InvalidCommandException();
-            if (profileChangeCommand.isNicknameChange()) {
-                ProfileMenuController.changeNickname(loggedInUser, profileChangeCommand.getNickname());
-                System.out.println("nickname changed successfully!");
-            } else if (profileChangeCommand.isPasswordChange()) {
-                ProfileMenuController.changePassword(loggedInUser, profileChangeCommand.getPassword(), profileChangeCommand.getNewPassword());
-                System.out.println("password changed successfully!");
-            }
-            return true;
-        } catch (InvalidCommandException | ParameterException ignored) {
-            return false;
-        } catch (NicknameExistsException | CurrentPasswordInvalidException | SameNewPasswordException ex) {
-            System.out.println(ex.getMessage());
-            return true;
-        }
-    }
-
-    @Override
-    void enterMenu(MenuNames menu) {
-        System.out.println(MenuUtils.MENU_NAV_FAILED);
-    }
-
-    @Override
-    void printMenu() {
-        System.out.println("Profile Menu");
+    public void initialize(URL location, ResourceBundle resources) {
+        Assets.setMenuBackgroundImage(rootPane);
     }
 }

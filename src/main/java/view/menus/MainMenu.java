@@ -22,6 +22,10 @@ public class MainMenu implements Initializable {
         SceneChanger.changeScene(MenuNames.SCOREBOARD);
     }
 
+    public void clickedProfileButton(MouseEvent mouseEvent) {
+        SceneChanger.changeScene(MenuNames.PROFILE);
+    }
+
     public void clickedLogoutButton(MouseEvent mouseEvent) {
         MainMenu.loggedInUser = null;
         SceneChanger.changeScene(MenuNames.LOGIN);
