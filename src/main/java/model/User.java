@@ -1,9 +1,14 @@
 package model;
 
+import com.talanlabs.avatargenerator.GitHubAvatar;
+import javafx.scene.image.Image;
 import model.cards.Card;
 import model.exceptions.UserDeckIsInvalidException;
 import model.exceptions.UserHaveNoActiveDeckException;
+import view.menus.MainMenu;
 
+import java.awt.*;
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -17,6 +22,7 @@ public class User {
      */
     private String activeDeck = null;
     private String password, nickname;
+    private byte[] profilePic = null;
     private int score = 0, money = 100000;
 
     public User(String username, String password, String nickname) {
@@ -124,6 +130,23 @@ public class User {
 
     public ArrayList<Card> getAvailableCards() {
         return availableCards;
+    }
+
+    public byte[] getProfilePicBytes() {
+        return this.profilePic;
+    }
+
+    public ByteArrayInputStream getProfilePicByteStream() {
+        if (getProfilePicBytes() == null) {
+            long hash = MainMenu.loggedInUser.getNickname().hashCode() + 100000; // some problems with library. It doesn't accept numbers less than 100000
+            return new ByteArrayInputStream(GitHubAvatar.newAvatarBuilder().color(Color.PINK).build().createAsPngBytes(hash));
+        } else {
+            return new ByteArrayInputStream(getProfilePicBytes());
+        }
+    }
+
+    public void setProfilePicBytes(byte[] bytes) {
+        this.profilePic = bytes;
     }
 
     public void removeCardFromPlayer(Card card) {

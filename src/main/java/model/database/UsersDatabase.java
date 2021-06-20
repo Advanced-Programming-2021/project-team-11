@@ -7,6 +7,7 @@ import model.cards.Card;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Map;
 
 public class UsersDatabase {
@@ -28,7 +29,8 @@ public class UsersDatabase {
                 "score INT NOT NULL DEFAULT 0," +
                 "money INT NOT NULL DEFAULT 100000," +
                 "active_deck VARCHAR(255) DEFAULT NULL," +
-                "cards JSON NOT NULL DEFAULT (JSON_ARRAY())" +
+                "cards JSON NOT NULL DEFAULT (JSON_ARRAY())," +
+                "profile_pic TEXT DEFAULT NULL" +
                 ")");
         statement.executeUpdate("CREATE TABLE IF NOT EXISTS decks (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -44,7 +46,7 @@ public class UsersDatabase {
     public static void loadUsers() throws SQLException {
         Statement statement = connection.createStatement();
         // Load users
-        ResultSet rs = statement.executeQuery("select username, password, nickname, score, money, active_deck, cards from users");
+        ResultSet rs = statement.executeQuery("select username, password, nickname, score, money, active_deck, cards, profile_pic from users");
         while (rs.next()) {
             String username = rs.getString("username");
             String password = rs.getString("password");
@@ -53,17 +55,19 @@ public class UsersDatabase {
             int money = rs.getInt("money");
             String activeDeck = rs.getString("active_deck");
             String cardsArray = rs.getString("cards");
-            registerUser(username, password, nickname, score, money, activeDeck, cardsArray);
+            String profilePicBase64 = rs.getString("profile_pic");
+            registerUser(username, password, nickname, score, money, activeDeck, cardsArray, profilePicBase64);
         }
         rs.close();
         statement.close();
     }
 
-    private static void registerUser(String username, String password, String nickname, int score, int money, String activeDeck, String cardsArray) throws SQLException {
+    private static void registerUser(String username, String password, String nickname, int score, int money, String activeDeck, String cardsArray, String profilePicBase64) throws SQLException {
         User user = new User(username, password, nickname);
         user.increaseScore(score);
         user.setMoney(money);
         user.setActiveDeck(activeDeck);
+        user.setProfilePicBytes(profilePicBase64 == null ? null : Base64.getDecoder().decode(profilePicBase64));
         String[] cards = new Gson().fromJson(cardsArray, String[].class);
         for (String cardName : cards) {
             Card card = Card.getCardByName(cardName);
@@ -113,7 +117,7 @@ public class UsersDatabase {
     }
 
     private static void saveUser(User user) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO users (username, password, nickname, score, money, active_deck, cards) VALUES (?,?,?,?,?,?,?)");
+        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO users (username, password, nickname, score, money, active_deck, cards, profile_pic) VALUES (?,?,?,?,?,?,?,?)");
         preparedStatement.setString(1, user.getUsername());
         preparedStatement.setString(2, user.getPassword());
         preparedStatement.setString(3, user.getNickname());
@@ -121,6 +125,7 @@ public class UsersDatabase {
         preparedStatement.setInt(5, user.getMoney());
         preparedStatement.setString(6, user.getActiveDeckName());
         preparedStatement.setString(7, cardsToJsonArrayString(user.getAvailableCards()));
+        preparedStatement.setString(8, user.getProfilePicBytes() == null ? null : Base64.getEncoder().encodeToString(user.getProfilePicBytes()));
         preparedStatement.executeUpdate();
         preparedStatement.close();
         for (Map.Entry<String, Deck> deck : user.getDecks().entrySet())

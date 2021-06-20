@@ -1,0 +1,11 @@
+.jfx-button-raised {
+    -jfx-button-type: RAISED;
+    -fx-background-color: blue;
+    -fx-text-fill: white;
+}
+
+.jfx-button-flat {
+    -jfx-button-type: FLAT;
+    -fx-background-color: white;
+    -fx-text-fill: black;
+}

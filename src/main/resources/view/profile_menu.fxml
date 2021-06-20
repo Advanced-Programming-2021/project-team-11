@@ -2,9 +2,72 @@
 
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.text.Text?>
+<?import javafx.geometry.Insets?>
+<?import view.components.JfxCursorButton?>
+<?import com.jfoenix.controls.JFXDialog?>
+<?import com.jfoenix.controls.JFXDialogLayout?>
+<?import javafx.scene.control.Label?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXPasswordField?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="view.menus.ProfileMenu"
             prefHeight="400.0" prefWidth="600.0" fx:id="rootPane">
-
+    <center>
+        <StackPane fx:id="dialogsStack">
+            <JFXDialog fx:id="passwordDialog">
+                <JFXDialogLayout>
+                    <heading>
+                        <Label>Change Password</Label>
+                    </heading>
+                    <body>
+                        <VBox spacing="20">
+                            <JFXPasswordField fx:id="oldPasswordText" labelFloat="true" promptText="Old Password"/>
+                            <JFXPasswordField fx:id="newPasswordText" labelFloat="true" promptText="New Password"/>
+                            <JFXPasswordField fx:id="newPasswordTextConfirm" labelFloat="true" promptText="Confirm New Password"/>
+                        </VBox>
+                    </body>
+                    <actions>
+                        <JfxCursorButton onMouseClicked="#clickedPasswordDialogClose">Back</JfxCursorButton>
+                        <JfxCursorButton onMouseClicked="#clickedPasswordDialogChange">Change</JfxCursorButton>
+                    </actions>
+                </JFXDialogLayout>
+            </JFXDialog>
+            <JFXDialog fx:id="nicknameDialog">
+                <JFXDialogLayout>
+                    <heading>
+                        <Label>Change Nickname</Label>
+                    </heading>
+                    <body>
+                        <JFXTextField fx:id="newNicknameText" labelFloat="true" promptText="New Nickname"/>
+                    </body>
+                    <actions>
+                        <JfxCursorButton onMouseClicked="#clickedNicknameDialogClose">Back</JfxCursorButton>
+                        <JfxCursorButton onMouseClicked="#clickedNicknameDialogChange">Change</JfxCursorButton>
+                    </actions>
+                </JFXDialogLayout>
+            </JFXDialog>
+            <VBox alignment="CENTER" spacing="10">
+                <VBox maxHeight="500" maxWidth="200" alignment="CENTER" spacing="10"
+                      style="-fx-border-radius: 10 10 10 10; -fx-background-radius: 10 10 10 10; -fx-background-color: white;">
+                    <ImageView fitHeight="150" fitWidth="150" fx:id="profilePic"/>
+                    <Text fx:id="usernameText"/>
+                    <Text fx:id="nicknameText"/>
+                    <JfxCursorButton styleClass="jfx-button-raised" text="Change Nickname"
+                                     onMouseClicked="#clickedChangeNickname"/>
+                    <JfxCursorButton styleClass="jfx-button-raised" text="Change Password"
+                                     onMouseClicked="#clickedChangePassword"/>
+                    <JfxCursorButton styleClass="jfx-button-raised" text="Upload Picture"
+                                     onMouseClicked="#clickedUploadFile"/>
+                    <JfxCursorButton styleClass="jfx-button-flat" text="Back" onMouseClicked="#clickedBackButton"/>
+                    <padding>
+                        <Insets bottom="10" top="10" left="10" right="10"/>
+                    </padding>
+                </VBox>
+            </VBox>
+        </StackPane>
+    </center>
 </BorderPane>

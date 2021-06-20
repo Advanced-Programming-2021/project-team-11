@@ -20,13 +20,13 @@
                 </VBox.margin>
             </PasswordField>
             <HoverButton initialHeight="50.0" initialWidth="170.0" hoverHeight="60" hoverWidth="180"
-                         text="Login" onMouseClicked="#clickedLoginButton">
+                         text="Login" onMouseClicked="#clickedLoginButton" fontSize="36">
                 <VBox.margin>
                     <Insets bottom="15"/>
                 </VBox.margin>
             </HoverButton>
             <HoverButton initialHeight="50.0" initialWidth="170.0" hoverHeight="60" hoverWidth="180"
-                         text="Back" onMouseClicked="#clickedBackButton"/>
+                         text="Back" onMouseClicked="#clickedBackButton" fontSize="36"/>
         </VBox>
     </center>
 </BorderPane>

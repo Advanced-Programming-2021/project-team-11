@@ -29,13 +29,13 @@
                 </VBox.margin>
             </TextField>
             <HoverButton initialHeight="50.0" initialWidth="170.0" hoverHeight="60" hoverWidth="180"
-                         text="Login" onMouseClicked="#clickedRegisterButton" fontSize="30">
+                         text="Register" onMouseClicked="#clickedRegisterButton" fontSize="30">
                 <VBox.margin>
                     <Insets bottom="15"/>
                 </VBox.margin>
             </HoverButton>
             <HoverButton initialHeight="50.0" initialWidth="170.0" hoverHeight="60" hoverWidth="180"
-                         text="Back" onMouseClicked="#clickedBackButton"/>
+                         text="Back" onMouseClicked="#clickedBackButton"  fontSize="36"/>
         </VBox>
     </center>
 </BorderPane>

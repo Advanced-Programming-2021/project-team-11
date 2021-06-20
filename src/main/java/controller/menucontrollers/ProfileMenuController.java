@@ -3,6 +3,7 @@ package controller.menucontrollers;
 import model.User;
 import model.exceptions.CurrentPasswordInvalidException;
 import model.exceptions.NicknameExistsException;
+import model.exceptions.PasswordsDontMatchException;
 import model.exceptions.SameNewPasswordException;
 
 public class ProfileMenuController {
@@ -12,7 +13,9 @@ public class ProfileMenuController {
         user.setNickname(newNickname);
     }
 
-    public static void changePassword(User user, String oldPassword, String newPassword) throws CurrentPasswordInvalidException, SameNewPasswordException {
+    public static void changePassword(User user, String oldPassword, String newPassword, String newPasswordConfirm) throws CurrentPasswordInvalidException, SameNewPasswordException, PasswordsDontMatchException {
+        if (!newPassword.equals(newPasswordConfirm))
+            throw new PasswordsDontMatchException();
         if (!user.checkPassword(oldPassword))
             throw new CurrentPasswordInvalidException();
         if (oldPassword.equals(newPassword))

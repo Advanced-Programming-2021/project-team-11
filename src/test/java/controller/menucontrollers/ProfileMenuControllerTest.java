@@ -1,10 +1,7 @@
 package controller.menucontrollers;
 
 import model.User;
-import model.exceptions.CurrentPasswordInvalidException;
-import model.exceptions.InvalidCredentialException;
-import model.exceptions.NicknameExistsException;
-import model.exceptions.SameNewPasswordException;
+import model.exceptions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -48,24 +45,24 @@ public class ProfileMenuControllerTest {
             fail(e);
         }
         try {
-            ProfileMenuController.changePassword(user, "hirbod", "hirbod2");
-        } catch (CurrentPasswordInvalidException | SameNewPasswordException e) {
+            ProfileMenuController.changePassword(user, "hirbod", "hirbod2", "hirbod2");
+        } catch (CurrentPasswordInvalidException | SameNewPasswordException | PasswordsDontMatchException e) {
             fail(e);
         }
         try {
-            ProfileMenuController.changePassword(user, "hirbod2", "hirbod");
-        } catch (CurrentPasswordInvalidException | SameNewPasswordException e) {
+            ProfileMenuController.changePassword(user, "hirbod2", "hirbod", "hirbod");
+        } catch (CurrentPasswordInvalidException | SameNewPasswordException | PasswordsDontMatchException e) {
             fail(e);
         }
         try {
-            ProfileMenuController.changePassword(user, "hirbod2", "hirbod2");
+            ProfileMenuController.changePassword(user, "hirbod2", "hirbod2", "hirbod2");
         } catch (CurrentPasswordInvalidException ignored) {
-        } catch (SameNewPasswordException e) {
+        } catch (SameNewPasswordException | PasswordsDontMatchException e) {
             fail(e);
         }
         try {
-            ProfileMenuController.changePassword(user, "hirbod", "hirbod");
-        } catch (CurrentPasswordInvalidException e) {
+            ProfileMenuController.changePassword(user, "hirbod", "hirbod", "hirbod");
+        } catch (CurrentPasswordInvalidException | PasswordsDontMatchException e) {
             fail(e);
         } catch (SameNewPasswordException ignored) {
         }

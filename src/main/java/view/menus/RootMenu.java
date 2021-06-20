@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import java.util.Objects;
 
 public class RootMenu extends Application {
+    public static Stage primaryStage;
     // Default constructor; DO NOT REMOVE
     public RootMenu() {
     }
@@ -29,6 +30,7 @@ public class RootMenu extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
         SceneChanger.setScene(scene);
+        RootMenu.primaryStage = primaryStage;
     }
 
     public void clickedLoginButton(MouseEvent mouseEvent) {
