@@ -53,8 +53,8 @@
                 <VBox maxHeight="500" maxWidth="200" alignment="CENTER" spacing="10"
                       styleClass="rounded-card">
                     <ImageView fitHeight="150" fitWidth="150" fx:id="profilePic"/>
-                    <Text fx:id="usernameText"/>
-                    <Text fx:id="nicknameText"/>
+                    <Text fx:id="usernameText" textAlignment="CENTER"/>
+                    <Text fx:id="nicknameText" textAlignment="CENTER"/>
                     <JfxCursorButton styleClass="jfx-button-raised" text="Change Nickname"
                                      onMouseClicked="#clickedChangeNickname"/>
                     <JfxCursorButton styleClass="jfx-button-raised" text="Change Password"

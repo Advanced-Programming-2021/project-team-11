@@ -16,3 +16,26 @@
     -fx-background-radius: 20 20 20 20;
     -fx-background-color: white;
 }
+
+.thin-rounded-card {
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);
+    -fx-border-radius: 3 3 3 3;
+    -fx-background-radius: 3 3 3 3;
+    -fx-background-color: white;
+}
+
+.dark-background {
+    -fx-background-color: #263238;
+}
+
+.jfx-button-buy-ok {
+    -jfx-button-type: RAISED;
+    -fx-background-color: green;
+    -fx-text-fill: white;
+}
+
+.jfx-button-buy-not-ok {
+    -jfx-button-type: RAISED;
+    -fx-background-color: red;
+    -fx-text-fill: white;
+}

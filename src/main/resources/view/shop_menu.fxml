@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXMasonryPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import com.jfoenix.controls.JFXDialog?>
+<?import com.jfoenix.controls.JFXDialogLayout?>
+<?import javafx.scene.control.Label?>
+<?import view.components.JfxCursorButton?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="view.menus.ShopMenu"
+      prefHeight="600.0" prefWidth="800.0">
+    <StackPane fx:id="rootStackPane" xmlns:fx="http://javafx.com/fxml/1"
+               xmlns="http://javafx.com/javafx/2.2">
+        <ScrollPane fitToWidth="true" fx:id="scrollPane" hbarPolicy="NEVER">
+            <JFXMasonryPane fx:id="masonryPane" HSpacing="10" VSpacing="10" styleClass="dark-background">
+                <padding>
+                    <Insets top="16" right="16" bottom="16" left="16"/>
+                </padding>
+            </JFXMasonryPane>
+        </ScrollPane>
+        <JFXDialog fx:id="buyConfirmDialog">
+            <JFXDialogLayout>
+                <heading>
+                    <Label>Buy This Card?</Label>
+                </heading>
+                <body>
+                    <VBox spacing="20">
+                        <Label fx:id="buyDialogBody" />
+                    </VBox>
+                </body>
+                <actions>
+                    <JfxCursorButton onMouseClicked="#clickedBuyDialogClose">Back</JfxCursorButton>
+                    <JfxCursorButton onMouseClicked="#clickedBuyDialogChange">Buy</JfxCursorButton>
+                </actions>
+            </JFXDialogLayout>
+        </JFXDialog>
+    </StackPane>
+</VBox>

@@ -4,8 +4,8 @@ import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import controller.menucontrollers.ProfileMenuController;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -26,17 +26,28 @@ import java.nio.file.Files;
 import java.util.ResourceBundle;
 
 public class ProfileMenu implements Initializable {
-    public BorderPane rootPane;
-    public ImageView profilePic;
-    public Text usernameText;
-    public Text nicknameText;
-    public JFXDialog passwordDialog;
-    public StackPane dialogsStack;
-    public JFXPasswordField oldPasswordText;
-    public JFXPasswordField newPasswordText;
-    public JFXPasswordField newPasswordTextConfirm;
-    public JFXDialog nicknameDialog;
-    public JFXTextField newNicknameText;
+    @FXML
+    private BorderPane rootPane;
+    @FXML
+    private ImageView profilePic;
+    @FXML
+    private Text usernameText;
+    @FXML
+    private Text nicknameText;
+    @FXML
+    private JFXDialog passwordDialog;
+    @FXML
+    private StackPane dialogsStack;
+    @FXML
+    private JFXPasswordField oldPasswordText;
+    @FXML
+    private JFXPasswordField newPasswordText;
+    @FXML
+    private JFXPasswordField newPasswordTextConfirm;
+    @FXML
+    private JFXDialog nicknameDialog;
+    @FXML
+    private JFXTextField newNicknameText;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

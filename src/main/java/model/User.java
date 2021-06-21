@@ -11,8 +11,10 @@ import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public class User {
+    private final static Color[] profilePicColors = {Color.BLACK, Color.MAGENTA, Color.PINK, Color.GREEN, Color.red};
     private final static ArrayList<User> users = new ArrayList<>();
     private final String username;
     private final HashMap<String, Deck> decks = new HashMap<>();
@@ -139,7 +141,8 @@ public class User {
     private ByteArrayInputStream getProfilePicByteStream() {
         if (getProfilePicBytes() == null) {
             long hash = MainMenu.loggedInUser.getNickname().hashCode() + 100000; // some problems with library. It doesn't accept numbers less than 100000
-            return new ByteArrayInputStream(GitHubAvatar.newAvatarBuilder().color(Color.PINK).build().createAsPngBytes(hash));
+            Color picColor = profilePicColors[new Random(hash).nextInt(profilePicColors.length)];
+            return new ByteArrayInputStream(GitHubAvatar.newAvatarBuilder().color(picColor).build().createAsPngBytes(hash));
         } else {
             return new ByteArrayInputStream(getProfilePicBytes());
         }

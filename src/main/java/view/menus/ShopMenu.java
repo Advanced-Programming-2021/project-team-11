@@ -1,88 +1,73 @@
 package view.menus;
 
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXMasonryPane;
+import com.jfoenix.controls.JFXScrollPane;
 import controller.menucontrollers.ShopMenuController;
-import model.User;
+import javafx.application.Platform;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import model.cards.Card;
+import model.exceptions.BooAnException;
 import model.exceptions.CardNotExistsException;
 import model.exceptions.InsufficientBalanceException;
-import model.exceptions.InvalidCommandException;
-import view.menus.commands.shop.ShopBuyItemCommand;
+import view.components.AlertsUtil;
+import view.components.CardShopViewCard;
 
-import static view.menus.MenuUtils.showCard;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
 
-public class ShopMenu extends Menu {
-    private static final String CHEAT_MONEY = "HESOYAM", CHEAT_CARDS = "TOOLUP", SHOW_ALL_CARDS_COMMAND = "shop show --all";
-    private final User loggedInUser;
-
-    ShopMenu(User loggedInUser) {
-        this.loggedInUser = loggedInUser;
-        openMenu();
-    }
+public class ShopMenu implements Initializable {
+    private final ArrayList<CardShopViewCard> cards = new ArrayList<>();
+    private CardShopViewCard selectedCard;
+    @FXML
+    private StackPane rootStackPane;
+    @FXML
+    private ScrollPane scrollPane;
+    @FXML
+    private JFXMasonryPane masonryPane;
+    @FXML
+    private JFXDialog buyConfirmDialog;
+    @FXML
+    private Label buyDialogBody;
 
     @Override
-    void openMenu() {
-        while (true) {
-            String command = MenuUtils.readLine();
-            try {
-                if (processMenuCommands(command))
-                    return;
-                continue;
-            } catch (InvalidCommandException ignored) {
-            }
-            // Other commands
-            if (buyCard(command) || hesoyam(command) || showAllCards(command) || toolup(command) || showCard(command))
-                continue;
-            System.out.println(MenuUtils.INVALID_COMMAND);
+    public void initialize(URL location, ResourceBundle resources) {
+        for (Card card : Card.getAllCards())
+            cards.add(new CardShopViewCard(card, MainMenu.loggedInUser.getMoney(), this::clickedBuy));
+        masonryPane.getChildren().addAll(cards);
+        Platform.runLater(() -> scrollPane.requestLayout());
+        JFXScrollPane.smoothScrolling(scrollPane);
+        buyConfirmDialog.setDialogContainer(rootStackPane);
+    }
+
+    private void clickedBuy(CardShopViewCard cardView) {
+        this.selectedCard = cardView;
+        if (!cardView.canUserAffordCard())
+            AlertsUtil.showError("You do not have enough money to buy this card!");
+        else {
+            buyDialogBody.setText(cardView.getBuyDialogMessage());
+            buyConfirmDialog.show();
         }
     }
 
-    private boolean buyCard(String command) {
+    public void clickedBuyDialogClose(MouseEvent mouseEvent) {
+        buyConfirmDialog.close();
+    }
+
+    public void clickedBuyDialogChange(MouseEvent mouseEvent) {
         try {
-            String cardName = new ShopBuyItemCommand().removePrefix(command);
-            ShopMenuController.buyCardForUser(loggedInUser, cardName);
-            System.out.println("card bought!");
-            return true;
-        } catch (InvalidCommandException e) {
-            return false;
-        } catch (InsufficientBalanceException | CardNotExistsException e) {
-            System.out.println(e.getMessage());
-            return true;
+            ShopMenuController.buyCardForUser(MainMenu.loggedInUser, selectedCard.getCard().getName());
+        } catch (CardNotExistsException | InsufficientBalanceException e) {
+            throw new BooAnException(e);
         }
-    }
-
-    private boolean showAllCards(String command) {
-        if (command.equals(SHOW_ALL_CARDS_COMMAND)) {
-            Card.getAllCards().stream().sorted().forEach(x -> System.out.printf("%s:%d\n", x.getName(), x.getPrice()));
-            return true;
-        }
-        return false;
-    }
-
-    private boolean hesoyam(String command) {
-        if (command.equals(CHEAT_MONEY)) {
-            ShopMenuController.increaseMoneyCheat(loggedInUser);
-            System.out.println("$$$$$$$$$$$$$$$$");
-            return true;
-        }
-        return false;
-    }
-
-    private boolean toolup(String command) {
-        if (command.equals(CHEAT_CARDS)) {
-            ShopMenuController.addAllCardsCheat(loggedInUser);
-            System.out.println(":)");
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    void enterMenu(MenuNames menu) {
-        System.out.println(MenuUtils.MENU_NAV_FAILED);
-    }
-
-    @Override
-    void printMenu() {
-        System.out.println("Shop Menu");
+        cards.forEach(card -> card.setUserBalance(MainMenu.loggedInUser.getMoney()));
+        buyConfirmDialog.close();
+        AlertsUtil.showSuccess("Card bought!");
     }
 }

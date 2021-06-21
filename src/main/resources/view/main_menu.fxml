@@ -16,7 +16,7 @@
                 <HoverButton initialHeight="70.0" initialWidth="230.0" hoverHeight="80" hoverWidth="240"
                              text="Your Decks" fontSize="30"/>
                 <HoverButton initialHeight="70.0" initialWidth="230.0" hoverHeight="80" hoverWidth="240"
-                             text="Shop" fontSize="30"/>
+                             text="Shop" fontSize="30" onMouseClicked="#clickedShopButton"/>
                 <HoverButton initialHeight="70.0" initialWidth="230.0" hoverHeight="80" hoverWidth="240"
                              text="Profile" fontSize="30" onMouseClicked="#clickedProfileButton"/>
                 <HoverButton initialHeight="70.0" initialWidth="230.0" hoverHeight="80" hoverWidth="240"

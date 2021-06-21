@@ -1,18 +1,23 @@
 package view.components;
 
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import model.User;
+import view.util.ViewUtil;
 
 import java.io.IOException;
 
 public class UserBadge extends HBox {
-    public Circle profilePic;
-    public Text username;
-    public Text coins;
+    @FXML
+    private Circle profilePic;
+    @FXML
+    private Text username;
+    @FXML
+    private Text coins;
 
     public UserBadge() {
         try {
@@ -28,7 +33,7 @@ public class UserBadge extends HBox {
 
     public void setUser(User user) {
         profilePic.setFill(new ImagePattern(user.getProfilePicImage()));
-        username.setText(user.getUsername());
+        username.setText(ViewUtil.beautyPrintText(user.getUsername(), 17));
         coins.setText(String.valueOf(user.getMoney()));
     }
 }
