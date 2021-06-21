@@ -1,6 +1,5 @@
 package view.components;
 
-import com.jfoenix.controls.JFXBadge;
 import com.jfoenix.controls.JFXButton;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -16,8 +15,10 @@ import view.menus.SceneChanger;
 public class CardShopViewCard extends HBox {
     private final Card card;
     private boolean canAffordThisCard;
+    private long userStock;
     private final ImageView cardImageView = new ImageView();
-    private final Text cardNameText = new Text(), cardPriceText = new Text(), cardTypeText = new Text(), cardDescriptionText = new Text();
+    private final Text cardNameText = new Text(), cardPriceText = new Text(), cardTypeText = new Text(),
+            cardDescriptionText = new Text(), playerStock = new Text();
     private final JFXButton buyButton = new JFXButton("Buy");
 
     public CardShopViewCard(Card card, int userBalance, CardShopViewCardClickedListener onClicked) {
@@ -40,7 +41,9 @@ public class CardShopViewCard extends HBox {
         buyButtonHBox.setAlignment(Pos.CENTER);
         buyButtonHBox.getChildren().add(buyButton);
         cardInfoVBox.getChildren().addAll(cardNameText, cardPriceText, cardDescriptionText, cardTypeText, buyButtonHBox);
-        super.getChildren().addAll(cardImageView, cardInfoVBox);
+        VBox imageAndStockBox = new VBox(playerStock, cardImageView);
+        imageAndStockBox.setAlignment(Pos.CENTER);
+        super.getChildren().addAll(imageAndStockBox, cardInfoVBox);
     }
 
     public void setUserBalance(int balance) {
@@ -68,6 +71,21 @@ public class CardShopViewCard extends HBox {
         cardImageView.setFitHeight(100);
         cardImageView.setFitWidth(70);
         cardImageView.setImage(Assets.getCardImage(card));
+    }
+
+    /**
+     * Sets how many cards does this player have
+     *
+     * @param i The number of cards which this user have
+     */
+    public void setCardStockOfPlayer(long i) {
+        userStock = i;
+        playerStock.setText("Your stock: " + i);
+    }
+
+    public void increaseUserStock() {
+        userStock++;
+        setCardStockOfPlayer(userStock);
     }
 
     public String getBuyDialogMessage() {

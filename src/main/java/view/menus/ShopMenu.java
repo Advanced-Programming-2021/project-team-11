@@ -17,6 +17,7 @@ import model.exceptions.CardNotExistsException;
 import model.exceptions.InsufficientBalanceException;
 import view.components.AlertsUtil;
 import view.components.CardShopViewCard;
+import view.components.UserBadge;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -35,15 +36,25 @@ public class ShopMenu implements Initializable {
     private JFXDialog buyConfirmDialog;
     @FXML
     private Label buyDialogBody;
+    @FXML
+    private UserBadge userBadge;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        for (Card card : Card.getAllCards())
-            cards.add(new CardShopViewCard(card, MainMenu.loggedInUser.getMoney(), this::clickedBuy));
+        for (Card card : Card.getAllCards()) {
+            CardShopViewCard cardView = new CardShopViewCard(card, MainMenu.loggedInUser.getMoney(), this::clickedBuy);
+            cardView.setCardStockOfPlayer(MainMenu.loggedInUser.getAvailableCards().stream().filter(x -> x == card).count());
+            cards.add(cardView);
+        }
         masonryPane.getChildren().addAll(cards);
         Platform.runLater(() -> scrollPane.requestLayout());
         JFXScrollPane.smoothScrolling(scrollPane);
         buyConfirmDialog.setDialogContainer(rootStackPane);
+        updateUserBadge();
+    }
+
+    private void updateUserBadge() {
+        userBadge.setUser(MainMenu.loggedInUser);
     }
 
     private void clickedBuy(CardShopViewCard cardView) {
@@ -67,7 +78,13 @@ public class ShopMenu implements Initializable {
             throw new BooAnException(e);
         }
         cards.forEach(card -> card.setUserBalance(MainMenu.loggedInUser.getMoney()));
+        selectedCard.increaseUserStock();
+        updateUserBadge();
         buyConfirmDialog.close();
         AlertsUtil.showSuccess("Card bought!");
+    }
+
+    public void clickedBackButton(MouseEvent mouseEvent) {
+        SceneChanger.changeScene(MenuNames.MAIN);
     }
 }

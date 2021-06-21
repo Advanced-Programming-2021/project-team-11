@@ -1,18 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXDialog?>
+<?import com.jfoenix.controls.JFXDialogLayout?>
 <?import com.jfoenix.controls.JFXMasonryPane?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import com.jfoenix.controls.JFXDialog?>
-<?import com.jfoenix.controls.JFXDialogLayout?>
-<?import javafx.scene.control.Label?>
+<?import view.components.HoverButton?>
 <?import view.components.JfxCursorButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import view.components.UserBadge?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="view.menus.ShopMenu"
       prefHeight="600.0" prefWidth="800.0">
+    <AnchorPane minHeight="60" maxHeight="60" minWidth="-Infinity" styleClass="dark-background">
+        <UserBadge fx:id="userBadge" layoutX="10" layoutY="10" />
+        <HoverButton initialWidth="110" initialHeight="55" hoverWidth="110" hoverHeight="55" fontSize="25"
+                     onMouseClicked="#clickedBackButton" text="Back" layoutX="680" layoutY="13"/>
+    </AnchorPane>
     <StackPane fx:id="rootStackPane" xmlns:fx="http://javafx.com/fxml/1"
                xmlns="http://javafx.com/javafx/2.2">
         <ScrollPane fitToWidth="true" fx:id="scrollPane" hbarPolicy="NEVER">
@@ -29,7 +37,7 @@
                 </heading>
                 <body>
                     <VBox spacing="20">
-                        <Label fx:id="buyDialogBody" />
+                        <Label fx:id="buyDialogBody"/>
                     </VBox>
                 </body>
                 <actions>
