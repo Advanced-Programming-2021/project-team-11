@@ -136,13 +136,17 @@ public class User {
         return this.profilePic;
     }
 
-    public ByteArrayInputStream getProfilePicByteStream() {
+    private ByteArrayInputStream getProfilePicByteStream() {
         if (getProfilePicBytes() == null) {
             long hash = MainMenu.loggedInUser.getNickname().hashCode() + 100000; // some problems with library. It doesn't accept numbers less than 100000
             return new ByteArrayInputStream(GitHubAvatar.newAvatarBuilder().color(Color.PINK).build().createAsPngBytes(hash));
         } else {
             return new ByteArrayInputStream(getProfilePicBytes());
         }
+    }
+
+    public Image getProfilePicImage() {
+        return new Image(getProfilePicByteStream());
     }
 
     public void setProfilePicBytes(byte[] bytes) {

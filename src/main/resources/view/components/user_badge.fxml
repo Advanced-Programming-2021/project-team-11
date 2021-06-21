@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Text?>
+<fx:root type="javafx.scene.layout.HBox" xmlns="http://javafx.com/javafx"
+         xmlns:fx="http://javafx.com/fxml" alignment="CENTER_LEFT" maxWidth="100" maxHeight="40" minWidth="100"
+         minHeight="40" styleClass="rounded-card" spacing="5">
+    <Circle fx:id="profilePic" radius="20"/>
+    <VBox spacing="3">
+        <Text fx:id="username"/>
+        <Text fx:id="coins"/>
+    </VBox>
+</fx:root>

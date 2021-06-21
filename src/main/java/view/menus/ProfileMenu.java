@@ -41,7 +41,7 @@ public class ProfileMenu implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Assets.setMenuBackgroundImage(rootPane);
-        profilePic.setImage(new Image(MainMenu.loggedInUser.getProfilePicByteStream()));
+        profilePic.setImage(MainMenu.loggedInUser.getProfilePicImage());
         usernameText.setText("Username:\n" + MainMenu.loggedInUser.getUsername());
         nicknameText.setText("Nickname:\n" + MainMenu.loggedInUser.getNickname());
         passwordDialog.setDialogContainer(dialogsStack);
@@ -60,7 +60,7 @@ public class ProfileMenu implements Initializable {
         if (image != null) {
             try {
                 MainMenu.loggedInUser.setProfilePicBytes(Files.readAllBytes(image.toPath()));
-                profilePic.setImage(new Image(MainMenu.loggedInUser.getProfilePicByteStream()));
+                profilePic.setImage(MainMenu.loggedInUser.getProfilePicImage());
             } catch (IOException exception) {
                 exception.printStackTrace();
             }
