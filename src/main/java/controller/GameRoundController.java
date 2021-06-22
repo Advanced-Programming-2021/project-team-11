@@ -571,6 +571,13 @@ public class GameRoundController {
         changeOfHeartCards.add(card);
     }
 
+    public void forceDrawCard(String cardName) throws CardNotExistsException {
+        Card card = Card.getCardByName(cardName);
+        if (card == null)
+            throw new CardNotExistsException(cardName);
+        getPlayerBoard().getHand().add(new PlayableCard(card, CardPlaceType.HAND));
+    }
+
     private boolean isPlayableCardInRivalHand(PlayableCard card) {
         return getRivalBoard().getHand().stream().anyMatch(x -> x == card) || Arrays.stream(getRivalBoard().getMonsterCards()).anyMatch(x -> x == card)
                 || Arrays.stream(getRivalBoard().getSpellCards()).anyMatch(x -> x == card) || getRivalBoard().getGraveyard().stream().anyMatch(x -> x == card) ||

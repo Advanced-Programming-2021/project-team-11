@@ -37,18 +37,6 @@ public class SelectCommand implements Command {
         return field;
     }
 
-    public int getMonsterPosition() {
-        return monster;
-    }
-
-    public int getSpellPosition() {
-        return spell;
-    }
-
-    public int getHandPosition() {
-        return hand;
-    }
-
     public CardPlaceType getCardPlaceType() {
         if (monster != 0)
             return CardPlaceType.MONSTER;

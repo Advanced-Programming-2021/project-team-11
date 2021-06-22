@@ -29,7 +29,8 @@ public class DuelMenu extends Menu {
             ATTACK_PREFIX_COMMAND = "attack ", ATTACK_DIRECT_COMMAND = "attack direct",
             ACTIVATE_EFFECT_COMMAND = "activate effect", SHOW_CARD_COMMAND = "card show --selected",
             SURRENDER_COMMAND = "surrender", CHEAT_HP = "PAINKILLER", NEXT_PHASE_COMMAND = "next phase",
-            SHOW_GRAVEYARD_COMMAND = "show graveyard", PRINT_BOARD_COMMAND = "print board", NUKE_COMMAND = "NUKE";
+            SHOW_GRAVEYARD_COMMAND = "show graveyard", PRINT_BOARD_COMMAND = "print board", NUKE_COMMAND = "NUKE",
+            DRAW_CUSTOM_CARD_CHEAT = "DRAW ";
     private final GameController gameController;
     private final User player1, player2;
     private boolean isRoundEnded = false, isGameEnded = false;
@@ -70,7 +71,7 @@ public class DuelMenu extends Menu {
             if (painkiller(command) || selectCommandProcessor(command) || nextPhase(command) || selectCommandProcessor(command)
                     || summon(command) || setCard(command) || flipSummon(command) || directAttack(command) || attackToMonster(command)
                     || showGraveyard(command) || surrender(command) || showCard(command) || printBoard(command) || activateSpell(command)
-                    || nuke(command) || MenuUtils.showCard(command))
+                    || nuke(command) || MenuUtils.showCard(command) || forceDrawCard(command))
                 continue;
             System.out.println(MenuUtils.INVALID_COMMAND);
         }
@@ -462,6 +463,17 @@ public class DuelMenu extends Menu {
             return true;
         }
         return false;
+    }
+
+    private boolean forceDrawCard(String command) {
+        if (!command.startsWith(DRAW_CUSTOM_CARD_CHEAT))
+            return false;
+        try {
+            gameController.getRound().forceDrawCard(command.substring(DRAW_CUSTOM_CARD_CHEAT.length()));
+        } catch (CardNotExistsException e) {
+            System.out.println(e.getMessage());
+        }
+        return true;
     }
 
     private boolean prepareTrap(String[] cards) {

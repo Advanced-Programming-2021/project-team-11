@@ -20,6 +20,6 @@ public class SetCommand implements Command {
 
     @Override
     public boolean isValid() {
-        return position.equals("attack") || position.equals("defence");
+        return position != null && (position.equals("attack") || position.equals("defence"));
     }
 }
