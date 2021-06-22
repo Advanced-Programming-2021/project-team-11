@@ -293,4 +293,38 @@ public class MenusTest {
                 "user logged out successfully!\n", Setuper.getOutputString());
         MonsterCard.getAllMonsterCards().remove(card);
     }
+
+    @Test
+    void testDuelStartMenu() {
+        Setuper.setInput("user create -u 1 -p 1 -n 1\n" +
+                "user create -u 2 -p 2 -n 2\n" +
+                "user login -u 1 -p 1\n" +
+                "menu enter Duel\n" +
+                "kir\n" +
+                "menu show-current\n" +
+                "menu enter Main\n" +
+                "duel -n -r 1\n" +
+                "duel -n -r 2 -s 3\n" +
+                "duel -n -r 3 -s 3\n" +
+                "duel -n -r 3 -s 1\n" +
+                "duel -n -r 3 --ai\n" +
+                "duel -n -r 3 -s 2\n" +
+                "menu exit\n" +
+                "menu exit\n" +
+                "menu exit\n");
+        new LoginMenu();
+        Assertions.assertEquals("user created successfully!\n" +
+                "user created successfully!\n" +
+                "user logged in successfully!\n" +
+                "invalid command\n" +
+                "Duel Menu\n" +
+                "menu navigation is not possible\n" +
+                "invalid command\n" +
+                "number of rounds is not supported\n" +
+                "there is no player with this username\n" +
+                "You have played yourself!\n" +
+                "not this time...\n" +
+                "1 has no active deck\n" +
+                "user logged out successfully!\n", Setuper.getOutputString());
+    }
 }
