@@ -73,10 +73,6 @@ public class PlayerBoard {
         this.field = field;
     }
 
-    public void removeHandCard(int index) {
-        hand.remove(index);
-    }
-
     public void removeHandCard(PlayableCard card) {
         hand.remove(card);
     }
@@ -88,32 +84,22 @@ public class PlayerBoard {
         monsterCard[cardPosition] = null;
     }
 
-    public void sendSpellToGraveyard(int cardPosition) {
-        spellCard[cardPosition].sendToGraveyard();
-        graveyard.add(spellCard[cardPosition]);
-        spellCard[cardPosition] = null;
-    }
-
-    public void removeSpellCard(int i) {
-        spellCard[i] = null;
-    }
-
-    public int addMonsterCard(PlayableCard card) {
+    public void addMonsterCard(PlayableCard card) {
         card.setCardPlace(CardPlaceType.MONSTER);
         for (int i = 0; i < monsterCard.length; i++)
             if (monsterCard[i] == null) {
                 monsterCard[i] = card;
-                return i;
+                return;
             }
         throw new BooAnException("Monster zone is full");
     }
 
-    public int addSpellCard(PlayableCard card) {
+    public void addSpellCard(PlayableCard card) {
         card.setCardPlace(CardPlaceType.SPELL);
         for (int i = 0; i < spellCard.length; i++)
             if (spellCard[i] == null) {
                 spellCard[i] = card;
-                return i;
+                return;
             }
         throw new BooAnException("Spell zone is full");
     }

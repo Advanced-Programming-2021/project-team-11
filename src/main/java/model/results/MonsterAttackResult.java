@@ -53,11 +53,11 @@ public class MonsterAttackResult {
     public String toString() {
         String resultString = "";
         if (wasHidden)
-            resultString += String.format("opponent’s monster card was %s and ", cardName);
+            resultString += String.format("opponent's monster card was %s and ", getCardName());
         switch (result) {
             case RIVAL_DESTROYED:
                 if (wasAttackCard)
-                    resultString += String.format("your opponent's monster is destroyed and your opponent receives %d battle damage", damageReceived);
+                    resultString += String.format("your opponent's monster is destroyed and your opponent receives %d battle damage", getDamageReceived());
                 else
                     resultString += "the defense position monster is destroyed";
                 break;
@@ -69,9 +69,9 @@ public class MonsterAttackResult {
                 break;
             case ME_DESTROYED:
                 if (wasAttackCard)
-                    resultString += String.format("your monster card is destroyed and you received %d battle damage", damageReceived);
+                    resultString += String.format("your monster card is destroyed and you received %d battle damage", getDamageReceived());
                 else
-                    resultString += String.format("no card is destroyed and you received %d battle damage", damageReceived);
+                    resultString += String.format("no card is destroyed and you received %d battle damage", getDamageReceived());
                 break;
         }
         return resultString;
