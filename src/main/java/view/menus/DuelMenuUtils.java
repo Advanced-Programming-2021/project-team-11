@@ -149,7 +149,7 @@ class DuelMenuUtils {
             System.out.printf("%d. %s\n", i + 1, cards[i]);
         System.out.printf("%d. %s\n", cards.length + 1, "cancel the activation");
         int index = MenuUtils.readCardByIndex(cards.length + 1);
-        if (index == -1 || index == cards.length + 1)
+        if (index == -1 || index == cards.length)
             return -1;
         return index;
     }
