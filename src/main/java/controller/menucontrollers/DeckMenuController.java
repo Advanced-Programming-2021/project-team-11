@@ -19,8 +19,10 @@ public class DeckMenuController {
         Deck deck = user.getDeckByName(deckName);
         if (deck == null)
             throw new DeckDoesNotExistsException(deckName);
+
         if (user.getActiveDeck() != null && user.getActiveDeckName().equals(deckName)) // de-activate the active deck if needed
             user.setActiveDeck(null);
+
         // Return cards to user
         deck.getMainDeck().forEach(user::addCardToPlayer);
         deck.getSideDeck().forEach(user::addCardToPlayer);
@@ -45,6 +47,7 @@ public class DeckMenuController {
             throw new DeckSideOrMainFullException(isSide);
         if (deck.haveThreeCards(card))
             throw new DeckHaveThreeCardsException(card, deckName);
+
         // Process the card
         if (isSide)
             deck.addCardToSideDeck(card);
@@ -60,6 +63,7 @@ public class DeckMenuController {
         Optional<Card> cardChecker = isSide ? deck.getSideDeck().stream().filter(x -> x.getName().equals(cardName)).findFirst() : deck.getMainDeck().stream().filter(x -> x.getName().equals(cardName)).findFirst();
         if (!cardChecker.isPresent())
             throw new DeckCardNotExistsException(cardName, isSide);
+
         // Process the card
         Card card = cardChecker.get();
         if (isSide)
@@ -102,6 +106,7 @@ public class DeckMenuController {
         Optional<Card> sideDeckCardCandidate = deck.getSideDeck().stream().filter(x -> x.getName().equals(sideDeckCardName)).findFirst();
         if (!sideDeckCardCandidate.isPresent())
             throw new DeckCardNotExistsException(sideDeckCardName, true);
+
         // Swap!
         deck.removeCardFromMainDeck(mainDeckCardCandidate.get());
         deck.removeCardFromSideDeck(sideDeckCardCandidate.get());
@@ -113,19 +118,18 @@ public class DeckMenuController {
         final String deckName = "deckup-deck";
         try {
             addDeck(user, deckName);
-        } catch (Exception ignored) {
-        }
+        } catch (Exception ignored) {}
+
         ArrayList<Card> cards = new ArrayList<>(Card.getAllCards());
         Collections.shuffle(cards);
         for (Card card : cards)
             try {
                 user.addCardToPlayer(card);
                 addCardToDeck(user, deckName, card.getName(), false);
-            } catch (Exception ignored) {
+            } catch (Exception ignored1) {
                 try {
                     addCardToDeck(user, deckName, card.getName(), true);
-                } catch (Exception ignored2) {
-                }
+                } catch (Exception ignored2) {}
             }
         return deckName;
     }

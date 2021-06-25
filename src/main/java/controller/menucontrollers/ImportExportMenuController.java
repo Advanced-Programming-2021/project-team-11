@@ -58,11 +58,11 @@ public class ImportExportMenuController {
         MonsterCard card = MonsterCard.getAllMonsterCardByName(exportedCard.getName());
         if (card == null)
             throw new InvalidCardToImportException("card does not exists!");
-        card.setDescription(exportedCard.getDescription());
+        card.setLevel(exportedCard.getLevel());
         card.setPrice(exportedCard.getPrice());
         card.setAttack(exportedCard.getAttack());
         card.setDefence(exportedCard.getDefence());
-        card.setLevel(exportedCard.getLevel());
+        card.setDescription(exportedCard.getDescription());
         card.setMonsterType(exportedCard.getMonsterType());
         card.setMonsterAttributeType(exportedCard.getMonsterAttributeType());
         card.init();
@@ -70,14 +70,12 @@ public class ImportExportMenuController {
 
     private static void handleNormalMonsterCard(ExportedCard exportedCard) {
         MonsterCard.getAllMonsterCards().remove(MonsterCard.getMonsterCardByName(exportedCard.getName()));
-        new SimpleMonster(exportedCard.getName(), exportedCard.getDescription(), exportedCard.getPrice(), exportedCard.getLevel(),
-                exportedCard.getDefence(), exportedCard.getAttack(), exportedCard.getMonsterType(), exportedCard.getMonsterAttributeType());
+        new SimpleMonster(exportedCard.getName(), exportedCard.getDescription(), exportedCard.getPrice(), exportedCard.getLevel(), exportedCard.getDefence(), exportedCard.getAttack(), exportedCard.getMonsterType(), exportedCard.getMonsterAttributeType());
     }
 
     private static void handleRitualMonsterCard(ExportedCard exportedCard) {
         MonsterCard.getAllMonsterCards().remove(MonsterCard.getMonsterCardByName(exportedCard.getName()));
-        new RitualMonster(exportedCard.getName(), exportedCard.getDescription(), exportedCard.getPrice(), exportedCard.getLevel(),
-                exportedCard.getDefence(), exportedCard.getAttack(), exportedCard.getMonsterType(), exportedCard.getMonsterAttributeType());
+        new RitualMonster(exportedCard.getName(), exportedCard.getDescription(), exportedCard.getPrice(), exportedCard.getLevel(), exportedCard.getDefence(), exportedCard.getAttack(), exportedCard.getMonsterType(), exportedCard.getMonsterAttributeType());
     }
 
     private static void handleSpellImport(ExportedCard exportedCard) {

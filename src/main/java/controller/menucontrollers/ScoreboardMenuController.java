@@ -19,12 +19,9 @@ public class ScoreboardMenuController {
 
     private static ArrayList<UserForScoreboard> sortWithRank(ArrayList<UserForScoreboard> scoreboard) {
         ArrayList<UserForScoreboard> result = new ArrayList<>(scoreboard.size());
-        int rankBefore = -1, scoreBefore = -1;
-        for (int i = 0; i < scoreboard.size(); i++) {
-            if (scoreBefore != scoreboard.get(i).getScore()) {
-                rankBefore = i;
-                scoreBefore = scoreboard.get(i).getScore();
-            }
+        for (int i = 0, rankBefore = -1, scoreBefore = -1; i < scoreboard.size(); i++) {
+            if (scoreBefore != scoreboard.get(i).getScore())
+                scoreBefore = scoreboard.get(rankBefore = i).getScore();
             scoreboard.get(i).setRank(rankBefore + 1);
             result.add(scoreboard.get(i));
         }
