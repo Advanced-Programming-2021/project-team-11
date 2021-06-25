@@ -1,8 +1,8 @@
 package model.enums;
 
 public enum CoinFlipResult {
-    TAIL,
-    HEAD;
+    HEAD,
+    TAIL;
 
     @Override
     public String toString() {

@@ -1,12 +1,12 @@
 package model.enums;
 
 public enum GamePhase {
-    DRAW("Draw"),
-    STANDBY("Standby"),
-    MAIN1("Main phase 1"),
     BATTLE_PHASE("Battle"),
+    MAIN1("Main phase 1"),
     MAIN2("Main phase 2"),
-    END_PHASE("End");
+    STANDBY("Standby"),
+    END_PHASE("End"),
+    DRAW("Draw");
 
     private final String name;
 
