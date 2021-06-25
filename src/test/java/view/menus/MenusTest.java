@@ -894,4 +894,384 @@ public class MenusTest {
                 "Game Over!\n" +
                 "user logged out successfully!\n");
     }
+
+    @Test
+    void simpleEffectFlipSummon() {
+        Setuper.setInput("user create -u 1 -p 1 -n 1\n" +
+                "user create -u 2 -p 2 -n 2\n" +
+                "user login -u 1 -p 1\n" +
+                "menu enter Deck\n" +
+                "DECKUP\n" +
+                "DECKUP\n" +
+                "deck set-activate deckup-deck\n" +
+                "menu exit\n" +
+                "logout\n" +
+                "user login -u 2 -p 2\n" +
+                "menu enter Deck\n" +
+                "DECKUP\n" +
+                "DECKUP\n" +
+                "deck set-activate deckup-deck\n" +
+                "menu exit\n" +
+                "menu enter Duel\n" +
+                "duel --new --second-player 1 --rounds 1\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "DRAW Man-Eater Bug\n" +
+                "select -h 7\n" +
+                "set\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "select -m 1\n" +
+                "flip-summon\n" +
+                "NUKE\n" +
+                "menu exit\n" +
+                "menu exit\n" +
+                "menu exit\n");
+        new LoginMenu();
+        Setuper.matchLines("user created successfully!\n" +
+                "user created successfully!\n" +
+                "user logged in successfully!\n" +
+                "Added a deck with name of deckup-deck :D\n" +
+                "Added a deck with name of deckup-deck :D\n" +
+                "deck activated successfully\n" +
+                "user logged out successfully!\n" +
+                "user logged in successfully!\n" +
+                "Added a deck with name of deckup-deck :D\n" +
+                "Added a deck with name of deckup-deck :D\n" +
+                "deck activated successfully\n" +
+                "\\d is the beginner!\n" +
+                "new card added to the hand: (.+)\n" +
+                "phase: Standby\n" +
+                "phase: Main phase 1\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\n" +
+                "55\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "card selected\n" +
+                "set successfully\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\n" +
+                "55\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tDH\tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "phase: Battle\n" +
+                "phase: Main phase 2\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\n" +
+                "55\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tDH\tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "phase: End\n" +
+                "its \\d's turn\n" +
+                "phase: Draw\n" +
+                "new card added to the hand: (.+)\n" +
+                "phase: Standby\n" +
+                "phase: Main phase 1\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\tc\n" +
+                "54\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tDH\tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "phase: Battle\n" +
+                "phase: Main phase 2\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\tc\n" +
+                "54\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tDH\tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "phase: End\n" +
+                "its \\d's turn\n" +
+                "phase: Draw\n" +
+                "phase: Standby\n" +
+                "phase: Main phase 1\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\tc\n" +
+                "54\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tDH\tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "card selected\n" +
+                "flip summoned successfully\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\tc\n" +
+                "54\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tOO\tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "BOOM\n" +
+                "\\d won the whole match with score: 1000-0\n" +
+                "Game Over!\n" +
+                "user logged out successfully!\n");
+    }
+
+    @Test
+    void testChangePosition() {
+        Setuper.setInput("user create -u 1 -p 1 -n 1\n" +
+                "user create -u 2 -p 2 -n 2\n" +
+                "user login -u 1 -p 1\n" +
+                "menu enter Deck\n" +
+                "DECKUP\n" +
+                "DECKUP\n" +
+                "deck set-activate deckup-deck\n" +
+                "menu exit\n" +
+                "logout\n" +
+                "user login -u 2 -p 2\n" +
+                "menu enter Deck\n" +
+                "DECKUP\n" +
+                "DECKUP\n" +
+                "deck set-activate deckup-deck\n" +
+                "menu exit\n" +
+                "menu enter Duel\n" +
+                "duel --new --second-player 1 --rounds 1\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "DRAW Man-Eater Bug\n" +
+                "select -h 7\n" +
+                "summon\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "select -m 1\n" +
+                "flip-summon\n" +
+                "set -p attack\n" +
+                "set -p defence\n" +
+                "NUKE\n" +
+                "menu exit\n" +
+                "menu exit\n" +
+                "menu exit\n");
+        new LoginMenu();
+        Setuper.matchLines("user created successfully!\n" +
+                "user created successfully!\n" +
+                "user logged in successfully!\n" +
+                "Added a deck with name of deckup-deck :D\n" +
+                "Added a deck with name of deckup-deck :D\n" +
+                "deck activated successfully\n" +
+                "user logged out successfully!\n" +
+                "user logged in successfully!\n" +
+                "Added a deck with name of deckup-deck :D\n" +
+                "Added a deck with name of deckup-deck :D\n" +
+                "deck activated successfully\n" +
+                "\\d is the beginner!\n" +
+                "new card added to the hand: (.+)\n" +
+                "phase: Standby\n" +
+                "phase: Main phase 1\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\n" +
+                "55\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "card selected\n" +
+                "summoned successfully\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\n" +
+                "55\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tOO\tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "phase: Battle\n" +
+                "phase: Main phase 2\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\n" +
+                "55\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tOO\tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "phase: End\n" +
+                "its \\d's turn\n" +
+                "phase: Draw\n" +
+                "new card added to the hand: (.+)\n" +
+                "phase: Standby\n" +
+                "phase: Main phase 1\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\tc\n" +
+                "54\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tOO\tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "phase: Battle\n" +
+                "phase: Main phase 2\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\tc\n" +
+                "54\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tOO\tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "phase: End\n" +
+                "its \\d's turn\n" +
+                "phase: Draw\n" +
+                "phase: Standby\n" +
+                "phase: Main phase 1\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\tc\n" +
+                "54\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tOO\tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "card selected\n" +
+                "you can’t flip summon this card\n" +
+                "this card is already in the wanted position\n" +
+                "monster card position changed successfully\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\tc\n" +
+                "54\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tDO\tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "BOOM\n" +
+                "\\d won the whole match with score: 1000-0\n" +
+                "Game Over!\n" +
+                "user logged out successfully!\n");
+    }
 }
