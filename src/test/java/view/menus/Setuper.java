@@ -1,5 +1,7 @@
 package view.menus;
 
+import org.junit.jupiter.api.Assertions;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -27,5 +29,13 @@ public class Setuper {
 
     public static String getOutputString() {
         return outContent.toString().replaceAll("\r\n", "\n");
+    }
+
+    public static void matchLines(String toMatchLines) {
+        String[] lines = toMatchLines.split("\n");
+        String[] outputLines = Setuper.getOutputString().split("\n");
+        for (int i = 0; i < lines.length; i++)
+            if (!outputLines[i].matches(lines[i]))
+                Assertions.fail(outputLines[i] + " does not match " + lines[i]);
     }
 }

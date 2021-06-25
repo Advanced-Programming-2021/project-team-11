@@ -191,7 +191,7 @@ public class DuelMenu extends Menu {
         System.out.printf("phase: %s\n", nowPhase.toString());
         switch (nowPhase) {
             case DRAW:
-                if (oldHandSize != 6 && !isPlayerTimeSealed)
+                if (oldHandSize < 6 && !isPlayerTimeSealed)
                     System.out.printf("new card added to the hand: %s\n", gameController.getRound().getPlayerBoard().getHand().get(oldHandSize).getCard().getName());
                 break;
             case MAIN1:

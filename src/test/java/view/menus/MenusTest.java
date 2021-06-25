@@ -537,11 +537,7 @@ public class MenusTest {
                 "\\d won the whole match with score: 0-1000\n" +
                 "Game Over!\n" +
                 "user logged out successfully!\n";
-        String[] lines = toMatchLines.split("\n");
-        String[] outputLines = Setuper.getOutputString().split("\n");
-        for (int i = 0; i < lines.length; i++)
-            if (!outputLines[i].matches(lines[i]))
-                Assertions.fail(outputLines[i] + " does not match " + lines[i]);
+        Setuper.matchLines(toMatchLines);
     }
 
     @Test
@@ -580,5 +576,322 @@ public class MenusTest {
                 "menu exit\n" +
                 "menu exit\n");
         new LoginMenu();
+    }
+
+    @Test
+    void testSelectCommand() {
+        Setuper.setInput("user create -u 1 -p 1 -n 1\n" +
+                "user create -u 2 -p 2 -n 2\n" +
+                "user login -u 1 -p 1\n" +
+                "menu enter Deck\n" +
+                "DECKUP\n" +
+                "DECKUP\n" +
+                "deck set-activate deckup-deck\n" +
+                "menu exit\n" +
+                "logout\n" +
+                "user login -u 2 -p 2\n" +
+                "menu enter Deck\n" +
+                "DECKUP\n" +
+                "DECKUP\n" +
+                "deck set-activate deckup-deck\n" +
+                "menu exit\n" +
+                "menu enter Duel\n" +
+                "duel --new --second-player 1 --rounds 1\n" +
+                "PAINKILLER\n" +
+                "show graveyard\n" +
+                "select\n" +
+                "select -s 10\n" +
+                "select -d\n" +
+                "select -h 1\n" +
+                "select -d\n" +
+                "NUKE\n" +
+                "menu exit\n" +
+                "menu exit\n" +
+                "menu exit\n");
+        new LoginMenu();
+        Setuper.matchLines("user created successfully!\n" +
+                "user created successfully!\n" +
+                "user logged in successfully!\n" +
+                "Added a deck with name of deckup-deck :D\n" +
+                "Added a deck with name of deckup-deck :D\n" +
+                "deck activated successfully\n" +
+                "user logged out successfully!\n" +
+                "user logged in successfully!\n" +
+                "Added a deck with name of deckup-deck :D\n" +
+                "Added a deck with name of deckup-deck :D\n" +
+                "deck activated successfully\n" +
+                "\\d is the beginner!\n" +
+                "new card added to the hand: (.+)\n" +
+                "\\+\\+\\+\\+\\+\n" +
+                "\\d's graveyard\n" +
+                "graveyard empty\n" +
+                "\\d's graveyard\n" +
+                "graveyard empty\n" +
+                "invalid command\n" +
+                "invalid selection\n" +
+                "no card is selected yet\n" +
+                "card selected\n" +
+                "card deselected\n" +
+                "BOOM\n" +
+                "\\d won the whole match with score: 1000-0\n" +
+                "Game Over!\n" +
+                "user logged out successfully!\n");
+    }
+
+    @Test
+    void testDuelTribute() {
+        Setuper.setInput("user create -u 1 -p 1 -n 1\n" +
+                "user create -u 2 -p 2 -n 2\n" +
+                "user login -u 1 -p 1\n" +
+                "menu enter Deck\n" +
+                "DECKUP\n" +
+                "DECKUP\n" +
+                "deck set-activate deckup-deck\n" +
+                "menu exit\n" +
+                "logout\n" +
+                "user login -u 2 -p 2\n" +
+                "menu enter Deck\n" +
+                "DECKUP\n" +
+                "DECKUP\n" +
+                "deck set-activate deckup-deck\n" +
+                "menu exit\n" +
+                "menu enter Duel\n" +
+                "duel --new --second-player 1 --rounds 1\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "DRAW Crawling dragon\n" +
+                "select -h 7\n" +
+                "summon\n" +
+                "set\n" +
+                "DRAW Battle OX\n" +
+                "select -h 8\n" +
+                "summon\n" +
+                "DRAW Battle OX\n" +
+                "select -h 8\n" +
+                "summon\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "select -h 7\n" +
+                "summon\n" +
+                "4\n" +
+                "select -h 7\n" +
+                "summon\n" +
+                "1\n" +
+                "next phase\n" +
+                "select -m 1\n" +
+                "attack direct\n" +
+                "NUKE\n" +
+                "menu exit\n" +
+                "menu exit\n" +
+                "menu exit\n");
+        new LoginMenu();
+        Setuper.matchLines("user created successfully!\n" +
+                "user created successfully!\n" +
+                "user logged in successfully!\n" +
+                "Added a deck with name of deckup-deck :D\n" +
+                "Added a deck with name of deckup-deck :D\n" +
+                "deck activated successfully\n" +
+                "user logged out successfully!\n" +
+                "user logged in successfully!\n" +
+                "Added a deck with name of deckup-deck :D\n" +
+                "Added a deck with name of deckup-deck :D\n" +
+                "deck activated successfully\n" +
+                "\\d is the beginner!\n" +
+                "new card added to the hand: (.+)\n" +
+                "phase: Standby\n" +
+                "phase: Main phase 1\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\n" +
+                "55\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "card selected\n" +
+                "there are not enough cards for tribute\n" +
+                "there are not enough cards for tribute\n" +
+                "card selected\n" +
+                "summoned successfully\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\n" +
+                "55\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tOO\tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "card selected\n" +
+                "you already summoned/set on this turn\n" +
+                "phase: Battle\n" +
+                "phase: Main phase 2\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\n" +
+                "55\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tOO\tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "phase: End\n" +
+                "its \\d's turn\n" +
+                "phase: Draw\n" +
+                "new card added to the hand: (.+)\n" +
+                "phase: Standby\n" +
+                "phase: Main phase 1\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\tc\tc\tc\n" +
+                "54\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tOO\tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "phase: Battle\n" +
+                "phase: Main phase 2\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\tc\tc\tc\n" +
+                "54\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tOO\tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "phase: End\n" +
+                "its \\d's turn\n" +
+                "phase: Draw\n" +
+                "phase: Standby\n" +
+                "phase: Main phase 1\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\tc\n" +
+                "54\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tOO\tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "card selected\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\tc\n" +
+                "54\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tOO\tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "Select a card position to tribute or type \"cancel\" to cancel \\(0\\/1\\): there is no monster on one of these addresses\n" +
+                "card selected\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\tc\n" +
+                "54\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tOO\tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "Select a card position to tribute or type \"cancel\" to cancel \\(0\\/1\\): summoned successfully\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\tc\n" +
+                "54\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "01\t\t\t\t\t\tE\n" +
+                "\tE \tE \tOO\tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "phase: Battle\n" +
+                "card selected\n" +
+                "you opponent receives 1600 battle damage\n" +
+                "\\d:6400\n" +
+                "\tc\tc\tc\tc\tc\tc\n" +
+                "54\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "01\t\t\t\t\t\tE\n" +
+                "\tE \tE \tOO\tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "BOOM\n" +
+                "\\d won the whole match with score: 1000-0\n" +
+                "Game Over!\n" +
+                "user logged out successfully!\n");
     }
 }
