@@ -1,8 +1,8 @@
 package model.game;
 
 public class GameEndResults {
-    private final int roundNumbers, player1MaxHp, player2MaxHp;
     private final boolean player1Won;
+    private final int roundNumbers, player1MaxHp, player2MaxHp;
 
     public GameEndResults(int player1MaxHp, int player2MaxHp, boolean player1Won, int roundNumbers) {
         this.player1MaxHp = player1MaxHp;
@@ -11,23 +11,23 @@ public class GameEndResults {
         this.player1Won = player1Won;
     }
 
+    public boolean didPlayer1Won() {
+        return player1Won;
+    }
+
     public int getPlayer1Score() {
-        return roundNumbers * (player1Won ? 1000 : 0);
+        return player1Won ? 1000 * roundNumbers : 0;
     }
 
     public int getPlayer2Score() {
-        return roundNumbers * (!player1Won ? 1000 : 0);
+        return player1Won ? 0 : 1000 * roundNumbers;
     }
 
     public int getPlayer1Money() {
-        return roundNumbers * (player1Won ? (1000 + player1MaxHp) : 100);
+        return player1Won ? (1000 + player1MaxHp) * roundNumbers : 100 * roundNumbers;
     }
 
     public int getPlayer2Money() {
-        return roundNumbers * (!player1Won ? (1000 + player2MaxHp) : 100);
-    }
-
-    public boolean didPlayer1Won() {
-        return player1Won;
+        return player1Won ? 100 * roundNumbers : (1000 + player2MaxHp) * roundNumbers;
     }
 }

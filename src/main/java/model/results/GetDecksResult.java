@@ -7,6 +7,7 @@ import java.util.TreeSet;
 public class GetDecksResult {
     private final DeckResult activeDeck;
     private final TreeSet<DeckResult> otherDeck;
+
     public GetDecksResult(DeckResult activeDeck, TreeSet<DeckResult> otherDeckNames) {
         this.activeDeck = activeDeck;
         this.otherDeck = otherDeckNames;
@@ -22,14 +23,14 @@ public class GetDecksResult {
 
     public static class DeckResult implements Comparable<DeckResult> {
         private final String name;
-        private final int sideCount, mainCount;
         private final boolean isValid;
+        private final int sideCount, mainCount;
 
         public DeckResult(String name, Deck deck) {
             this.name = name;
+            isValid = deck.isValid();
             sideCount = deck.getSideDeck().size();
             mainCount = deck.getMainDeck().size();
-            isValid = deck.isValid();
         }
 
         public String getName() {
