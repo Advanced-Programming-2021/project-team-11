@@ -15,6 +15,7 @@ public class CardLoader {
         if (!firstLoad)
             throw new BooAnException("loadCards called twice!");
         HardcodedCardsLoader.load();
+
         // Load the csv
         loadCsv(monsterFilename, CardLoader::loadMonster);
         loadCsv(spellFilename, args -> {
@@ -27,18 +28,12 @@ public class CardLoader {
     }
 
     private static void loadCsv(String filename, Loader loader) {
-        boolean firstLine = true;
         try {
-            FileReader filereader = new FileReader(filename);
-            CSVReader csvReader = new CSVReader(filereader);
             String[] nextRecord;
-            while ((nextRecord = csvReader.readNext()) != null) {
-                if (firstLine) { // skip the headers
-                    firstLine = false;
-                    continue;
-                }
-                loader.load(nextRecord);
-            }
+            CSVReader csvReader = new CSVReader(new FileReader(filename));
+            for (boolean firstLine = true; (nextRecord = csvReader.readNext()) != null; firstLine = false)
+                if (!firstLine) // skip the headers
+                    loader.load(nextRecord);
         } catch (Exception e) {
             throw new ConfigLoadingException(e);
         }
@@ -46,11 +41,10 @@ public class CardLoader {
 
     private static void loadMonster(String[] data) {
         String name = data[0], description = data[7];
-        int level = Integer.parseInt(data[1]), attack = Integer.parseInt(data[5]), defence = Integer.parseInt(data[6]),
-                price = Integer.parseInt(data[8]);
-        MonsterAttributeType attribute = MonsterAttributeType.valueOfCaseInsensitive(data[2]);
         MonsterType monsterType = MonsterType.valueOfCaseInsensitive(data[3]);
         MonsterCardType cardType = MonsterCardType.valueOfCaseInsensitive(data[4]);
+        MonsterAttributeType attribute = MonsterAttributeType.valueOfCaseInsensitive(data[2]);
+        int level = Integer.parseInt(data[1]), attack = Integer.parseInt(data[5]), defence = Integer.parseInt(data[6]), price = Integer.parseInt(data[8]);
         switch (cardType) {
             case NORMAL:
                 new SimpleMonster(name, description, price, level, defence, attack, monsterType, attribute);
@@ -59,13 +53,13 @@ public class CardLoader {
                 new RitualMonster(name, description, price, level, defence, attack, monsterType, attribute);
                 break;
             case EFFECT:
-                if (name.equals("Gate Guardian")) { // This specific card can be handled just like normal cards!
+                if (name.equals("Gate Guardian")) // This specific card can be handled just like normal cards!
                     new SimpleMonster(name, description, price, level, defence, attack, monsterType, attribute);
-                    break;
+                else {
+                    MonsterCard card = MonsterCard.getAllMonsterCardByName(name);
+                    if (card instanceof InitializableEffectMonsters)
+                        ((InitializableEffectMonsters) card).initialize(description, price, level, defence, attack, monsterType, attribute);
                 }
-                MonsterCard card = MonsterCard.getAllMonsterCardByName(name);
-                if (card instanceof InitializableEffectMonsters)
-                    ((InitializableEffectMonsters) card).initialize(description, price, level, defence, attack, monsterType, attribute);
                 break;
         }
     }

@@ -22,52 +22,39 @@ public class UsersDatabase {
         connection = DriverManager.getConnection("jdbc:sqlite:" + filename);
         Statement statement = connection.createStatement();
         statement.setQueryTimeout(30);
-        statement.executeUpdate("CREATE TABLE IF NOT EXISTS users (" +
-                "username VARCHAR(255) PRIMARY KEY," +
-                "password TEXT NOT NULL," +
-                "nickname TEXT NOT NULL," +
-                "score INT NOT NULL DEFAULT 0," +
-                "money INT NOT NULL DEFAULT 100000," +
-                "active_deck VARCHAR(255) DEFAULT NULL," +
-                "cards JSON NOT NULL DEFAULT (JSON_ARRAY())," +
-                "profile_pic TEXT DEFAULT NULL" +
-                ")");
-        statement.executeUpdate("CREATE TABLE IF NOT EXISTS decks (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "owner VARCHAR(255) NOT NULL," +
-                "name VARCHAR(255) NOT NULL," +
-                "side_deck JSON NOT NULL DEFAULT (JSON_ARRAY())," +
-                "main_deck JSON NOT NULL DEFAULT (JSON_ARRAY())," +
-                "FOREIGN KEY (owner) REFERENCES users (username)" +
-                ")");
+        statement.executeUpdate("CREATE TABLE IF NOT EXISTS users (username VARCHAR(255) PRIMARY KEY, password TEXT NOT NULL, nickname TEXT NOT NULL, score INT NOT NULL DEFAULT 0, money INT NOT NULL DEFAULT 100000, active_deck VARCHAR(255) DEFAULT NULL, cards JSON NOT NULL DEFAULT (JSON_ARRAY()), profile_pic TEXT DEFAULT NULL)");
+        statement.executeUpdate("CREATE TABLE IF NOT EXISTS decks (id INTEGER PRIMARY KEY AUTOINCREMENT, owner VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, side_deck JSON NOT NULL DEFAULT (JSON_ARRAY()), main_deck JSON NOT NULL DEFAULT (JSON_ARRAY()), FOREIGN KEY (owner) REFERENCES users (username))");
         statement.close();
     }
 
     public static void loadUsers() throws SQLException {
         Statement statement = connection.createStatement();
+
         // Load users
         ResultSet rs = statement.executeQuery("select username, password, nickname, score, money, active_deck, cards, profile_pic from users");
         while (rs.next()) {
+            int score = rs.getInt("score");
+            int money = rs.getInt("money");
+            String cardsArray = rs.getString("cards");
             String username = rs.getString("username");
             String password = rs.getString("password");
             String nickname = rs.getString("nickname");
-            int score = rs.getInt("score");
-            int money = rs.getInt("money");
             String activeDeck = rs.getString("active_deck");
-            String cardsArray = rs.getString("cards");
             String profilePicBase64 = rs.getString("profile_pic");
             registerUser(username, password, nickname, score, money, activeDeck, cardsArray, profilePicBase64);
         }
         rs.close();
+
         statement.close();
     }
 
     private static void registerUser(String username, String password, String nickname, int score, int money, String activeDeck, String cardsArray, String profilePicBase64) throws SQLException {
         User user = new User(username, password, nickname);
+        user.setProfilePicBytes(profilePicBase64 == null ? null : Base64.getDecoder().decode(profilePicBase64));
+        user.setActiveDeck(activeDeck);
         user.increaseScore(score);
         user.setMoney(money);
-        user.setActiveDeck(activeDeck);
-        user.setProfilePicBytes(profilePicBase64 == null ? null : Base64.getDecoder().decode(profilePicBase64));
+
         String[] cards = new Gson().fromJson(cardsArray, String[].class);
         for (String cardName : cards) {
             Card card = Card.getCardByName(cardName);
@@ -80,6 +67,7 @@ public class UsersDatabase {
     private static void addDecksOfUser(User user) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT name, main_deck, side_deck FROM decks WHERE owner=?");
         preparedStatement.setString(1, user.getUsername());
+
         ResultSet rs = preparedStatement.executeQuery();
         while (rs.next()) {
             String name = rs.getString("name");
@@ -111,6 +99,7 @@ public class UsersDatabase {
         statement.executeUpdate("DELETE FROM decks");
         statement.executeUpdate("DELETE FROM users");
         statement.close();
+
         // Save each user
         for (User user : User.getUsers())
             saveUser(user);
