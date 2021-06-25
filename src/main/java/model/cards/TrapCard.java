@@ -45,9 +45,6 @@ public abstract class TrapCard extends Card {
 
     @Override
     public final String toString() {
-        return String.format("Name: %s\n" +
-                "Trap\n" +
-                "Type: %s\n" +
-                "Description: %s", getName(), getTrapCardType().toString(), getDescription());
+        return String.format("Name: %s\nTrap\nType: %s\nDescription: %s", getName(), getTrapCardType().toString(), getDescription());
     }
 }

@@ -9,11 +9,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public abstract class Card implements Comparable<Card> {
-    private final String name;
     private final CardType cardType;
-    private int price;
+    private final String name;
+    private boolean initialized;
     private String description;
-    private boolean initialized = false;
+    private int price;
 
     /**
      * Creates a card. Please note that {@link #init()} is not called in the constructor

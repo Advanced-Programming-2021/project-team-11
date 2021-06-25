@@ -8,8 +8,8 @@ import java.util.Optional;
 
 public abstract class SpellCard extends Card {
     private final static ArrayList<SpellCard> allSpellCards = new ArrayList<>();
-    private final SpellCardType spellCardType;
     private final boolean needsUserInteraction;
+    private final SpellCardType spellCardType;
 
     /**
      * Creates an uninitialized spell card
@@ -62,9 +62,6 @@ public abstract class SpellCard extends Card {
 
     @Override
     public final String toString() {
-        return String.format("Name: %s\n" +
-                "Spell\n" +
-                "Type: %s\n" +
-                "Description: %s", getName(), getSpellCardType().toString(), getDescription());
+        return String.format("Name: %s\nSpell\nType: %s\nDescription: %s", getName(), getSpellCardType().toString(), getDescription());
     }
 }

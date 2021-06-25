@@ -6,9 +6,9 @@ import java.util.Optional;
 public abstract class MonsterCard extends Card {
     private static final ArrayList<MonsterCard> allMonsterCards = new ArrayList<>();
     private final MonsterCardType monsterCardType;
+    private MonsterAttributeType monsterAttributeType;
     private int level, defence, attack;
     private MonsterType monsterType;
-    private MonsterAttributeType monsterAttributeType;
 
     public MonsterCard(String name) {
         super(name, "", CardType.MONSTER, 0);
@@ -102,12 +102,6 @@ public abstract class MonsterCard extends Card {
 
     @Override
     public final String toString() {
-        return String.format("Name: %s\n" +
-                        "Level: %d\n" +
-                        "Type: %s\n" +
-                        "ATK: %d\n" +
-                        "DEF: %d\n" +
-                        "Description: %s",
-                getName(), getLevel(), getMonsterType().toString(), getAttack(), getDefence(), getDescription());
+        return String.format("Name: %s\nLevel: %d\nType: %s\nATK: %d\nDEF: %d\nDescription: %s", getName(), getLevel(), getMonsterType().toString(), getAttack(), getDefence(), getDescription());
     }
 }

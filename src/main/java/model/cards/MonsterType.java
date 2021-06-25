@@ -3,21 +3,21 @@ package model.cards;
 import controller.GeneralUtil;
 
 public enum MonsterType {
-    AQUA,
-    BEAST,
     BEAST_WARRIOR,
-    CYBERSE,
-    DRAGON,
-    FAIRY,
-    FIEND,
-    INSECT,
-    MACHINE,
-    PYRO,
-    ROCK,
     SEA_SERPENT,
     SPELLCASTER,
+    WARRIOR,
     THUNDER,
-    WARRIOR;
+    CYBERSE,
+    MACHINE,
+    DRAGON,
+    INSECT,
+    FAIRY,
+    FIEND,
+    BEAST,
+    AQUA,
+    PYRO,
+    ROCK;
 
     public static MonsterType valueOfCaseInsensitive(String value) {
         return MonsterType.valueOf(value.replace('-', '_').replace(' ', '_').toUpperCase());

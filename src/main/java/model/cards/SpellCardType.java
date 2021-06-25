@@ -3,12 +3,12 @@ package model.cards;
 import controller.GeneralUtil;
 
 public enum SpellCardType {
-    NORMAL,
-    CONTINUES,
     QUICK_PLAY,
+    CONTINUES,
+    NORMAL,
+    RITUAL,
     FIELD,
-    EQUIP,
-    RITUAL;
+    EQUIP;
 
     @Override
     public String toString() {

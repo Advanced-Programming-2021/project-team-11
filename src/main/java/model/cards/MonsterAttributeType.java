@@ -2,10 +2,10 @@ package model.cards;
 
 public enum MonsterAttributeType {
     EARTH,
-    DARK,
     WATER,
-    FIRE,
     LIGHT,
+    DARK,
+    FIRE,
     WIND;
 
     public static MonsterAttributeType valueOfCaseInsensitive(String value) {
