@@ -16,11 +16,12 @@ import model.exceptions.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public class CardSpecificMenus {
-    public static void handleManEaterBugRemoval(PlayerBoard rivalBoard, ManEaterBug card) {
+    public static void handleManEaterBugRemoval(PlayerBoard rivalBoard) {
         // At first check if the rival board is empty; Can't do anything if the board is empty!
         if (rivalBoard.isMonsterZoneEmpty())
             return;
@@ -29,15 +30,17 @@ public class CardSpecificMenus {
         int position;
         while (true) {
             try {
-                position = Integer.parseInt(MenuUtils.readLine());
+                String readLine = MenuUtils.readLine();
+                if (readLine.equals(MenuUtils.CANCEL_COMMAND))
+                    return;
+                position = Integer.parseInt(readLine);
                 if (position >= 1 && position <= 5)
                     break;
             } catch (NumberFormatException ignored) {
             }
             System.out.println(MenuUtils.INVALID_NUMBER);
         }
-        position = DuelMenuUtils.inputToRivalBoard(position);
-        card.activateEffect(null, rivalBoard, null, rivalBoard.getMonsterCards()[position], 0);
+        ManEaterBug.getInstance().activateEffect(null, rivalBoard, null, rivalBoard.getMonsterCards()[position - 1], 0);
     }
 
     public static void handleScannerCardEffect(ArrayList<PlayableCard> rivalGraveyard, PlayableCard scannerCard) throws CantActivateSpellException {
@@ -53,11 +56,12 @@ public class CardSpecificMenus {
             if (command.equals(MenuUtils.CANCEL_COMMAND))
                 return;
             try {
-                index = Integer.parseInt(MenuUtils.readLine());
+                index = Integer.parseInt(command);
+                index--;
             } catch (NumberFormatException ex) {
                 System.out.println(MenuUtils.INVALID_NUMBER);
             }
-            if (rivalGraveyard.get(index).getCard().getCardType() != CardType.MONSTER) {
+            if (index < 0 || index >= rivalGraveyard.size() || rivalGraveyard.get(index).getCard().getCardType() != CardType.MONSTER) {
                 index = -1;
                 System.out.println("Please select a monster card");
             }
@@ -103,7 +107,7 @@ public class CardSpecificMenus {
             return false;
         }
         if (tributes == 3)
-            Arrays.stream(gameRoundController.getRivalBoard().getMonsterCards()).forEach(card -> gameRoundController.getRivalBoard().sendToGraveyard(card));
+            Arrays.stream(gameRoundController.getRivalBoard().getMonsterCards()).filter(Objects::nonNull).forEach(card -> gameRoundController.getRivalBoard().sendToGraveyard(card));
         return true;
     }
 
@@ -123,7 +127,7 @@ public class CardSpecificMenus {
                 String input = MenuUtils.readLine();
                 if (input.equals(MenuUtils.CANCEL_COMMAND))
                     return;
-                handIndex = Integer.parseInt(input);
+                handIndex = Integer.parseInt(input) - 1;
                 if (handIndex < 0 || handIndex >= playerBoard.getHand().size())
                     throw new NumberFormatException();
                 break;
@@ -252,13 +256,17 @@ public class CardSpecificMenus {
             System.out.print("Choose some monsters by their index, separated by ',': ");
             try {
                 for (String number : MenuUtils.readLine().split(","))
-                    indexesOfMonsters.add(Integer.parseInt(number));
+                    indexesOfMonsters.add(Integer.parseInt(number) - 1);
                 // Check level
-                int sum = indexesOfMonsters.stream().mapToInt(i -> ((MonsterCard) board.getSpellCardsList().get(i).getCard()).getLevel()).sum();
-                if (((RitualMonster) list.get(index).getCard()).getLevel() == sum)
-                    break;
-                else
-                    System.out.printf("The sum of levels of card which you have chosen is not %d!\n", ((RitualMonster) list.get(index).getCard()).getLevel());
+                try {
+                    int sum = indexesOfMonsters.stream().mapToInt(i -> ((MonsterCard) board.getMonsterCardsList().get(i).getCard()).getLevel()).sum();
+                    if (((RitualMonster) list.get(index).getCard()).getLevel() == sum)
+                        break;
+                    else
+                        System.out.printf("The sum of levels of card which you have chosen is not %d!\n", ((RitualMonster) list.get(index).getCard()).getLevel());
+                } catch (IndexOutOfBoundsException ex) {
+                    System.out.println("One of your cards position is not valid!");
+                }
             } catch (NumberFormatException ex) {
                 System.out.println(MenuUtils.INVALID_NUMBER);
             }
@@ -269,6 +277,7 @@ public class CardSpecificMenus {
         ArrayList<PlayableCard> monstersToTribute = new ArrayList<>();
         indexesOfMonsters.forEach(i -> monstersToTribute.add(board.getMonsterCardsList().get(i)));
         monstersToTribute.forEach(board::sendToGraveyard);
+        board.getHand().remove(list.get(index));
         board.addMonsterCard(list.get(index));
     }
 
@@ -280,6 +289,8 @@ public class CardSpecificMenus {
         DuelMenuUtils.printNumberedCardList(cards);
         // Let the player choose a card
         int index = MenuUtils.readCardByIndex(cards.size());
+        if (index == -1)
+            return;
         // Summon that card
         gameRoundController.specialSummon((MonsterCard) cards.get(index).getCard(), true);
         gameRoundController.getPlayerBoard().sendToGraveyard(thisCard);
@@ -296,7 +307,7 @@ public class CardSpecificMenus {
         board.getDeck().remove(list.get(index));
         board.getHand().add(new PlayableCard(list.get(index), CardPlaceType.HAND));
         board.shuffleDeck();
-        board.removeHandCard(thisCard);
+        board.sendToGraveyard(thisCard);
     }
 
     public static void handleChangeOfHeart(GameRoundController roundController, PlayableCard thisCard) {
@@ -306,7 +317,7 @@ public class CardSpecificMenus {
         if (index == -1)
             return;
         roundController.changeOfHeartSwapOwner(monsters.get(index));
-        roundController.getPlayerBoard().removeHandCard(thisCard);
+        roundController.getPlayerBoard().sendToGraveyard(thisCard);
     }
 
     public static void equip(GameRoundController roundController, PlayableCard thisCard) {
@@ -354,7 +365,10 @@ public class CardSpecificMenus {
     public static void getMindCrushCard(GameRoundController gameRoundController, PlayableCard thisCard) {
         while (true) {
             System.out.println("Choose a card by it's name.");
-            Card card = Card.getCardByName(MenuUtils.readLine());
+            String name = MenuUtils.readLine();
+            if (name.equals(MenuUtils.CANCEL_COMMAND))
+                break;
+            Card card = Card.getCardByName(name);
             if (card == null) {
                 System.out.println("This card does not exists!");
                 continue;
@@ -368,24 +382,24 @@ public class CardSpecificMenus {
     public static void handleTwinTwisters(GameRoundController round, PlayableCard thisCard) {
         ArrayList<PlayableCard> cards = round.getRivalBoard().getSpellCardsList();
         DuelMenuUtils.printNumberedCardList(cards);
+        System.out.println("Select two cards (use cancel to dont select a card)");
+        int index1 = MenuUtils.readCardByIndex(cards.size());
+        int index2 = MenuUtils.readCardByIndex(cards.size());
+        if (index1 != -1)
+            round.getRivalBoard().sendToGraveyard(cards.get(index1));
+        if (index1 != index2 && index2 != -1)
+            round.getRivalBoard().sendToGraveyard(cards.get(index2));
+        round.getPlayerBoard().getHand().remove(GameUtils.random.nextInt(round.getPlayerBoard().getHand().size()));
+        round.getPlayerBoard().sendToGraveyard(thisCard);
+    }
+
+    public static void handleMysticalSpaceTyphoon(GameRoundController round, PlayableCard thisCard) {
+        ArrayList<PlayableCard> cards = round.getRivalBoard().getSpellCardsList();
+        DuelMenuUtils.printNumberedCardList(cards);
         int index = MenuUtils.readCardByIndex(cards.size());
         if (index == -1)
             return;
         round.getRivalBoard().sendToGraveyard(cards.get(index));
         round.getPlayerBoard().sendToGraveyard(thisCard);
-    }
-
-    public static void handleMysticalSpaceTyphoon(GameRoundController roundController, PlayableCard thisCard) {
-        ArrayList<PlayableCard> cards = roundController.getRivalBoard().getSpellCardsList();
-        DuelMenuUtils.printNumberedCardList(cards);
-        System.out.println("Select two cards (use cancel to dont select a card)");
-        int index1 = MenuUtils.readCardByIndex(cards.size());
-        int index2 = MenuUtils.readCardByIndex(cards.size());
-        if (index1 != -1)
-            roundController.getRivalBoard().sendToGraveyard(cards.get(index1));
-        if (index1 != index2 && index2 != -1)
-            roundController.getRivalBoard().sendToGraveyard(cards.get(index1));
-        roundController.getPlayerBoard().getHand().remove(GameUtils.random.nextInt(roundController.getPlayerBoard().getHand().size()));
-        roundController.getPlayerBoard().sendToGraveyard(thisCard);
     }
 }

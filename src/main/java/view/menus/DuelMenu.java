@@ -325,7 +325,7 @@ public class DuelMenu extends Menu {
             PlayableCard selectedCard = gameController.getRound().returnSelectedCard();
             gameController.getRound().flipSummon();
             if (selectedCard.getCard() instanceof ManEaterBug)
-                CardSpecificMenus.handleManEaterBugRemoval(gameController.getRound().getRivalBoard(), (ManEaterBug) selectedCard.getCard());
+                CardSpecificMenus.handleManEaterBugRemoval(gameController.getRound().getRivalBoard());
             System.out.println("flip summoned successfully");
             printBoard();
         } catch (Exception e) {

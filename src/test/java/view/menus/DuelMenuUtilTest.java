@@ -65,11 +65,6 @@ public class DuelMenuUtilTest {
         assertEquals(3, DuelMenuUtils.inputToPlayerBoard(3));
         assertEquals(0, DuelMenuUtils.inputToPlayerBoard(4));
         assertEquals(4, DuelMenuUtils.inputToPlayerBoard(5));
-        assertEquals(2, DuelMenuUtils.inputToRivalBoard(1));
-        assertEquals(3, DuelMenuUtils.inputToRivalBoard(2));
-        assertEquals(1, DuelMenuUtils.inputToRivalBoard(3));
-        assertEquals(4, DuelMenuUtils.inputToRivalBoard(4));
-        assertEquals(0, DuelMenuUtils.inputToRivalBoard(5));
     }
 
     @Test

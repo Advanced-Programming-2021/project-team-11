@@ -61,13 +61,6 @@ class DuelMenuUtils {
         throw new BooAnException("Invalid input: " + index);
     }
 
-    public static int inputToRivalBoard(int index) {
-        for (int i = 0; i < RIVAL_BOARD_INDEXES.length; i++)
-            if (RIVAL_BOARD_INDEXES[i] == index)
-                return i;
-        throw new BooAnException("Invalid input: " + index);
-    }
-
     public static void printGraveyard(ArrayList<PlayableCard> graveyard, User player) {
         printGraveyard(graveyard, player.getNickname());
     }
