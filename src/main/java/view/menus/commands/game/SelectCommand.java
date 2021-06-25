@@ -73,7 +73,7 @@ public class SelectCommand implements Command {
             case FIELD:
                 return monster == 0 && spell == 0 && hand == 0;
             case HAND:
-                return monster == 0 && spell == 0 && !field && hand <= 6 && hand > 0;
+                return monster == 0 && spell == 0 && !field && hand > 0;
         }
         return false;
     }

@@ -166,14 +166,6 @@ public class PlayableCard {
         checkSpellAbsorption(myBoard, rivalBoard);
     }
 
-    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard rivalCard, boolean isTotalTimeActivatedImportant) {
-        effectActivateCounterRound++;
-        effectActivateCounterTotal++;
-        spellActivated = true;
-        getCard().activateEffect(myBoard, rivalBoard, this, rivalCard, isTotalTimeActivatedImportant ? effectActivateCounterTotal : effectActivateCounterRound);
-        checkSpellAbsorption(myBoard, rivalBoard);
-    }
-
     public boolean isEffectConditionMet(PlayerBoard myBoard, PlayerBoard rivalBoard) {
         return getCard().isConditionMade(myBoard, rivalBoard, this, 0);
     }

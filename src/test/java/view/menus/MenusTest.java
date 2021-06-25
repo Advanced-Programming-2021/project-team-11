@@ -5,6 +5,7 @@ import model.cards.MonsterAttributeType;
 import model.cards.MonsterCard;
 import model.cards.MonsterType;
 import model.cards.SimpleMonster;
+import model.database.CardLoaderTest;
 import org.junit.jupiter.api.*;
 import view.menus.commands.deck.*;
 import view.menus.commands.shop.ShopBuyItemCommand;
@@ -14,6 +15,7 @@ import view.menus.commands.user.UserRegisterCommand;
 public class MenusTest {
     @BeforeAll
     static void setup() {
+        CardLoaderTest.setupCards();
         Setuper.setup();
     }
 
@@ -326,5 +328,257 @@ public class MenusTest {
                 "not this time...\n" +
                 "1 has no active deck\n" +
                 "user logged out successfully!\n", Setuper.getOutputString());
+    }
+
+    @Test
+    void testDuel() {
+        Setuper.setInput("user create -u 1 -p 1 -n 1\n" +
+                "user create -u 2 -p 2 -n 2\n" +
+                "user login -u 1 -p 1\n" +
+                "menu enter Deck\n" +
+                "DECKUP\n" +
+                "DECKUP\n" +
+                "deck set-activate deckup-deck\n" +
+                "menu exit\n" +
+                "logout\n" +
+                "user login -u 2 -p 2\n" +
+                "menu enter Deck\n" +
+                "DECKUP\n" +
+                "DECKUP\n" +
+                "deck set-activate deckup-deck\n" +
+                "menu exit\n" +
+                "menu enter Duel\n" +
+                "duel --new --second-player 1 --rounds 1\n" +
+                "menu show-current\n" +
+                "menu enter Main\n" +
+                "menu exit\n" +
+                "a\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "DRAW Battle OX\n" +
+                "select --hand 7\n" +
+                "card show --selected\n" +
+                "set\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "next phase\n" +
+                "DRAW Fireyarou\n" +
+                "select --hand 7\n" +
+                "summon\n" +
+                "next phase\n" +
+                "select -m 1 -o\n" +
+                "card show --selected\n" +
+                "select -m 1\n" +
+                "card show --selected\n" +
+                "attack 1\n" +
+                "print board\n" +
+                "NUKE\n" +
+                "menu exit\n" +
+                "menu exit\n" +
+                "menu exit\n");
+        new LoginMenu();
+        String toMatchLines = "user created successfully!\n" +
+                "user created successfully!\n" +
+                "user logged in successfully!\n" +
+                "Added a deck with name of deckup-deck :D\n" +
+                "Added a deck with name of deckup-deck :D\n" +
+                "deck activated successfully\n" +
+                "user logged out successfully!\n" +
+                "user logged in successfully!\n" +
+                "Added a deck with name of deckup-deck :D\n" +
+                "Added a deck with name of deckup-deck :D\n" +
+                "deck activated successfully\n" +
+                "\\d is the beginner!\n" +
+                "new card added to the hand: (.+)\n" +
+                "Duel Menu\n" +
+                "menu navigation is not possible\n" +
+                "menu navigation is not possible\n" +
+                "invalid command\n" +
+                "phase: Standby\n" +
+                "phase: Main phase 1\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\n" +
+                "55\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "card selected\n" +
+                "Name: Battle OX\n" +
+                "Level: 4\n" +
+                "Type: Beast Warrior\n" +
+                "ATK: 1700\n" +
+                "DEF: 1000\n" +
+                "Description: A monster with tremendous power, it destroys enemies with a swing of its axe.\n" +
+                "set successfully\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\n" +
+                "55\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tDH\tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "phase: Battle\n" +
+                "phase: Main phase 2\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\n" +
+                "55\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tDH\tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "phase: End\n" +
+                "its \\d's turn\n" +
+                "phase: Draw\n" +
+                "new card added to the hand: (.+)\n" +
+                "phase: Standby\n" +
+                "phase: Main phase 1\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\tc\n" +
+                "54\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tDH\tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "card selected\n" +
+                "summoned successfully\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\tc\n" +
+                "54\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tDH\tE \tE \n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tOO\tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "phase: Battle\n" +
+                "card selected\n" +
+                "card is not visible\n" +
+                "card selected\n" +
+                "Name: Fireyarou\n" +
+                "Level: 4\n" +
+                "Type: Pyro\n" +
+                "ATK: 1300\n" +
+                "DEF: 1000\n" +
+                "Description: A malevolent creature wrapped in flames that attacks enemies with intense fire.\n" +
+                "opponent's monster card was Battle OX and the defense position monster is destroyed\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\tc\n" +
+                "54\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "01\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tOO\tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "\\d:8000\n" +
+                "\tc\tc\tc\tc\tc\tc\n" +
+                "54\n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "01\t\t\t\t\t\tE\n" +
+                "\n" +
+                "--------------------------\n" +
+                "\n" +
+                "00\t\t\t\t\t\tE\n" +
+                "\tE \tE \tOO\tE \tE \n" +
+                "\tE \tE \tE \tE \tE \n" +
+                "\t\t\t\t\t\t54\n" +
+                "c\tc\tc\tc\tc\tc\t\n" +
+                "\\d:8000\n" +
+                "BOOM\n" +
+                "\\d won the whole match with score: 0-1000\n" +
+                "Game Over!\n" +
+                "user logged out successfully!\n";
+        String[] lines = toMatchLines.split("\n");
+        String[] outputLines = Setuper.getOutputString().split("\n");
+        for (int i = 0; i < lines.length; i++)
+            if (!outputLines[i].matches(lines[i]))
+                Assertions.fail(outputLines[i] + " does not match " + lines[i]);
+    }
+
+    @Test
+    void testCardSwap() {
+        Setuper.setInput("user create -u 1 -p 1 -n 1\n" +
+                "user create -u 2 -p 2 -n 2\n" +
+                "user login -u 1 -p 1\n" +
+                "menu enter Deck\n" +
+                "DECKUP\n" +
+                "DECKUP\n" +
+                "deck set-activate deckup-deck\n" +
+                "menu exit\n" +
+                "logout\n" +
+                "user login -u 2 -p 2\n" +
+                "menu enter Deck\n" +
+                "DECKUP\n" +
+                "DECKUP\n" +
+                "deck set-activate deckup-deck\n" +
+                "menu exit\n" +
+                "menu enter Duel\n" +
+                "duel --new --second-player 1 --rounds 3\n" +
+                "NUKE\n" +
+                "menu show-current\n" +
+                "menu enter Deck\n" +
+                "a\n" +
+                "show deck\n" +
+                "deck swap -m kir -s koobs\n" +
+                "deck swap -m \"Battle OX\" -s \"Battle OX\"\n" +
+                "menu exit\n" +
+                "menu exit\n" +
+                "NUKE\n" +
+                "menu exit\n" +
+                "menu exit\n" +
+                "NUKE\n" +
+                "menu exit\n" +
+                "menu exit\n" +
+                "menu exit\n");
+        new LoginMenu();
     }
 }
