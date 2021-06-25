@@ -8,8 +8,7 @@ public class GeneralUtil {
      * @return Formatted name
      */
     public static String formatEnumName(String name) {
-        name = name.replace('_', ' ');
-        String[] words = name.split("\\s");
+        String[] words = name.replace('_', ' ').split("\\s");
         StringBuilder formatted = new StringBuilder(name.length());
         for (String word : words) {
             formatted.append(word.substring(0, 1).toUpperCase());
