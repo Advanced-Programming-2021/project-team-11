@@ -11,12 +11,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class PlayerBoard {
-    private final Player player;
-    private final PlayableCard[] spellCard = new PlayableCard[5];
-    private final PlayableCard[] monsterCard = new PlayableCard[5];
-    private final ArrayList<PlayableCard> graveyard = new ArrayList<>();
     private final ArrayList<PlayableCard> hand = new ArrayList<>(6);
+    private final ArrayList<PlayableCard> graveyard = new ArrayList<>();
+    private final PlayableCard[] monsterCard = new PlayableCard[5];
+    private final PlayableCard[] spellCard = new PlayableCard[5];
     private final ArrayList<Card> deck;
+    private final Player player;
     private PlayableCard field;
     /**
      * The effect of {@link model.cards.spells.SwordsOfRevealingLight} stage
@@ -139,8 +139,7 @@ public class PlayerBoard {
     }
 
     public ArrayList<PlayableCard> getMonsterCardsList() {
-        return Arrays.stream(monsterCard).filter(Objects::nonNull)
-                .collect(Collectors.toCollection(ArrayList::new));
+        return Arrays.stream(monsterCard).filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
     }
 
     public PlayableCard[] getSpellCards() {
@@ -148,8 +147,7 @@ public class PlayerBoard {
     }
 
     public ArrayList<PlayableCard> getSpellCardsList() {
-        return Arrays.stream(spellCard).filter(Objects::nonNull)
-                .collect(Collectors.toCollection(ArrayList::new));
+        return Arrays.stream(spellCard).filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
     }
 
     public ArrayList<Card> getDeck() {
@@ -197,8 +195,7 @@ public class PlayerBoard {
     }
 
     public void tryApplyMessengerOfPeace() {
-        getMonsterCardsList().stream().filter(card -> !card.isHidden() && card.getCard() instanceof MessengerOfPeace)
-                .findFirst().ifPresent(card -> card.activateEffect(this, null, null));
+        getMonsterCardsList().stream().filter(card -> !card.isHidden() && card.getCard() instanceof MessengerOfPeace).findFirst().ifPresent(card -> card.activateEffect(this, null, null));
     }
 
     public void removeSpellTrapCard(TrapCard card) {

@@ -6,8 +6,8 @@ public class UserForScoreboard implements Comparable<UserForScoreboard> {
     private int rank;
 
     public UserForScoreboard(User user) {
-        this.score = user.getScore();
         this.nickname = user.getNickname();
+        this.score = user.getScore();
     }
 
     public String getNickname() {
@@ -33,9 +33,6 @@ public class UserForScoreboard implements Comparable<UserForScoreboard> {
 
     @Override
     public int compareTo(UserForScoreboard u) {
-        int scoreDiff = this.score - u.score;
-        if (scoreDiff == 0)
-            return this.nickname.compareTo(u.nickname);
-        return -scoreDiff;
+        return this.score != u.score ? u.score - this.score: this.nickname.compareTo(u.nickname);
     }
 }

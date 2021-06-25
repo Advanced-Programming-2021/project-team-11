@@ -16,9 +16,9 @@ import java.util.Random;
 public class User {
     private final static Color[] profilePicColors = {Color.BLACK, Color.MAGENTA, Color.PINK, Color.GREEN, Color.red};
     private final static ArrayList<User> users = new ArrayList<>();
-    private final String username;
-    private final HashMap<String, Deck> decks = new HashMap<>();
     private final ArrayList<Card> availableCards = new ArrayList<>();
+    private final HashMap<String, Deck> decks = new HashMap<>();
+    private final String username;
     /**
      * The name of active deck
      */
@@ -117,9 +117,7 @@ public class User {
     }
 
     public Deck getActiveDeck() {
-        if (getActiveDeckName() == null)
-            return null;
-        return getDeckByName(getActiveDeckName());
+        return getActiveDeckName() != null ? getDeckByName(getActiveDeckName()) : null;
     }
 
     public void setActiveDeck(String deckName) {
@@ -143,9 +141,8 @@ public class User {
             long hash = MainMenu.loggedInUser.getNickname().hashCode() + 100000; // some problems with library. It doesn't accept numbers less than 100000
             Color picColor = profilePicColors[new Random(hash).nextInt(profilePicColors.length)];
             return new ByteArrayInputStream(GitHubAvatar.newAvatarBuilder().color(picColor).build().createAsPngBytes(hash));
-        } else {
+        } else
             return new ByteArrayInputStream(getProfilePicBytes());
-        }
     }
 
     public Image getProfilePicImage() {
