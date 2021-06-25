@@ -21,9 +21,9 @@ public class GameController {
     private boolean player1Starting = true;
 
     public GameController(User player1, User player2, GameRounds rounds) {
-        this.rounds = rounds;
         this.player1 = player1;
         this.player2 = player2;
+        this.rounds = rounds;
     }
 
     public GameRoundController getRound() {
@@ -39,13 +39,13 @@ public class GameController {
         if (rounds == GameRounds.ONE) {
             if (player1RoundsWon == 1)
                 return new GameEndResults(player1MaxHealth, player2MaxHealth, true, 1);
-            else if (player2RoundsWon == 1)
+            if (player2RoundsWon == 1)
                 return new GameEndResults(player1MaxHealth, player2MaxHealth, false, 1);
             return null;
         }
         if (player1RoundsWon == 2)
             return new GameEndResults(player1MaxHealth, player2MaxHealth, true, 3);
-        else if (player2RoundsWon == 2)
+        if (player2RoundsWon == 2)
             return new GameEndResults(player1MaxHealth, player2MaxHealth, false, 3);
         return null;
     }
