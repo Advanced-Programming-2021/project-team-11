@@ -76,15 +76,15 @@ public class PlayableCard {
 
     public int getAttackPower(PlayerBoard myBoard, PlayableCard field) {
         if (getCard().getCardType() == CardType.MONSTER)
-            return ((MonsterCard) getCard()).getAttack() + getAttackDelta(myBoard)
-                    + getFieldEffectForAttack(myBoard, field) + getEquippedCardAttackDiff(myBoard);
+            return Math.max(0, ((MonsterCard) getCard()).getAttack() + getAttackDelta(myBoard)
+                    + getFieldEffectForAttack(myBoard, field) + getEquippedCardAttackDiff(myBoard));
         return 0;
     }
 
     public int getDefencePower(PlayerBoard myBoard, PlayableCard field) {
         if (getCard().getCardType() == CardType.MONSTER)
-            return ((MonsterCard) getCard()).getDefence() + getDefenceDelta(myBoard)
-                    + getFieldEffectForDefence(myBoard, field) + getEquippedCardDefenceDiff(myBoard);
+            return Math.max(0, ((MonsterCard) getCard()).getDefence() + getDefenceDelta()
+                    + getFieldEffectForDefence(myBoard, field) + getEquippedCardDefenceDiff(myBoard));
         return 0;
     }
 
@@ -129,7 +129,7 @@ public class PlayableCard {
         return defenceDelta;
     }
 
-    private int getDefenceDelta(PlayerBoard myBoard) {
+    private int getDefenceDelta() {
         int tempDelta = 0;
         return getDefenceDeltaRaw() + tempDelta;
     }
@@ -148,10 +148,6 @@ public class PlayableCard {
 
     public boolean hasEffectActivated() {
         return spellActivated;
-    }
-
-    public void addDefenceDelta(int delta) {
-        defenceDelta += delta;
     }
 
     public void addAttackDelta(int delta) {

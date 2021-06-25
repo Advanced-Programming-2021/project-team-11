@@ -277,15 +277,15 @@ public class GameRoundController {
     }
 
     private void setSpellCard() throws SpellCardZoneFullException {
-        if (getPlayerBoard().isSpellZoneFull())
-            throw new SpellCardZoneFullException();
         if (selectedCard.getCard() instanceof FieldSpellCard)
             setFieldFromSelectedCard();
+        if (getPlayerBoard().isSpellZoneFull())
+            throw new SpellCardZoneFullException();
         else
             setSelectedSpellCard();
     }
 
-    public void flipSummon() throws Exception {
+    public void flipSummon() throws NoCardSelectedYetException, CantChangeCardPositionException, InvalidPhaseActionException, CantFlipSummonException {
         if (selectedCard == null)
             throw new NoCardSelectedYetException();
         if (selectedCard.getCardPlace() != CardPlaceType.MONSTER || isPlayableCardInRivalHand(selectedCard))
@@ -402,15 +402,20 @@ public class GameRoundController {
         if (!(selectedCard.getCardPlace() == CardPlaceType.SPELL || selectedCard.getCardPlace() == CardPlaceType.FIELD
                 || (selectedCard.getCardPlace() == CardPlaceType.HAND && selectedCard.getCard().getCardType() == CardType.SPELL)))
             throw new OnlySpellCardsAllowedException();
-        if (phase != GamePhase.BATTLE_PHASE)
+        if ((!(selectedCard.getCard() instanceof AdvancedRitualArt) && phase != GamePhase.BATTLE_PHASE) || ((selectedCard.getCard() instanceof AdvancedRitualArt) && (phase != GamePhase.MAIN1 && phase != GamePhase.MAIN2)))
             throw new InvalidPhaseActionException();
         if (selectedCard.getCardPlace() == CardPlaceType.HAND && getPlayerBoard().isSpellZoneFull())
             throw new SpellCardZoneFullException();
         if (selectedCard.getCardPlace() == CardPlaceType.HAND) { // Move to spell zone
-            getPlayerBoard().removeHandCard(selectedCard);
-            selectedCard.setCardPlace(CardPlaceType.SPELL);
-            getPlayerBoard().addSpellCard(selectedCard);
-            selectedCard.makeVisible();
+            if (selectedCard.getCard() instanceof FieldSpellCard) {
+                setFieldFromSelectedCard();
+                return ActivateSpellCallback.DONE;
+            } else {
+                getPlayerBoard().removeHandCard(selectedCard);
+                selectedCard.setCardPlace(CardPlaceType.SPELL);
+                getPlayerBoard().addSpellCard(selectedCard);
+                selectedCard.makeVisible();
+            }
         } else if (selectedCard.hasEffectActivated() || !selectedCard.isHidden())
             throw new SpellAlreadyActivatedException();
         return handleActivateSpellCard();
@@ -438,10 +443,10 @@ public class GameRoundController {
         if (!selectedCard.isEffectConditionMet(getPlayerBoard(), getPlayerBoard(), false))
             if (selectedCard.getCard() instanceof SpellCard)
                 ((SpellCard) selectedCard.getCard()).throwConditionNotMadeException();
-        if (selectedCard.getCard() instanceof SpellCard && ((SpellCard) selectedCard.getCard()).getUserNeedInteraction())
-            return ActivateSpellCallback.NORMAL;
         if (selectedCard.getCard() instanceof EquipSpellCard)
             return ActivateSpellCallback.EQUIP;
+        if (selectedCard.getCard() instanceof SpellCard && ((SpellCard) selectedCard.getCard()).getUserNeedInteraction())
+            return ActivateSpellCallback.NORMAL;
         selectedCard.activateEffect(getPlayerBoard(), getRivalBoard(), null);
         return ActivateSpellCallback.DONE;
     }
