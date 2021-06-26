@@ -37,16 +37,15 @@ public class AdvancedRitualArt extends SpellCard {
      */
     public static boolean isRitualSummonPossible(PlayerBoard board) {
         TreeSet<Integer> levelSums = subsetSum(board.getMonsterCardsList().stream().mapToInt(card -> ((MonsterCard) card.getCard()).getLevel()));
-        return board.getHand().stream().anyMatch(card -> card.getCard() instanceof RitualMonster &&
-                levelSums.contains(((RitualMonster) card.getCard()).getLevel()));
+        return board.getHand().stream().anyMatch(card -> card.getCard() instanceof RitualMonster && levelSums.contains(((RitualMonster) card.getCard()).getLevel()));
     }
 
     private static TreeSet<Integer> subsetSum(IntStream stream) {
         ArrayList<Integer> numbers = new ArrayList<>();
         TreeSet<Integer> result = new TreeSet<>();
         stream.forEach(numbers::add);
+
         int total = 1 << numbers.size();
-        // https://www.geeksforgeeks.org/print-sums-subsets-given-set/
         for (int i = 0; i < total; i++) {
             int sum = 0;
             for (int j = 0; j < numbers.size(); j++)
@@ -58,14 +57,10 @@ public class AdvancedRitualArt extends SpellCard {
     }
 
     @Override
-    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {
-
-    }
+    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {}
 
     @Override
-    public void deactivateEffect() {
-
-    }
+    public void deactivateEffect() {}
 
     /**
      * Checks if there is a way for player to tribute the cards needed to summon this card

@@ -19,15 +19,11 @@ public class MagnumShield extends EquipSpellCard {
 
     @Override
     public int getDefenceDelta(PlayableCard card, PlayerBoard playerBoard) {
-        if (!card.isAttacking())
-            return card.getAttackPower(playerBoard, null); // :|
-        return 0;
+        return !card.isAttacking() ? card.getAttackPower(playerBoard, null) : 0;
     }
 
     @Override
     public int getAttackDelta(PlayableCard card, PlayerBoard playerBoard) {
-        if (card.isAttacking())
-            return card.getDefencePower(playerBoard, null); // :|
-        return 0;
+        return card.isAttacking() ? card.getDefencePower(playerBoard, null) : 0;
     }
 }

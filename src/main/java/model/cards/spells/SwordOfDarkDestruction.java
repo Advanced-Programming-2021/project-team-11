@@ -23,15 +23,11 @@ public class SwordOfDarkDestruction extends EquipSpellCard {
 
     @Override
     public int getDefenceDelta(PlayableCard card, PlayerBoard playerBoard) {
-        if (super.isMonsterTypeSame(card, ATTACK_DEFENCE_TYPES))
-            return DEFENCE_DELTA;
-        return 0;
+        return super.isMonsterTypeSame(card, ATTACK_DEFENCE_TYPES) ? DEFENCE_DELTA : 0;
     }
 
     @Override
     public int getAttackDelta(PlayableCard card, PlayerBoard playerBoard) {
-        if (super.isMonsterTypeSame(card, ATTACK_DEFENCE_TYPES))
-            return ATTACK_DELTA;
-        return 0;
+        return super.isMonsterTypeSame(card, ATTACK_DEFENCE_TYPES) ? ATTACK_DELTA : 0;
     }
 }

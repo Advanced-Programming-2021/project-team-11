@@ -37,9 +37,7 @@ public class Raigeki extends SpellCard {
     }
 
     @Override
-    public void deactivateEffect() {
-
-    }
+    public void deactivateEffect() {}
 
     @Override
     public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, int activationCounter) {
@@ -47,7 +45,5 @@ public class Raigeki extends SpellCard {
     }
 
     @Override
-    public void throwConditionNotMadeException() {
-
-    }
+    public void throwConditionNotMadeException() {}
 }

@@ -25,14 +25,10 @@ public class SpellAbsorption extends SpellCard {
     }
 
     @Override
-    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {
-
-    }
+    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {}
 
     @Override
-    public void deactivateEffect() {
-
-    }
+    public void deactivateEffect() {}
 
     @Override
     public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, int activationCounter) {
@@ -40,7 +36,5 @@ public class SpellAbsorption extends SpellCard {
     }
 
     @Override
-    public void throwConditionNotMadeException() {
-
-    }
+    public void throwConditionNotMadeException() {}
 }

@@ -23,9 +23,8 @@ public class ClosedForest extends FieldSpellCard {
 
     @Override
     public int getDefenceDelta(PlayableCard card, PlayerBoard playerBoard) {
-        if (super.isMonsterTypeSame(card, ATTACK_DEFENCE_TYPES))
-            if (playerBoard.getMonsterCardsList().stream().anyMatch(c -> c == card)) // only if this players
-                return ATTACK_DEFENCE_MULTIPLIER * (int) playerBoard.getGraveyard().stream().filter(c -> c.getCard() instanceof MonsterCard).count();
+        if (super.isMonsterTypeSame(card, ATTACK_DEFENCE_TYPES) && playerBoard.getMonsterCardsList().stream().anyMatch(c -> c == card)) // only if this players
+            return ATTACK_DEFENCE_MULTIPLIER * (int) playerBoard.getGraveyard().stream().filter(c -> c.getCard() instanceof MonsterCard).count();
         return 0;
     }
 

@@ -44,7 +44,5 @@ public class ChangeOfHeart extends SpellCard {
     }
 
     @Override
-    public void throwConditionNotMadeException() {
-
-    }
+    public void throwConditionNotMadeException() {}
 }

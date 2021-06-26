@@ -16,9 +16,7 @@ public abstract class EquipAndFieldCards extends SpellCard {
     }
 
     protected final boolean isMonsterTypeSame(PlayableCard card, MonsterType[] expectedTypes) {
-        if (!(card.getCard() instanceof MonsterCard))
-            return false;
-        return Arrays.stream(expectedTypes).anyMatch(type -> ((MonsterCard) card.getCard()).getMonsterType() == type);
+        return card.getCard() instanceof MonsterCard && Arrays.stream(expectedTypes).anyMatch(type -> ((MonsterCard) card.getCard()).getMonsterType() == type);
     }
 
     public abstract int getDefenceDelta(PlayableCard card, PlayerBoard playerBoard);
@@ -26,17 +24,11 @@ public abstract class EquipAndFieldCards extends SpellCard {
     public abstract int getAttackDelta(PlayableCard card, PlayerBoard playerBoard);
 
     @Override
-    public final void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {
-
-    }
+    public final void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {}
 
     @Override
-    public final void deactivateEffect() {
-
-    }
+    public final void deactivateEffect() {}
 
     @Override
-    public final void throwConditionNotMadeException() {
-
-    }
+    public final void throwConditionNotMadeException() {}
 }

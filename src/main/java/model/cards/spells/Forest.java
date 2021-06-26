@@ -22,9 +22,7 @@ public class Forest extends FieldSpellCard {
 
     @Override
     public int getDefenceDelta(PlayableCard card, PlayerBoard playerBoard) {
-        if (super.isMonsterTypeSame(card, ATTACK_DEFENCE_TYPES))
-            return ATTACK_DEFENCE_DELTA;
-        return 0;
+        return super.isMonsterTypeSame(card, ATTACK_DEFENCE_TYPES) ? ATTACK_DEFENCE_DELTA : 0;
     }
 
     @Override
