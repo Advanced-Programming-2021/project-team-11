@@ -26,18 +26,13 @@ public class TrapHole extends TrapCard {
     }
 
     @Override
-    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {
-
-    }
+    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {}
 
     @Override
-    public void deactivateEffect() {
-
-    }
+    public void deactivateEffect() {}
 
     @Override
     public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, int activationCounter) {
-        return rivalBoard.getSpellCardsList().stream().anyMatch(card -> card.getCard() instanceof TrapHole)
-                && ((MonsterCard) thisCard.getCard()).getAttack() >= getMinAttack();
+        return rivalBoard.getSpellCardsList().stream().anyMatch(card -> card.getCard() instanceof TrapHole) && ((MonsterCard) thisCard.getCard()).getAttack() >= getMinAttack();
     }
 }
