@@ -9,8 +9,8 @@ public class ExportedCard {
     private int price;
     // For monsters
     private int level, defence, attack;
-    private MonsterCardType monsterCardType;
     private MonsterType monsterType;
+    private MonsterCardType monsterCardType;
     private MonsterAttributeType monsterAttributeType;
     // For spells
     private SpellCardType spellCardType;

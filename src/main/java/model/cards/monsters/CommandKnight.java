@@ -28,9 +28,7 @@ public class CommandKnight extends InitializableEffectMonsters {
     }
 
     @Override
-    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {
-
-    }
+    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {}
 
     /**
      * The condition determines if this player's card can be attacked or not
@@ -41,7 +39,6 @@ public class CommandKnight extends InitializableEffectMonsters {
      */
     @Override
     public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, int activationCounter) {
-        return thisCard.isAttacking()
-                && rivalBoard.countActiveMonsterCards() - rivalBoard.getMonsterCardsList().stream().filter(x -> x.getCard().getName().equals(getName())).count() >= 1;
+        return thisCard.isAttacking() && rivalBoard.countActiveMonsterCards() - rivalBoard.getMonsterCardsList().stream().filter(x -> x.getCard().getName().equals(getName())).count() >= 1;
     }
 }
