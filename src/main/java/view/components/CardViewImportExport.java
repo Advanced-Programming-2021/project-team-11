@@ -16,30 +16,38 @@ public class CardViewImportExport extends HBox {
     private final ImageView cardImageView = new ImageView();
     private final Text cardNameText = new Text(), cardTypeText = new Text(),
             cardDescriptionText = new Text();
-    private final JFXButton exportButton = new JFXButton("Export");
+    private final JFXButton exportCsvButton = new JFXButton("Export CSV"), exportJsonButton = new JFXButton("Export JSON");
 
-    public CardViewImportExport(Card card, CardViewImportExportClickedListener onClicked) {
+    public CardViewImportExport(Card card, CardViewImportExportClickedListener onJsonClicked, CardViewImportExportClickedListener onCsvClicked) {
         super(5);
         this.card = card;
         super.setAlignment(Pos.CENTER_LEFT);
         super.getStyleClass().add("thin-rounded-card");
         super.setPadding(new Insets(3));
-        initializeComponents(onClicked);
+        initializeComponents(onJsonClicked, onCsvClicked);
         setCardDetails();
     }
 
-    private void initializeComponents(CardViewImportExportClickedListener onClicked) {
+    private void initializeComponents(CardViewImportExportClickedListener onJsonClicked, CardViewImportExportClickedListener onCsvClicked) {
         VBox cardInfoVBox = new VBox(5);
         HBox exportButtonHBox = new HBox();
-        exportButton.setPadding(new Insets(3, 15, 3, 15));
-        exportButton.getStyleClass().add("jfx-button-buy-ok");
-        exportButton.setOnMouseExited(x -> SceneChanger.getScene().setCursor(Cursor.DEFAULT));
-        exportButton.setOnMouseEntered(x -> SceneChanger.getScene().setCursor(Cursor.HAND));
-        exportButton.setOnMouseClicked(x -> onClicked.clicked(this));
+        VBox exportButtonVBox = new VBox(5);
+        styleButton(onCsvClicked, exportCsvButton);
+        styleButton(onJsonClicked, exportJsonButton);
         exportButtonHBox.setAlignment(Pos.CENTER);
-        exportButtonHBox.getChildren().add(exportButton);
+        exportButtonVBox.setAlignment(Pos.CENTER);
+        exportButtonVBox.getChildren().addAll(exportCsvButton, exportJsonButton);
+        exportButtonHBox.getChildren().add(exportButtonVBox);
         cardInfoVBox.getChildren().addAll(cardNameText, cardDescriptionText, cardTypeText, exportButtonHBox);
         super.getChildren().addAll(cardImageView, cardInfoVBox);
+    }
+
+    private void styleButton(CardViewImportExportClickedListener onJsonClicked, JFXButton exportJsonButton) {
+        exportJsonButton.setPadding(new Insets(3, 15, 3, 15));
+        exportJsonButton.getStyleClass().add("jfx-button-buy-ok");
+        exportJsonButton.setOnMouseExited(x -> SceneChanger.getScene().setCursor(Cursor.DEFAULT));
+        exportJsonButton.setOnMouseEntered(x -> SceneChanger.getScene().setCursor(Cursor.HAND));
+        exportJsonButton.setOnMouseClicked(x -> onJsonClicked.clicked(this));
     }
 
     private void setCardDetails() {

@@ -34,20 +34,29 @@ public class ImportExportMenu implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Card.getAllCards().forEach(card -> cards.add(new CardViewImportExport(card, this::clickedExport)));
+        Card.getAllCards().forEach(card -> cards.add(new CardViewImportExport(card, this::clickedJsonExport, this::clickedCsvExport)));
         masonryPane.getChildren().addAll(cards);
         Platform.runLater(() -> scrollPane.requestLayout());
         JFXScrollPane.smoothScrolling(scrollPane);
         userBadge.setUser(MainMenu.loggedInUser);
     }
 
-    private void clickedExport(CardViewImportExport cardViewImportExport) {
+    private void clickedCsvExport(CardViewImportExport cardViewImportExport) {
         Card card = cardViewImportExport.getCard();
+        saveCard(card, false);
+    }
+
+    private void clickedJsonExport(CardViewImportExport cardViewImportExport) {
+        Card card = cardViewImportExport.getCard();
+        saveCard(card, true);
+    }
+
+    private void saveCard(Card card, boolean isJson) {
         String cardName = card.getName();
-        String json = ExportedCard.cardToJson(card);
+        String fileContent = isJson ? ExportedCard.cardToJson(card) : ExportedCard.cardToCsv(card);
         try {
-            String filename = cardName + ".json";
-            ImportExportMenuController.writeFile(filename, json);
+            String filename = cardName + (isJson ? ".json" : ".csv");
+            ImportExportMenuController.writeFile(filename, fileContent);
             AlertsUtil.showSuccess("Saved in " + filename);
         } catch (IOException ex) {
             AlertsUtil.showError("Cannot write file: " + ex.getMessage());
@@ -62,6 +71,7 @@ public class ImportExportMenu implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select The File To Import");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON", "*.json"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV", "*.csv"));
         File file = fileChooser.showOpenDialog(RootMenu.primaryStage);
         if (file != null)
             importCardFinal(file.getAbsolutePath());
@@ -69,7 +79,8 @@ public class ImportExportMenu implements Initializable {
 
     private void importCardFinal(String filename) {
         try {
-            ExportedCard card = ExportedCard.jsonToExportedCard(ImportExportMenuController.readFile(filename));
+            String file = ImportExportMenuController.readFile(filename);
+            ExportedCard card = filename.endsWith(".json") ? ExportedCard.jsonToExportedCard(file) : ExportedCard.csvToExportedCard(file);
             ImportExportMenuController.handleImport(card);
             AlertsUtil.showSuccess("Card imported!");
         } catch (JsonSyntaxException ex) {
