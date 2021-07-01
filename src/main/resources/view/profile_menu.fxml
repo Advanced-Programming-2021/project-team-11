@@ -61,6 +61,8 @@
                                      onMouseClicked="#clickedChangePassword"/>
                     <JfxCursorButton styleClass="jfx-button-raised" text="Upload Picture"
                                      onMouseClicked="#clickedUploadFile"/>
+                    <JfxCursorButton styleClass="jfx-button-raised" text="Remove Picture"
+                                     onMouseClicked="#clickedRemoveProfilePic"/>
                     <JfxCursorButton styleClass="jfx-button-flat" text="Back" onMouseClicked="#clickedBackButton"/>
                     <padding>
                         <Insets bottom="10" top="10" left="10" right="10"/>

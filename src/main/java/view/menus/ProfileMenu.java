@@ -78,6 +78,11 @@ public class ProfileMenu implements Initializable {
         }
     }
 
+    public void clickedRemoveProfilePic(MouseEvent mouseEvent) {
+        MainMenu.loggedInUser.setProfilePicBytes(null);
+        profilePic.setImage(MainMenu.loggedInUser.getProfilePicImage());
+    }
+
     public void clickedChangePassword(MouseEvent mouseEvent) {
         oldPasswordText.setText("");
         newPasswordText.setText("");

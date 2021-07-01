@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXMasonryPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import view.components.HoverButton?>
+<?import view.components.UserBadge?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="view.menus.ImportExportMenu"
+      prefHeight="600.0" prefWidth="800.0">
+    <AnchorPane minHeight="60" maxHeight="60" minWidth="-Infinity" styleClass="dark-background">
+        <UserBadge fx:id="userBadge" layoutX="10" layoutY="10"/>
+        <HoverButton initialWidth="110" initialHeight="55" hoverWidth="110" hoverHeight="55" fontSize="25"
+                     onMouseClicked="#clickedBackButton" text="Back" layoutX="680" layoutY="13"/>
+        <HoverButton initialWidth="110" initialHeight="55" hoverWidth="110" hoverHeight="55" fontSize="25"
+                     onMouseClicked="#clickedImportButton" text="Import" layoutX="550" layoutY="13"/>
+    </AnchorPane>
+    <ScrollPane fitToWidth="true" fx:id="scrollPane" hbarPolicy="NEVER">
+        <JFXMasonryPane fx:id="masonryPane" HSpacing="10" VSpacing="10" styleClass="dark-background">
+            <padding>
+                <Insets top="16" right="16" bottom="16" left="16"/>
+            </padding>
+        </JFXMasonryPane>
+    </ScrollPane>
+</VBox>
+

@@ -22,7 +22,7 @@
                 <HoverButton initialHeight="70.0" initialWidth="230.0" hoverHeight="80" hoverWidth="240"
                              text="Scoreboard" fontSize="30" onMouseClicked="#clickedScoreboardButton"/>
                 <HoverButton initialHeight="70.0" initialWidth="230.0" hoverHeight="80" hoverWidth="240"
-                             text="Import/Export" fontSize="30"/>
+                             text="Import/Export" fontSize="30" onMouseClicked="#clickedImportExportButton"/>
                 <HoverButton initialHeight="70.0" initialWidth="230.0" hoverHeight="80" hoverWidth="240"
                              text="Logout" fontSize="30" onMouseClicked="#clickedLogoutButton"/>
             </VBox>
