@@ -10,7 +10,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import model.UserForScoreboard;
+import model.results.UserForScoreboard;
 
 import java.net.URL;
 import java.util.ResourceBundle;

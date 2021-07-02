@@ -1,195 +1,128 @@
 package view.menus;
 
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.ParameterException;
 import controller.menucontrollers.DeckMenuController;
-import model.User;
-import model.cards.Card;
-import model.cards.CardType;
-import model.exceptions.*;
-import model.results.GetDecksResult;
-import view.menus.commands.CommandUtils;
-import view.menus.commands.deck.*;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.ObservableList;
+import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
+import model.exceptions.DeckDoesNotExistsException;
+import model.exceptions.DeckExistsException;
+import model.results.DeckListTableResult;
+import model.results.UserForScoreboard;
+import view.components.AlertsUtil;
+import view.components.TableButton;
 
-import java.util.ArrayList;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-import static view.menus.MenuUtils.showCard;
-
-public class DeckMenu extends Menu {
-    private final static String SHOW_CARDS_COMMAND = "deck show --cards", SHOW_DECKS_COMMAND = "deck show --all",
-            DECK_UP_CHEAT = "DECKUP";
-    private final User loggedInUser;
-
-    DeckMenu(User loggedInUser) {
-        this.loggedInUser = loggedInUser;
-        openMenu();
-    }
-
-    public static void showDeckCards(ArrayList<Card> cards, boolean isSide) {
-        System.out.printf("%s deck:\n", isSide ? "Side" : "Main");
-        System.out.println("Monsters:");
-        cards.stream().filter(x -> x.getCardType() == CardType.MONSTER).sorted()
-                .forEach(x -> System.out.printf("%s: %s\n", x.getName(), x.getDescription()));
-        System.out.println("Spell and Traps:");
-        cards.stream().filter(x -> x.getCardType() != CardType.MONSTER).sorted()
-                .forEach(x -> System.out.printf("%s: %s\n", x.getName(), x.getDescription()));
-    }
+public class DeckMenu implements Initializable {
+    public VBox tableContainer;
+    private boolean initialized = false;
 
     @Override
-    void openMenu() {
-        while (true) {
-            String command = MenuUtils.readLine();
-            try {
-                if (processMenuCommands(command))
-                    return;
-                continue;
-            } catch (InvalidCommandException ignored) {
+    public void initialize(URL location, ResourceBundle resources) {
+        setupTable();
+    }
+
+    private void setupTable() {
+        if (initialized) // remove old table
+            tableContainer.getChildren().remove(0);
+        initialized = true;
+        // Get the decks
+        TableView<DeckListTableResult> table = new TableView<>();
+        ObservableList<DeckListTableResult> decks = MainMenu.loggedInUser.getDecksForTable();
+        // Setup columns
+        TableColumn<DeckListTableResult, String> deckNameColumn = new TableColumn<>("Deck Name");
+        deckNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        deckNameColumn.setPrefWidth(160);
+        TableColumn<DeckListTableResult, Integer> mainDeckSizeColumn = new TableColumn<>("Main Deck Size");
+        mainDeckSizeColumn.setCellValueFactory(new PropertyValueFactory<>("mainDeckSize"));
+        mainDeckSizeColumn.setPrefWidth(160);
+        TableColumn<DeckListTableResult, Integer> sideDeckSizeColumn = new TableColumn<>("Side Deck Size");
+        sideDeckSizeColumn.setCellValueFactory(new PropertyValueFactory<>("sideDeckSize"));
+        sideDeckSizeColumn.setPrefWidth(160);
+        TableColumn<DeckListTableResult, String> deleteColumn = new TableColumn<>("Delete");
+        deleteColumn.setPrefWidth(50);
+        deleteColumn.setCellValueFactory(new PropertyValueFactory<>("DUMMY"));
+        deleteColumn.setCellFactory(TableButton.createTableButton("❌", this::handleRemoveDeck, TableButton.Color.RED));
+        TableColumn<DeckListTableResult, String> activateColumn = new TableColumn<>("Activate");
+        activateColumn.setPrefWidth(70);
+        activateColumn.setCellValueFactory(new PropertyValueFactory<>("DUMMY"));
+        activateColumn.setCellFactory(TableButton.createTableButton("✅", this::handleActiveDeck, TableButton.Color.GREEN));
+        TableColumn<DeckListTableResult, String> editColumn = new TableColumn<>("Edit");
+        editColumn.setPrefWidth(50);
+        editColumn.setCellValueFactory(new PropertyValueFactory<>("DUMMY"));
+        editColumn.setCellFactory(TableButton.createTableButton("✏", this::handleEditDeck, TableButton.Color.BLUE));
+        TableColumn<DeckListTableResult, Boolean> validColumn = new TableColumn<>("Valid");
+        validColumn.setPrefWidth(50);
+        validColumn.setCellValueFactory(cellData -> new SimpleBooleanProperty(cellData.getValue().isValid()));
+        validColumn.setCellFactory(col -> new TableCell<DeckListTableResult, Boolean>() {
+            @Override
+            protected void updateItem(Boolean item, boolean empty) {
+                super.updateItem(item, empty);
+                setAlignment(Pos.CENTER);
+                setText(empty ? null : (item ? "✅" : "❌"));
             }
-            // Try other commands
-            if (addDeck(command) || setActiveDeck(command) || deleteDeck(command) || addCardToDeck(command)
-                    || removeCardFromDeck(command) || showDeckCards(command) || showCard(command))
-                continue;
-            if (command.equals(SHOW_DECKS_COMMAND)) {
-                showAllDecks();
-                continue;
+        });
+        // Setup the table
+        table.setRowFactory(tv -> new TableRow<DeckListTableResult>() {
+            @Override
+            public void updateItem(DeckListTableResult item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item != null && item.isActive())
+                    setStyle(getStyle() + "; -fx-background-color: #81C784;");
             }
-            if (command.equals(SHOW_CARDS_COMMAND)) {
-                showAllCards();
-                continue;
-            }
-            if (command.equals(DECK_UP_CHEAT)) {
-                deckUpCheat();
-                continue;
-            }
-            System.out.println(MenuUtils.INVALID_COMMAND);
-        }
+        });
+        table.setItems(decks);
+        table.setSelectionModel(null);
+        table.getColumns().add(deckNameColumn);
+        table.getColumns().add(mainDeckSizeColumn);
+        table.getColumns().add(sideDeckSizeColumn);
+        table.getColumns().add(deleteColumn);
+        table.getColumns().add(activateColumn);
+        table.getColumns().add(editColumn);
+        table.getColumns().add(validColumn);
+        // Show it
+        table.setPrefSize(600, 600);
+        tableContainer.getChildren().add(0, table);
     }
 
-    private boolean addDeck(String command) {
+    private void handleRemoveDeck(DeckListTableResult deck) {
         try {
-            DeckMenuController.addDeck(loggedInUser, new DeckCreateCommand().removePrefix(command));
-            System.out.println("deck created successfully!");
-            return true;
-        } catch (DeckExistsException e) {
-            System.out.println(e.getMessage());
-            return true;
-        } catch (InvalidCommandException ignored) {
-            return false;
+            DeckMenuController.deleteDeck(MainMenu.loggedInUser, deck.getName());
+        } catch (DeckDoesNotExistsException ignored) {
         }
+        setupTable();
     }
 
-    private boolean setActiveDeck(String command) {
+    private void handleActiveDeck(DeckListTableResult deck) {
         try {
-            DeckMenuController.setActiveDeck(loggedInUser, new DeckSetActiveCommand().removePrefix(command));
-            System.out.println("deck activated successfully");
-            return true;
-        } catch (DeckDoesNotExistsException e) {
-            System.out.println(e.getMessage());
-            return true;
-        } catch (InvalidCommandException e) {
-            return false;
+            DeckMenuController.setActiveDeck(MainMenu.loggedInUser, deck.getName());
+        } catch (DeckDoesNotExistsException ignored) {
         }
+        setupTable();
     }
 
-    private boolean deleteDeck(String command) {
+    private void handleEditDeck(DeckListTableResult deck) {
+        // TODO
+    }
+
+    public void clickedBackButton(MouseEvent mouseEvent) {
+        SceneChanger.changeScene(MenuNames.MAIN);
+    }
+
+    public void clickedNewDeckButton(MouseEvent mouseEvent) {
+        String deckName = AlertsUtil.getTextAlert("Enter your deck name");
         try {
-            DeckMenuController.deleteDeck(loggedInUser, new DeckDeleteCommand().removePrefix(command));
-            System.out.println("deck deleted successfully");
-            return true;
-        } catch (DeckDoesNotExistsException e) {
-            System.out.println(e.getMessage());
-            return true;
-        } catch (InvalidCommandException e) {
-            return false;
+            DeckMenuController.addDeck(MainMenu.loggedInUser, deckName);
+            AlertsUtil.showSuccess("Deck added!");
+            setupTable();
+        } catch (DeckExistsException ex) {
+            AlertsUtil.showError(ex);
         }
-    }
-
-    private boolean addCardToDeck(String command) {
-        try {
-            DeckAddCardCommand addCardCommand = new DeckAddCardCommand();
-            JCommander.newBuilder()
-                    .addObject(addCardCommand)
-                    .build()
-                    .parse(CommandUtils.translateCommandline(addCardCommand.removePrefix(command)));
-            DeckMenuController.addCardToDeck(loggedInUser, addCardCommand.getDeckName(), addCardCommand.getCardName(), addCardCommand.isSide());
-            System.out.println("card added to deck successfully");
-            return true;
-        } catch (CardNotExistsException | DeckDoesNotExistsException | DeckSideOrMainFullException | DeckHaveThreeCardsException e) {
-            System.out.println(e.getMessage());
-            return true;
-        } catch (InvalidCommandException | ParameterException e) {
-            return false;
-        }
-    }
-
-    private boolean removeCardFromDeck(String command) {
-        try {
-            DeckRemoveCardCommand removeCardCommand = new DeckRemoveCardCommand();
-            JCommander.newBuilder()
-                    .addObject(removeCardCommand)
-                    .build()
-                    .parse(CommandUtils.translateCommandline(removeCardCommand.removePrefix(command)));
-            DeckMenuController.removeCardFromDeck(loggedInUser, removeCardCommand.getDeckName(), removeCardCommand.getCardName(), removeCardCommand.isSide());
-            System.out.println("card removed form deck successfully");
-            return true;
-        } catch (DeckCardNotExistsException | DeckDoesNotExistsException e) {
-            System.out.println(e.getMessage());
-            return true;
-        } catch (InvalidCommandException | ParameterException e) {
-            return false;
-        }
-    }
-
-    private void showAllDecks() {
-        GetDecksResult result = DeckMenuController.getDecks(loggedInUser);
-        System.out.println("Decks:");
-        System.out.println("Active deck:");
-        if (result.getActiveDeck() != null)
-            System.out.println(result.getActiveDeck().toString());
-        System.out.println("Other decks:");
-        for (GetDecksResult.DeckResult deck : result.getOtherDecks())
-            System.out.println(deck.toString());
-    }
-
-    private boolean showDeckCards(String command) {
-        try {
-            DeckShowCommand showDeckCommand = new DeckShowCommand();
-            JCommander.newBuilder()
-                    .addObject(showDeckCommand)
-                    .build()
-                    .parse(CommandUtils.translateCommandline(showDeckCommand.removePrefix(command)));
-            ArrayList<Card> cards = DeckMenuController.getDeckCards(loggedInUser, showDeckCommand.getDeckName(), showDeckCommand.isSide());
-            System.out.printf("Deck: %s\n", showDeckCommand.getDeckName());
-            showDeckCards(cards, showDeckCommand.isSide());
-            return true;
-        } catch (DeckDoesNotExistsException e) {
-            System.out.println(e.getMessage());
-            return true;
-        } catch (InvalidCommandException | ParameterException e) {
-            return false;
-        }
-    }
-
-    /**
-     * Adds a deck with all cards to user
-     */
-    private void deckUpCheat() {
-        String deckName = DeckMenuController.addAllCardsToNewDeck(loggedInUser);
-        System.out.println("Added a deck with name of " + deckName + " :D");
-    }
-
-    private void showAllCards() {
-        DeckMenuController.getAllCards(loggedInUser).stream().sorted()
-                .forEach(x -> System.out.printf("%s:%s\n", x.getName(), x.getDescription()));
-    }
-
-    @Override
-    void enterMenu(MenuNames menu) {
-        System.out.println(MenuUtils.MENU_NAV_FAILED);
-    }
-
-    @Override
-    void printMenu() {
-        System.out.println("Deck Menu");
     }
 }

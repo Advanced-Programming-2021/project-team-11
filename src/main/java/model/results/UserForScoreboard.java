@@ -1,4 +1,6 @@
-package model;
+package model.results;
+
+import model.User;
 
 public class UserForScoreboard implements Comparable<UserForScoreboard> {
     private final String nickname;

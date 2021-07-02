@@ -44,4 +44,8 @@ public class MainMenu implements Initializable {
     public void clickedImportExportButton(MouseEvent mouseEvent) {
         SceneChanger.changeScene(MenuNames.IMPORT_EXPORT);
     }
+
+    public void clickedDecksButton(MouseEvent mouseEvent) {
+        SceneChanger.changeScene(MenuNames.DECK);
+    }
 }

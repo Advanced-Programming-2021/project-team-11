@@ -39,8 +39,8 @@ public class DuelChangeSideDeckMenu extends Menu {
     private boolean showDeck(String command) {
         if (!command.equals(SHOW_DECK_COMMAND))
             return false;
-        DeckMenu.showDeckCards(toChangeUser.getActiveDeck().getMainDeck(), false);
-        DeckMenu.showDeckCards(toChangeUser.getActiveDeck().getSideDeck(), true);
+        //DeckMenu2.showDeckCards(toChangeUser.getActiveDeck().getMainDeck(), false);
+        //DeckMenu2.showDeckCards(toChangeUser.getActiveDeck().getSideDeck(), true);
         return true;
     }
 

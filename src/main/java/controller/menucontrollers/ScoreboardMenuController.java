@@ -3,7 +3,7 @@ package controller.menucontrollers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.User;
-import model.UserForScoreboard;
+import model.results.UserForScoreboard;
 
 import java.util.ArrayList;
 import java.util.TreeSet;
