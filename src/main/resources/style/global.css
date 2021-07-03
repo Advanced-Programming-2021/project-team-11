@@ -28,6 +28,15 @@
     -fx-background-color: #263238;
 }
 
+.white-background {
+    -fx-background-color: white;
+}
+
+.dark-scroll-pane {
+    -fx-background: #263238;
+    -fx-border-color: #263238;
+}
+
 .jfx-button-buy-ok {
     -jfx-button-type: RAISED;
     -fx-background-color: green;

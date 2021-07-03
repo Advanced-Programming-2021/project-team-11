@@ -64,4 +64,11 @@ public class Deck {
         return countNumberOfCardsInTotal(card) >= 3;
     }
 
+    public String getSummery() {
+        StringBuilder stringBuilder = new StringBuilder();
+        mainDeck.forEach(x -> stringBuilder.append(x.getName()).append('\n'));
+        sideDeck.forEach(x -> stringBuilder.append(x.getName()).append('\n'));
+        return stringBuilder.length() == 0 ? "Empty Deck!" : stringBuilder.toString();
+    }
+
 }

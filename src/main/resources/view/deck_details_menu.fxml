@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import view.components.HoverButton?>
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.menus.DeckDetailsMenu">
+    <ImageView fitHeight="600.0" fitWidth="800.0">
+        <Image url="@../assets/main-background.png"/>
+    </ImageView>
+    <AnchorPane layoutX="10" layoutY="8" maxHeight="50" minWidth="780" maxWidth="780" styleClass="white-background">
+        <HoverButton initialWidth="110" initialHeight="55" hoverWidth="110" hoverHeight="55" fontSize="25"
+                     onMouseClicked="#clickedBackButton" text="Back" layoutX="650" layoutY="5"/>
+        <Text fx:id="deckName" layoutX="50" layoutY="36" fill="white" stroke="black">
+            <font>
+                <Font size="30"/>
+            </font>
+        </Text>
+    </AnchorPane>
+    <ScrollPane fx:id="mainDeckScrollPane" fitToWidth="true" hbarPolicy="NEVER" AnchorPane.bottomAnchor="270"
+                AnchorPane.leftAnchor="30" AnchorPane.rightAnchor="320" AnchorPane.topAnchor="60" styleClass="dark-scroll-pane">
+        <AnchorPane fx:id="mainDeckAnchorPane" styleClass="dark-background">
+            <padding>
+                <Insets bottom="16" left="16" right="16" top="16"/>
+            </padding>
+        </AnchorPane>
+    </ScrollPane>
+    <ScrollPane fx:id="sideDeckScrollPane" fitToWidth="true" hbarPolicy="NEVER" AnchorPane.bottomAnchor="30"
+                AnchorPane.leftAnchor="30" AnchorPane.rightAnchor="320" AnchorPane.topAnchor="360" styleClass="dark-scroll-pane">
+        <AnchorPane fx:id="sideDeckAnchorPane" styleClass="dark-background">
+            <padding>
+                <Insets bottom="16" left="16" right="16" top="16"/>
+            </padding>
+        </AnchorPane>
+    </ScrollPane>
+    <ScrollPane fx:id="inventoryScrollPane" fitToWidth="true" hbarPolicy="NEVER" AnchorPane.bottomAnchor="30"
+                AnchorPane.leftAnchor="500" AnchorPane.rightAnchor="25" AnchorPane.topAnchor="60" styleClass="dark-scroll-pane">
+        <AnchorPane fx:id="inventoryAnchorPane" styleClass="dark-background">
+            <padding>
+                <Insets bottom="16" left="16" right="16" top="16"/>
+            </padding>
+        </AnchorPane>
+    </ScrollPane>
+</AnchorPane>

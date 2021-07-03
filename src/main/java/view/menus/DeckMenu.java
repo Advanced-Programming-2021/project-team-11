@@ -5,14 +5,16 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import model.exceptions.DeckDoesNotExistsException;
 import model.exceptions.DeckExistsException;
 import model.results.DeckListTableResult;
-import model.results.UserForScoreboard;
 import view.components.AlertsUtil;
 import view.components.TableButton;
 
@@ -68,6 +70,10 @@ public class DeckMenu implements Initializable {
                 setText(empty ? null : (item ? "✅" : "❌"));
             }
         });
+        TableColumn<DeckListTableResult, String> sneakPeakColumn = new TableColumn<>("Sneak Peak");
+        sneakPeakColumn.setPrefWidth(100);
+        sneakPeakColumn.setCellValueFactory(new PropertyValueFactory<>("DUMMY"));
+        sneakPeakColumn.setCellFactory(TableButton.createTableTooltipForDeck("👁"));
         // Setup the table
         table.setRowFactory(tv -> new TableRow<DeckListTableResult>() {
             @Override
@@ -86,6 +92,7 @@ public class DeckMenu implements Initializable {
         table.getColumns().add(activateColumn);
         table.getColumns().add(editColumn);
         table.getColumns().add(validColumn);
+        table.getColumns().add(sneakPeakColumn);
         // Show it
         table.setPrefSize(600, 600);
         tableContainer.getChildren().add(0, table);
@@ -108,7 +115,9 @@ public class DeckMenu implements Initializable {
     }
 
     private void handleEditDeck(DeckListTableResult deck) {
-        // TODO
+        DeckDetailsMenu.toEditDeck = MainMenu.loggedInUser.getDecks().get(deck.getName());
+        DeckDetailsMenu.toEditDeckName = deck.getName();
+        SceneChanger.changeScene(MenuNames.DECK_DETAILS);
     }
 
     public void clickedBackButton(MouseEvent mouseEvent) {
@@ -119,8 +128,8 @@ public class DeckMenu implements Initializable {
         String deckName = AlertsUtil.getTextAlert("Enter your deck name");
         try {
             DeckMenuController.addDeck(MainMenu.loggedInUser, deckName);
-            AlertsUtil.showSuccess("Deck added!");
             setupTable();
+            AlertsUtil.showSuccess("Deck added!");
         } catch (DeckExistsException ex) {
             AlertsUtil.showError(ex);
         }
