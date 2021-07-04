@@ -73,6 +73,11 @@ public class DeckMenuController {
         user.addCardToPlayer(card);
     }
 
+    public static void swapCardBetweenDecks(User user, String deckName, String cardName, boolean fromSide) throws DeckDoesNotExistsException, DeckCardNotExistsException, DeckSideOrMainFullException, CardNotExistsException, DeckHaveThreeCardsException {
+        removeCardFromDeck(user, deckName, cardName, fromSide);
+        addCardToDeck(user, deckName, cardName, !fromSide);
+    }
+
     public static GetDecksResult getDecks(User user) {
         String activeDeckName = user.getActiveDeckName();
         TreeSet<GetDecksResult.DeckResult> otherDecks = new TreeSet<>();

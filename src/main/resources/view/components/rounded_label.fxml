@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Text?>
+<fx:root type="javafx.scene.layout.HBox" xmlns="http://javafx.com/javafx"
+         xmlns:fx="http://javafx.com/fxml" alignment="CENTER" maxWidth="100" maxHeight="30" minWidth="100"
+         minHeight="30" styleClass="rounded-card" spacing="5">
+    <Text fx:id="text"/>
+</fx:root>
