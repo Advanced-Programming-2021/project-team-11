@@ -3,6 +3,7 @@ package view.menus;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXMasonryPane;
 import com.jfoenix.controls.JFXScrollPane;
+import controller.menucontrollers.DeckMenuController;
 import controller.menucontrollers.ShopMenuController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -50,6 +51,14 @@ public class ShopMenu implements Initializable {
         Platform.runLater(() -> scrollPane.requestLayout());
         JFXScrollPane.smoothScrolling(scrollPane);
         buyConfirmDialog.setDialogContainer(rootStackPane);
+        userBadge.setOnMouseClicked(e -> {
+            if (e.isAltDown())
+                DeckMenuController.addAllCardsToNewDeck(MainMenu.loggedInUser);
+            if (e.isControlDown()) {
+                ShopMenuController.addAllCardsCheat(MainMenu.loggedInUser);
+                Platform.runLater(() -> cards.forEach(CardShopViewCard::increaseUserStock));
+            }
+        });
         updateUserBadge();
     }
 

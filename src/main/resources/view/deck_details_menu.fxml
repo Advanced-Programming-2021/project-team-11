@@ -17,7 +17,7 @@
     <AnchorPane layoutX="25" layoutY="8" maxHeight="50" minWidth="750" maxWidth="750" styleClass="thin-rounded-card">
         <HoverButton initialWidth="110" initialHeight="55" hoverWidth="110" hoverHeight="55" fontSize="25"
                      onMouseClicked="#clickedBackButton" text="Back" layoutX="640" layoutY="5"/>
-        <Text fx:id="deckName" layoutX="50" layoutY="36" fill="white" stroke="black">
+        <Text fx:id="deckName" layoutX="20" layoutY="35" fill="white" stroke="black">
             <font>
                 <Font size="30"/>
             </font>

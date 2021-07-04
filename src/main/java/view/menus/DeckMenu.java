@@ -127,6 +127,8 @@ public class DeckMenu implements Initializable {
 
     public void clickedNewDeckButton(MouseEvent mouseEvent) {
         String deckName = AlertsUtil.getTextAlert("Enter your deck name");
+        if (deckName == null)
+            return;
         try {
             DeckMenuController.addDeck(MainMenu.loggedInUser, deckName);
             setupTable();
