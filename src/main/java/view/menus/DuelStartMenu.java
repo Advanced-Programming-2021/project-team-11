@@ -2,6 +2,7 @@ package view.menus;
 
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXTextField;
+import controller.GameController;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.input.MouseEvent;
@@ -10,6 +11,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import model.User;
 import model.enums.CoinFlipResult;
+import model.enums.GameRounds;
+import model.exceptions.UserDeckIsInvalidException;
+import model.exceptions.UserHaveNoActiveDeckException;
 import view.components.*;
 
 import java.net.URL;
@@ -17,7 +21,7 @@ import java.util.ResourceBundle;
 
 public class DuelStartMenu implements Initializable {
     private static User guest;
-    private static int rounds = 1;
+    private static GameRounds rounds;
     private static CoinFlipResult bet;
     public JfxCursorButton dialogCancelButton, dialogTailsButton, dialogHeadsButton;
     @FXML
@@ -41,14 +45,14 @@ public class DuelStartMenu implements Initializable {
     }
 
     public void clickedSingleButton(MouseEvent mouseEvent) {
-        startGame(1);
+        startGame(GameRounds.ONE);
     }
 
     public void clickedMatchButton(MouseEvent mouseEvent) {
-        startGame(3);
+        startGame(GameRounds.THREE);
     }
 
-    private void startGame(int rounds) {
+    private void startGame(GameRounds rounds) {
         DuelStartMenu.rounds = rounds;
         guest = User.getUserByUsername(otherName.getText());
         if (guest == null) {
@@ -59,13 +63,13 @@ public class DuelStartMenu implements Initializable {
             AlertsUtil.showError("You played yourself!");
             return;
         }
-        /*try {
+        try {
             MainMenu.loggedInUser.validateUserActiveDeck();
             guest.validateUserActiveDeck();
         } catch (UserHaveNoActiveDeckException | UserDeckIsInvalidException e) {
             AlertsUtil.showError(e);
             return;
-        }*/
+        }
         dialogContainer.getChildren().clear();
         dialogContainer.getChildren().add(new CoinFlip(this::coinFlippedCallback));
         coinFlipDialog.show();
@@ -75,7 +79,8 @@ public class DuelStartMenu implements Initializable {
         DuelMenu.player1 = result == bet ? MainMenu.loggedInUser : guest;
         DuelMenu.player2 = result == bet ? guest : MainMenu.loggedInUser;
         AlertsUtil.showSuccess(DuelMenu.player1.getNickname() + " is the starter!", () -> {
-
+            DuelMenu.gameController = new GameController(DuelMenu.player1, DuelMenu.player2, rounds);
+            SceneChanger.changeScene(MenuNames.DUEL);
         });
     }
 

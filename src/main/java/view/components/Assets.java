@@ -19,6 +19,7 @@ public class Assets {
     public final static ImageCursor UNAVAILABLE_CURSOR = new ImageCursor(new Image(Objects.requireNonNull(RootMenu.class.getResource("/assets/unavailable_cursor.png")).toExternalForm()));
     private final static Image COIN_HEADS = new Image(Objects.requireNonNull(RootMenu.class.getResource("/assets/coins/heads.png")).toExternalForm());
     private final static Image COIN_TAILS = new Image(Objects.requireNonNull(RootMenu.class.getResource("/assets/coins/tails.png")).toExternalForm());
+    private final static Image NORMAL_FIELD = new Image(Objects.requireNonNull(RootMenu.class.getResource("/assets/fields/Normal.bmp")).toExternalForm());
 
     public static void setMenuBackgroundImage(Region borderPane) {
         borderPane.setBackground(new Background(new BackgroundImage(Assets.MENU_BACKGROUND, BackgroundRepeat.NO_REPEAT,
