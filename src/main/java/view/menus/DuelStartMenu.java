@@ -1,88 +1,106 @@
 package view.menus;
 
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.ParameterException;
-import controller.GameUtils;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXTextField;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import model.User;
-import model.enums.GameRounds;
-import model.exceptions.*;
-import view.menus.commands.CommandUtils;
-import view.menus.commands.duelstart.DuelStartCommand;
+import model.enums.CoinFlipResult;
+import view.components.*;
 
-public class DuelStartMenu extends Menu {
-    private final User player1;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-    DuelStartMenu(User player1) {
-        this.player1 = player1;
-        openMenu();
-    }
+public class DuelStartMenu implements Initializable {
+    private static User guest;
+    private static int rounds = 1;
+    private static CoinFlipResult bet;
+    public JfxCursorButton dialogCancelButton, dialogTailsButton, dialogHeadsButton;
+    @FXML
+    private HBox dialogContainer;
+    @FXML
+    private JFXDialog coinFlipDialog;
+    @FXML
+    private StackPane dialogsStack;
+    @FXML
+    private JFXTextField otherName;
+    @FXML
+    private BorderPane rootPane;
+    @FXML
+    private UserBadge userBadge;
 
     @Override
-    void openMenu() {
-        while (true) {
-            String command = MenuUtils.readLine();
-            try {
-                if (processMenuCommands(command))
-                    return;
-                continue;
-            } catch (InvalidCommandException ignored) {
-            }
-            // Here we should start a duel. Read the command until we read the start
-            if (!startRound(command))
-                System.out.println(MenuUtils.INVALID_COMMAND);
+    public void initialize(URL location, ResourceBundle resources) {
+        Assets.setMenuBackgroundImage(rootPane);
+        userBadge.setUser(MainMenu.loggedInUser);
+        coinFlipDialog.setDialogContainer(dialogsStack);
+    }
+
+    public void clickedSingleButton(MouseEvent mouseEvent) {
+        startGame(1);
+    }
+
+    public void clickedMatchButton(MouseEvent mouseEvent) {
+        startGame(3);
+    }
+
+    private void startGame(int rounds) {
+        DuelStartMenu.rounds = rounds;
+        guest = User.getUserByUsername(otherName.getText());
+        if (guest == null) {
+            AlertsUtil.showError("User with this username does not exists!");
+            return;
         }
-    }
-
-    private boolean startRound(String command) {
-        try {
-            DuelStartCommand duelStartCommand = new DuelStartCommand();
-            JCommander.newBuilder()
-                    .addObject(duelStartCommand)
-                    .build()
-                    .parse(CommandUtils.translateCommandline(duelStartCommand.removePrefix(command)));
-            if (!duelStartCommand.isValid())
-                return false;
-            if (duelStartCommand.getRounds() != 3 && duelStartCommand.getRounds() != 1)
-                throw new InvalidRoundNumbersException();
-            if (duelStartCommand.isAi())
-                startAiDuel(duelStartCommand.getRounds());
-            else
-                startMultiplayerDuel(duelStartCommand.getSecondPlayerName(), duelStartCommand.getRounds());
-            return true;
-        } catch (InvalidCommandException e) {
-            return false;
-        } catch (InvalidRoundNumbersException | UsernameNotExistsException | UserHaveNoActiveDeckException
-                | UserDeckIsInvalidException | PlayedYourselfException | ParameterException e) {
-            System.out.println(e.getMessage());
-            return true;
+        if (guest == MainMenu.loggedInUser) {
+            AlertsUtil.showError("You played yourself!");
+            return;
         }
+        /*try {
+            MainMenu.loggedInUser.validateUserActiveDeck();
+            guest.validateUserActiveDeck();
+        } catch (UserHaveNoActiveDeckException | UserDeckIsInvalidException e) {
+            AlertsUtil.showError(e);
+            return;
+        }*/
+        dialogContainer.getChildren().clear();
+        dialogContainer.getChildren().add(new CoinFlip(this::coinFlippedCallback));
+        coinFlipDialog.show();
     }
 
-    private void startMultiplayerDuel(String secondPlayerUsername, int rounds) throws UserHaveNoActiveDeckException, UsernameNotExistsException, UserDeckIsInvalidException, PlayedYourselfException {
-        User player2 = User.getUserByUsername(secondPlayerUsername);
-        if (player2 == null)
-            throw new UsernameNotExistsException();
-        if (player1 == player2)
-            throw new PlayedYourselfException();
-        // Check both players decks
-        player1.validateUserActiveDeck();
-        player2.validateUserActiveDeck();
-        // Draw to get the first player
-        boolean isPlayer1Starter = GameUtils.random.nextBoolean();
-        new DuelMenu(isPlayer1Starter ? player1 : player2, isPlayer1Starter ? player2 : player1, rounds == 1 ? GameRounds.ONE : GameRounds.THREE);
+    private void coinFlippedCallback(CoinFlipResult result) {
+        DuelMenu.player1 = result == bet ? MainMenu.loggedInUser : guest;
+        DuelMenu.player2 = result == bet ? guest : MainMenu.loggedInUser;
+        AlertsUtil.showSuccess(DuelMenu.player1.getNickname() + " is the starter!", () -> {
+
+        });
     }
 
-    private void startAiDuel(int rounds) {
-        System.out.println("not this time...");
+    public void clickedBackButton(MouseEvent mouseEvent) {
+        SceneChanger.changeScene(MenuNames.MAIN);
     }
 
-    @Override
-    void enterMenu(MenuNames menu) {
-        System.out.println(MenuUtils.MENU_NAV_FAILED);
+    public void clickedDialogClose(MouseEvent mouseEvent) {
+        coinFlipDialog.close();
     }
 
-    @Override
-    void printMenu() {
-        System.out.println("Duel Menu");
+    public void clickedDialogTails(MouseEvent mouseEvent) {
+        bet = CoinFlipResult.TAIL;
+        flip();
+    }
+
+    public void clickedDialogHeads(MouseEvent mouseEvent) {
+        bet = CoinFlipResult.HEAD;
+        flip();
+    }
+
+    private void flip() {
+        ((CoinFlip) dialogContainer.getChildren().get(0)).flip();
+        dialogCancelButton.setDisable(true);
+        dialogHeadsButton.setDisable(true);
+        dialogTailsButton.setDisable(true);
     }
 }

@@ -23,6 +23,14 @@ public class GameUtils {
         return random.nextInt(6) + 1;
     }
 
+    public static int getFlipCoinFlipCount(CoinFlipResult finalResult) {
+        int number = 5 + random.nextInt(5);
+        int finalResultInt = finalResult.ordinal();
+        if (number % 2 != finalResultInt)
+            number++;
+        return number;
+    }
+
     public static boolean canMonsterCardEffectBeActivated(Card card) {
         // I really don't want to use instance of here :))
         return Arrays.stream(ACTIVATED_MONSTER_CARDS).anyMatch(name -> name.equals(card.getName()));

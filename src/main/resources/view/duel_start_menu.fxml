@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.layout.*?>
+<?import view.components.HoverButton?>
+<?import view.components.UserBadge?>
+<?import com.jfoenix.controls.JFXDialog?>
+<?import com.jfoenix.controls.JFXDialogLayout?>
+<?import javafx.scene.control.Label?>
+<?import view.components.JfxCursorButton?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="view.menus.DuelStartMenu"
+            prefHeight="600.0" prefWidth="800.0">
+    <BorderPane fx:id="rootPane" minHeight="600" minWidth="800">
+        <center>
+            <StackPane fx:id="dialogsStack">
+                <JFXDialog fx:id="coinFlipDialog">
+                    <JFXDialogLayout>
+                        <heading>
+                            <Label>Place Your Bet</Label>
+                        </heading>
+                        <body>
+                            <HBox alignment="CENTER" fx:id="dialogContainer" spacing="20">
+
+                            </HBox>
+                        </body>
+                        <actions>
+                            <JfxCursorButton fx:id="dialogCancelButton" onMouseClicked="#clickedDialogClose">Cancel</JfxCursorButton>
+                            <JfxCursorButton fx:id="dialogTailsButton" onMouseClicked="#clickedDialogTails">Tails</JfxCursorButton>
+                            <JfxCursorButton fx:id="dialogHeadsButton" onMouseClicked="#clickedDialogHeads">Heads</JfxCursorButton>
+                        </actions>
+                    </JFXDialogLayout>
+                </JFXDialog>
+                <VBox alignment="CENTER" spacing="15">
+                    <HBox styleClass="thin-rounded-card" maxWidth="200" maxHeight="50" minHeight="50"
+                          alignment="CENTER">
+                        <JFXTextField fx:id="otherName" promptText="Other Guy Username" labelFloat="true" minWidth="190"
+                                      maxWidth="190"/>
+                    </HBox>
+                    <HoverButton initialHeight="70.0" initialWidth="230.0" hoverHeight="80" hoverWidth="240"
+                                 text="Single Round" fontSize="30" onMouseClicked="#clickedSingleButton"/>
+                    <HoverButton initialHeight="70.0" initialWidth="230.0" hoverHeight="80" hoverWidth="240"
+                                 text="Match" fontSize="30" onMouseClicked="#clickedMatchButton"/>
+                    <HoverButton initialHeight="70.0" initialWidth="230.0" hoverHeight="80" hoverWidth="240"
+                                 text="Back" fontSize="30" onMouseClicked="#clickedBackButton"/>
+                </VBox>
+            </StackPane>
+        </center>
+    </BorderPane>
+    <UserBadge fx:id="userBadge" layoutX="10" layoutY="10"/>
+</AnchorPane>

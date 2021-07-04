@@ -6,6 +6,7 @@ enum MenuNames {
     REGISTER("register"),
     MAIN("main"),
     DUEL("duel"),
+    DUEL_START("duel_start"),
     DECK("deck"),
     DECK_DETAILS("deck_details"),
     SCOREBOARD("scoreboard"),
@@ -39,6 +40,8 @@ enum MenuNames {
                 return LOGIN;
             case "Main":
                 return MAIN;
+            case "Duel Start":
+                return DUEL_START;
             case "Duel":
                 return DUEL;
             case "Deck":

@@ -2,6 +2,7 @@ package view.menus;
 
 import controller.menucontrollers.DeckMenuController;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -49,15 +50,15 @@ public class DeckMenu implements Initializable {
         sideDeckSizeColumn.setPrefWidth(160);
         TableColumn<DeckListTableResult, String> deleteColumn = new TableColumn<>("Delete");
         deleteColumn.setPrefWidth(50);
-        deleteColumn.setCellValueFactory(new PropertyValueFactory<>("DUMMY"));
+        deleteColumn.setCellValueFactory(cellData -> new SimpleStringProperty(""));
         deleteColumn.setCellFactory(TableButton.createTableButton("❌", this::handleRemoveDeck, TableButton.Color.RED));
         TableColumn<DeckListTableResult, String> activateColumn = new TableColumn<>("Activate");
         activateColumn.setPrefWidth(70);
-        activateColumn.setCellValueFactory(new PropertyValueFactory<>("DUMMY"));
+        activateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(""));
         activateColumn.setCellFactory(TableButton.createTableButton("✅", this::handleActiveDeck, TableButton.Color.GREEN));
         TableColumn<DeckListTableResult, String> editColumn = new TableColumn<>("Edit");
         editColumn.setPrefWidth(50);
-        editColumn.setCellValueFactory(new PropertyValueFactory<>("DUMMY"));
+        editColumn.setCellValueFactory(cellData -> new SimpleStringProperty(""));
         editColumn.setCellFactory(TableButton.createTableButton("✏", this::handleEditDeck, TableButton.Color.BLUE));
         TableColumn<DeckListTableResult, Boolean> validColumn = new TableColumn<>("Valid");
         validColumn.setPrefWidth(50);
@@ -72,7 +73,7 @@ public class DeckMenu implements Initializable {
         });
         TableColumn<DeckListTableResult, String> sneakPeakColumn = new TableColumn<>("Sneak Peak");
         sneakPeakColumn.setPrefWidth(100);
-        sneakPeakColumn.setCellValueFactory(new PropertyValueFactory<>("DUMMY"));
+        sneakPeakColumn.setCellValueFactory(cellData -> new SimpleStringProperty(""));
         sneakPeakColumn.setCellFactory(TableButton.createTableTooltipForDeck("👁"));
         // Setup the table
         table.setRowFactory(tv -> new TableRow<DeckListTableResult>() {

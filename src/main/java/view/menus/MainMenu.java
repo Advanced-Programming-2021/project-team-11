@@ -48,4 +48,8 @@ public class MainMenu implements Initializable {
     public void clickedDecksButton(MouseEvent mouseEvent) {
         SceneChanger.changeScene(MenuNames.DECK);
     }
+
+    public void clickedDuelButton(MouseEvent mouseEvent) {
+        SceneChanger.changeScene(MenuNames.DUEL_START);
+    }
 }

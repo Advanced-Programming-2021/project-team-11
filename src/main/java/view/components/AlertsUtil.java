@@ -20,6 +20,10 @@ public class AlertsUtil {
         showAlert(message, "Success", Alert.AlertType.INFORMATION);
     }
 
+    public static void showSuccess(String message, Runnable afterClose) {
+        showAlert(message, "Success", Alert.AlertType.INFORMATION, afterClose);
+    }
+
     public static void showHelp(String message) {
         showAlert(message, "Help", Alert.AlertType.INFORMATION);
     }
@@ -30,6 +34,16 @@ public class AlertsUtil {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    public static void showAlert(String message, String title, Alert.AlertType type, Runnable afterClose) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        if (afterClose != null)
+            alert.setOnCloseRequest(x -> afterClose.run());
+        alert.show();
     }
 
     public static boolean confirmAlert(String message) {

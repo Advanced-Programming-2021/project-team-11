@@ -12,7 +12,7 @@
         <center>
             <VBox alignment="CENTER" spacing="15">
                 <HoverButton initialHeight="70.0" initialWidth="230.0" hoverHeight="80" hoverWidth="240"
-                             text="Duel!" fontSize="30"/>
+                             text="Duel!" fontSize="30" onMouseClicked="#clickedDuelButton"/>
                 <HoverButton initialHeight="70.0" initialWidth="230.0" hoverHeight="80" hoverWidth="240"
                              text="Your Decks" fontSize="30" onMouseClicked="#clickedDecksButton"/>
                 <HoverButton initialHeight="70.0" initialWidth="230.0" hoverHeight="80" hoverWidth="240"

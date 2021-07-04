@@ -3,6 +3,9 @@ package view.components;
 import javafx.scene.ImageCursor;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.paint.Paint;
 import model.cards.Card;
 import view.menus.RootMenu;
 
@@ -14,6 +17,8 @@ public class Assets {
     public final static Image MENU_BACKGROUND = new Image(Objects.requireNonNull(RootMenu.class.getResource("/assets/main-background.png")).toExternalForm());
     public final static Image UNKNOWN_CARD = new Image(Objects.requireNonNull(RootMenu.class.getResource("/assets/cards/unknown.jpg")).toExternalForm());
     public final static ImageCursor UNAVAILABLE_CURSOR = new ImageCursor(new Image(Objects.requireNonNull(RootMenu.class.getResource("/assets/unavailable_cursor.png")).toExternalForm()));
+    private final static Image COIN_HEADS = new Image(Objects.requireNonNull(RootMenu.class.getResource("/assets/coins/heads.png")).toExternalForm());
+    private final static Image COIN_TAILS = new Image(Objects.requireNonNull(RootMenu.class.getResource("/assets/coins/tails.png")).toExternalForm());
 
     public static void setMenuBackgroundImage(Region borderPane) {
         borderPane.setBackground(new Background(new BackgroundImage(Assets.MENU_BACKGROUND, BackgroundRepeat.NO_REPEAT,
@@ -35,6 +40,13 @@ public class Assets {
         } catch (NullPointerException ex) {
             return UNKNOWN_CARD;
         }
+    }
+
+    public static Paint getCoinImage(int number) {
+        number %= 2;
+        if (number == 0)
+            return new ImagePattern(COIN_HEADS);
+        return new ImagePattern(COIN_TAILS);
     }
 
     private Assets() {
