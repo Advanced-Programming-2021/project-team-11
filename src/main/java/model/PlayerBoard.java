@@ -27,6 +27,7 @@ public class PlayerBoard {
     public PlayerBoard(Player player, ArrayList<Card> cards) {
         this.player = player;
         this.deck = cards;
+        shuffleDeck();
         // Setup hand
         for (int i = 0; i < 5; i++) {
             hand.add(new PlayableCard(cards.get(0), CardPlaceType.HAND));

@@ -5,13 +5,32 @@
 <?import javafx.scene.layout.*?>
 <?import view.components.CardInfo?>
 <?import view.components.DuelistInfo?>
-<AnchorPane fx:id="rootView" prefHeight="600.0" prefWidth="800.0" styleClass="dark-background"
-            xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="view.menus.DuelMenu">
-    <ImageView fx:id="fieldImageView" AnchorPane.rightAnchor="0">
-        <Image url="@../assets/fields/Normal.bmp"/>
-    </ImageView>
-    <DuelistInfo fx:id="rivalInfo" AnchorPane.leftAnchor="10" AnchorPane.topAnchor="10"/>
-    <DuelistInfo fx:id="playerInfo" AnchorPane.bottomAnchor="10" AnchorPane.leftAnchor="10"/>
-    <CardInfo fx:id="cardInfo" AnchorPane.leftAnchor="10" AnchorPane.topAnchor="100"/>
-</AnchorPane>
+<?import com.jfoenix.controls.JFXDialog?>
+<?import com.jfoenix.controls.JFXDialogLayout?>
+<?import javafx.scene.control.Label?>
+<StackPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1"
+           fx:controller="view.menus.DuelMenu" fx:id="stackPane" xmlns:fx="http://javafx.com/fxml/1">
+    <JFXDialog fx:id="dialog">
+        <JFXDialogLayout fx:id="dialogContainerLayout">
+            <heading>
+                <Label fx:id="dialogHeader"/>
+            </heading>
+            <body>
+                <VBox fx:id="dialogContainer" spacing="20">
+
+                </VBox>
+            </body>
+            <actions>
+
+            </actions>
+        </JFXDialogLayout>
+    </JFXDialog>
+    <AnchorPane prefHeight="600.0" prefWidth="800.0" fx:id="rootView" styleClass="dark-background">
+        <ImageView fx:id="fieldImageView" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="15">
+            <Image url="@../assets/fields/Normal.bmp"/>
+        </ImageView>
+        <DuelistInfo fx:id="rivalInfo" AnchorPane.leftAnchor="10" AnchorPane.topAnchor="20"/>
+        <DuelistInfo fx:id="playerInfo" AnchorPane.leftAnchor="10" AnchorPane.bottomAnchor="20"/>
+        <CardInfo fx:id="cardInfo" AnchorPane.leftAnchor="10" AnchorPane.topAnchor="100"/>
+    </AnchorPane>
+</StackPane>

@@ -84,9 +84,7 @@ public class GameController {
 
     public void setupNewRound() {
         PlayerBoard player1Board = new PlayerBoard(new Player(player1), new ArrayList<>(player1.getActiveDeck().getMainDeck()));
-        player1Board.shuffleDeck();
         PlayerBoard player2Board = new PlayerBoard(new Player(player2), new ArrayList<>(player2.getActiveDeck().getMainDeck()));
-        player2Board.shuffleDeck();
         round = new GameRoundController(player1Board, player2Board, player1Starting);
     }
 }

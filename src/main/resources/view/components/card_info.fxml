@@ -5,8 +5,8 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.geometry.Insets?>
 <fx:root type="javafx.scene.layout.VBox" xmlns="http://javafx.com/javafx"
-         xmlns:fx="http://javafx.com/fxml" alignment="TOP_CENTER" maxWidth="200" maxHeight="400" minWidth="200"
-         minHeight="400" styleClass="rounded-card" spacing="10">
+         xmlns:fx="http://javafx.com/fxml" alignment="TOP_CENTER" maxWidth="200" maxHeight="420" minWidth="200"
+         minHeight="420" styleClass="rounded-card" spacing="10">
     <ImageView fx:id="cardImage" fitWidth="100" fitHeight="150">
         <VBox.margin>
             <Insets top="10" />
