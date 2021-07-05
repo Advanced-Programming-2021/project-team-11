@@ -80,6 +80,7 @@ public class DuelStartMenu implements Initializable {
         DuelMenu.player2 = result == bet ? guest : MainMenu.loggedInUser;
         AlertsUtil.showSuccess(DuelMenu.player1.getNickname() + " is the starter!", () -> {
             DuelMenu.gameController = new GameController(DuelMenu.player1, DuelMenu.player2, rounds);
+            DuelMenu.gameController.setupNewRound();
             SceneChanger.changeScene(MenuNames.DUEL);
         });
     }

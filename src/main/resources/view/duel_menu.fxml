@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="view.menus.DuelMenu"
-            prefHeight="600.0" prefWidth="800.0">
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import view.components.CardInfo?>
+<?import view.components.DuelistInfo?>
+<AnchorPane fx:id="rootView" prefHeight="600.0" prefWidth="800.0" styleClass="dark-background"
+            xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="view.menus.DuelMenu">
     <ImageView fx:id="fieldImageView" AnchorPane.rightAnchor="0">
-        <Image url="@../assets/fields/Normal.bmp" />
+        <Image url="@../assets/fields/Normal.bmp"/>
     </ImageView>
+    <DuelistInfo fx:id="rivalInfo" AnchorPane.leftAnchor="10" AnchorPane.topAnchor="10"/>
+    <DuelistInfo fx:id="playerInfo" AnchorPane.bottomAnchor="10" AnchorPane.leftAnchor="10"/>
+    <CardInfo fx:id="cardInfo" AnchorPane.leftAnchor="10" AnchorPane.topAnchor="100"/>
 </AnchorPane>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Text?>
+<fx:root type="javafx.scene.layout.HBox" xmlns="http://javafx.com/javafx"
+         xmlns:fx="http://javafx.com/fxml" alignment="CENTER_LEFT" maxWidth="200" maxHeight="70" minWidth="200"
+         minHeight="70" styleClass="rounded-card" spacing="5">
+    <Circle fx:id="profilePic" radius="35"/>
+    <VBox spacing="3" alignment="CENTER_LEFT">
+        <Text fx:id="username"/>
+        <Text fx:id="nickname"/>
+        <Text fx:id="lp"/>
+    </VBox>
+</fx:root>
