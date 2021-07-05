@@ -7,12 +7,13 @@ import model.enums.CardPlaceType;
 import view.menus.SceneChanger;
 
 public class CardView extends ImageView {
+    private final static double SIZE_MULTIPLIER = 0.15;
     private final PlayableCard card;
     private final boolean forRival;
 
     public CardView(PlayableCard card, boolean forRival, CardHoverCallback hoverCallback) {
-        setFitHeight(100);
-        setFitWidth(70);
+        setFitHeight(614 * SIZE_MULTIPLIER);
+        setFitWidth(421 * SIZE_MULTIPLIER);
         this.card = card;
         this.forRival = forRival;
         setupListeners(hoverCallback);

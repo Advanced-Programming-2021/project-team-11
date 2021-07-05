@@ -3,12 +3,13 @@ package view.components;
 import javafx.scene.ImageCursor;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
+import model.PlayableCard;
 import model.cards.Card;
 import view.menus.RootMenu;
 
+import java.net.URL;
 import java.util.Objects;
 
 public class Assets {
@@ -48,6 +49,16 @@ public class Assets {
         if (number == 0)
             return new ImagePattern(COIN_HEADS);
         return new ImagePattern(COIN_TAILS);
+    }
+
+    public static Image getFieldImage(PlayableCard field) {
+        if (field == null)
+            return NORMAL_FIELD;
+        String cardName = field.getCard().getName();
+        URL image = RootMenu.class.getResource(String.format("/assets/fields/%s.bmp", cardName));
+        if (image == null)
+            return NORMAL_FIELD;
+        return new Image(image.toExternalForm());
     }
 
     private Assets() {
