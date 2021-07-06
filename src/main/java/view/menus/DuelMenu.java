@@ -22,12 +22,12 @@ import model.PlayableCard;
 import model.User;
 import model.cards.Card;
 import model.cards.MonsterCard;
-import model.enums.ActivateSpellCallback;
-import model.enums.CardPlaceType;
-import model.enums.GamePhase;
-import model.enums.GameStatus;
+import model.enums.*;
 import model.exceptions.*;
 import model.game.GameEndResults;
+import model.results.MonsterAttackResult;
+import view.animation.CardDestroyedTransition;
+import view.animation.CardFlipTransition;
 import view.components.*;
 
 import java.net.URL;
@@ -72,7 +72,6 @@ public class DuelMenu implements Initializable {
                 cheat();
         });
         dialog.setDialogContainer(stackPane);
-        updatePlayersLp();
         drawScene();
     }
 
@@ -85,6 +84,7 @@ public class DuelMenu implements Initializable {
     }
 
     private void drawScene() {
+        updatePlayersLp();
         cardsOnGround.forEach(card -> rootView.getChildren().remove(card));
         cardsOnGround.clear();
         fieldImageView.setImage(Assets.getFieldImage(gameController.getRound().getField()));
@@ -138,7 +138,7 @@ public class DuelMenu implements Initializable {
         for (int i = 0; i < cards.length; i++) {
             PlayableCard card = cards[i];
             if (card != null) {
-                CardView view = new CardView(card, forRival, this::cardHovered, i);
+                CardView view = new CardView(card, forRival, this::cardHovered, i + 1);
                 view.setLayoutY(y);
                 view.setLayoutX(CARD_X_OFFSETS[i]);
                 if (callback != null)
@@ -157,6 +157,9 @@ public class DuelMenu implements Initializable {
         dialogContainerLayout.getActions().clear();
     }
 
+    /**
+     * Shows the pause menu
+     */
     private void pause() {
         disableAttackMode();
         setupDialog("Pause", new JfxCursorButton("(Un)Pause music", x -> {
@@ -347,7 +350,7 @@ public class DuelMenu implements Initializable {
     }
 
     private void rivalMonsterSelected(CardView card) {
-        if (attackingCard == null) {
+        if (attackingCard != null) {
             attackToCard(card);
             return;
         }
@@ -421,9 +424,11 @@ public class DuelMenu implements Initializable {
         }
     }
 
-    private void attackToCard(CardView card) {
+    private void attackToCard(CardView toAttackCard) {
         try {
-            gameController.getRound().attackToMonster(card.getIndex());
+            MonsterAttackResult attackResult = gameController.getRound().attackToMonster(toAttackCard.getIndex());
+            playAttackAnimations(attackingCard, toAttackCard, attackResult);
+            attackingCard = null;
         } catch (TrapCanBeActivatedException ex) {
             // TODO
            /* if (prepareTrap(ex.getAllowedCards())) {
@@ -433,6 +438,31 @@ public class DuelMenu implements Initializable {
             }*/
         } catch (Exception e) {
             AlertsUtil.showError(e);
+        }
+    }
+
+    private void playAttackAnimations(CardView playerCard, CardView rivalCard, MonsterAttackResult attackResult) {
+        boolean boardDrawDone = false;
+        boolean rivalCardDestroyed = false;
+        if (attackResult.getBattleResult() == AttackResult.RIVAL_DESTROYED || (attackResult.isAttackedCardInAttackMode() && attackResult.getBattleResult() == AttackResult.DRAW)) {
+            CardDestroyedTransition transition = new CardDestroyedTransition(rivalCard);
+            transition.setOnFinished(x -> drawScene());
+            transition.play();
+            boardDrawDone = true;
+            rivalCardDestroyed = true;
+        }
+        if (attackResult.getBattleResult() == AttackResult.ME_DESTROYED || (attackResult.isAttackedCardInAttackMode() && attackResult.getBattleResult() == AttackResult.DRAW)) {
+            CardDestroyedTransition transition = new CardDestroyedTransition(playerCard);
+            if (!boardDrawDone)
+                transition.setOnFinished(x -> drawScene());
+            transition.play();
+            boardDrawDone = true;
+        }
+        if (attackResult.wasHidden() && !rivalCardDestroyed) {
+            CardFlipTransition transition = new CardFlipTransition(rivalCard);
+            if (!boardDrawDone)
+                transition.setOnFinished(x -> drawScene());
+            transition.play();
         }
     }
 
