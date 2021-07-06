@@ -48,3 +48,9 @@
     -fx-background-color: red;
     -fx-text-fill: white;
 }
+
+.jfx-button-blue {
+    -jfx-button-type: RAISED;
+    -fx-background-color: darkblue;
+    -fx-text-fill: white;
+}

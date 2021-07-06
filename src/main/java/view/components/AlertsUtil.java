@@ -28,6 +28,10 @@ public class AlertsUtil {
         showAlert(message, "Help", Alert.AlertType.INFORMATION);
     }
 
+    public static void showHelp(String message, Runnable afterClose) {
+        showAlert(message, "Help", Alert.AlertType.INFORMATION, afterClose);
+    }
+
     public static void showAlert(String message, String title, Alert.AlertType type) {
         Alert alert = new Alert(type);
         alert.setTitle(title);

@@ -40,6 +40,7 @@ public class RootMenu extends Application {
     }
 
     public void clickedRegisterButton(MouseEvent mouseEvent) {
+        // TODO: remove
         User u1 = User.getUserByUsername("1");
         User u2 = User.getUserByUsername("2");
         DuelMenu.player1 = u1;

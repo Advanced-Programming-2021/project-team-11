@@ -402,6 +402,12 @@ public class GameRoundController {
         selectedCard.swapAttackMode();
     }
 
+    public void swapCardPosition() throws Exception {
+        if (selectedCard == null)
+            throw new NoCardSelectedYetException();
+        setCardPosition(!selectedCard.isAttacking());
+    }
+
     public ActivateSpellCallback activeSpell() throws NoCardSelectedException, OnlySpellCardsAllowedException, InvalidPhaseActionException, CardAlreadyAttackedException, MonsterEffectMustBeHandledException, RitualSummonNotPossibleException, CantSpecialSummonException, CantUseSpellException, SpellAlreadyActivatedException, SpellCardZoneFullException {
         if (selectedCard == null)
             throw new NoCardSelectedException();

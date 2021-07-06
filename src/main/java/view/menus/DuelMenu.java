@@ -3,6 +3,8 @@ package view.menus;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
 import controller.GameController;
+import javafx.animation.RotateTransition;
+import javafx.animation.TranslateTransition;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.effect.ColorAdjust;
@@ -14,10 +16,12 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import model.PlayableCard;
 import model.User;
 import model.cards.Card;
 import model.cards.MonsterCard;
+import model.enums.ActivateSpellCallback;
 import model.enums.CardPlaceType;
 import model.enums.GamePhase;
 import model.enums.GameStatus;
@@ -32,11 +36,13 @@ import java.util.ResourceBundle;
 public class DuelMenu implements Initializable {
     private static final double CARD_PLACES_WIDTH = 78, CARD_PLACES_FIRST_X = 800 + 107.5 - 570, PLAYER_DOWN_OFFSET = 60,
             CARD_PLACES_SPELL_RIVAL_Y = 106, CARD_PLACES_SPELL_PLAYER_Y = 600 - CARD_PLACES_SPELL_RIVAL_Y - PLAYER_DOWN_OFFSET,
-            CARD_PLACES_MONSTER_RIVAL_Y = CARD_PLACES_SPELL_RIVAL_Y + 104, CARD_PLACES_MONSTER_PLAYER_Y = 600 - CARD_PLACES_MONSTER_RIVAL_Y - PLAYER_DOWN_OFFSET;
+            CARD_PLACES_MONSTER_RIVAL_Y = CARD_PLACES_SPELL_RIVAL_Y + 104, CARD_PLACES_MONSTER_PLAYER_Y = 600 - CARD_PLACES_MONSTER_RIVAL_Y - PLAYER_DOWN_OFFSET,
+            CARD_PLACES_SWORD_OFFSET = 25;
     private static final double[] CARD_X_OFFSETS = {CARD_PLACES_FIRST_X + CARD_PLACES_WIDTH * 2, CARD_PLACES_FIRST_X + CARD_PLACES_WIDTH, CARD_PLACES_FIRST_X + CARD_PLACES_WIDTH * 3, CARD_PLACES_FIRST_X, CARD_PLACES_FIRST_X + CARD_PLACES_WIDTH * 4};
     public static GameController gameController;
     public static User player1, player2;
-    private static final ArrayList<CardView> cardsOnGround = new ArrayList<>();
+    private final ArrayList<CardView> cardsOnGround = new ArrayList<>();
+    private CardView attackingCard = null;
     public ImageView fieldImageView;
     public DuelistInfo rivalInfo;
     public DuelistInfo playerInfo;
@@ -86,7 +92,7 @@ public class DuelMenu implements Initializable {
     private void addHands() {
         ArrayList<PlayableCard> cards = gameController.getRound().getPlayerBoard().getHand();
         for (int i = 0; i < cards.size(); i++) {
-            CardView view = new CardView(cards.get(i), false, this::cardHovered);
+            CardView view = new CardView(cards.get(i), false, this::cardHovered, i);
             view.setLayoutY(545);
             view.setLayoutX(260 + i * 70);
             final int finalI = i + 1;
@@ -97,7 +103,7 @@ public class DuelMenu implements Initializable {
         }
         cards = gameController.getRound().getRivalBoard().getHand();
         for (int i = 0; i < cards.size(); i++) {
-            CardView view = new CardView(cards.get(i), true, this::cardHovered);
+            CardView view = new CardView(cards.get(i), true, this::cardHovered, i);
             view.setLayoutY(-40);
             view.setLayoutX(260 + i * 70);
             rootView.getChildren().add(view);
@@ -109,25 +115,27 @@ public class DuelMenu implements Initializable {
      * Renders all spells in the game board
      */
     private void addSpells() {
-        addMainCards(gameController.getRound().getRivalBoard().getSpellCards(), true, CARD_PLACES_SPELL_RIVAL_Y);
-        addMainCards(gameController.getRound().getPlayerBoard().getSpellCards(), false, CARD_PLACES_SPELL_PLAYER_Y);
+        addMainCards(gameController.getRound().getRivalBoard().getSpellCards(), true, CARD_PLACES_SPELL_RIVAL_Y, this::rivalSpellSelected);
+        addMainCards(gameController.getRound().getPlayerBoard().getSpellCards(), false, CARD_PLACES_SPELL_PLAYER_Y, this::playerSpellSelected);
     }
 
     /**
      * Renders all monster cards in the game board
      */
     private void addMonsters() {
-        addMainCards(gameController.getRound().getRivalBoard().getMonsterCards(), true, CARD_PLACES_MONSTER_RIVAL_Y);
-        addMainCards(gameController.getRound().getPlayerBoard().getMonsterCards(), false, CARD_PLACES_MONSTER_PLAYER_Y);
+        addMainCards(gameController.getRound().getRivalBoard().getMonsterCards(), true, CARD_PLACES_MONSTER_RIVAL_Y, this::rivalMonsterSelected);
+        addMainCards(gameController.getRound().getPlayerBoard().getMonsterCards(), false, CARD_PLACES_MONSTER_PLAYER_Y, this::playerMonsterSelected);
     }
 
-    private void addMainCards(PlayableCard[] cards, boolean forRival, double y) {
+    private void addMainCards(PlayableCard[] cards, boolean forRival, double y, PlayableCardSelectedCallback callback) {
         for (int i = 0; i < cards.length; i++) {
             PlayableCard card = cards[i];
             if (card != null) {
-                CardView view = new CardView(card, forRival, this::cardHovered);
+                CardView view = new CardView(card, forRival, this::cardHovered, i);
                 view.setLayoutY(y);
                 view.setLayoutX(CARD_X_OFFSETS[i]);
+                if (callback != null)
+                    view.setOnMouseClicked(x -> callback.selected(view));
                 rootView.getChildren().add(view);
                 cardsOnGround.add(view);
             }
@@ -143,6 +151,7 @@ public class DuelMenu implements Initializable {
     }
 
     private void pause() {
+        disableAttackMode();
         setupDialog("Pause", new JfxCursorButton("Resume", x -> dialog.close()),
                 new JfxCursorButton("Surrender", x -> {
                     dialog.close();
@@ -204,9 +213,11 @@ public class DuelMenu implements Initializable {
     private void handCardSelected(int index) {
         try {
             gameController.getRound().selectCard(index, false, CardPlaceType.HAND);
+            String title = gameController.getRound().returnSelectedCard().getCard() instanceof MonsterCard ?
+                    "Summon or set the card?" : "Activate or set this card?";
             JfxCursorButton firstButton = gameController.getRound().returnSelectedCard().getCard() instanceof MonsterCard ?
                     new JfxCursorButton("Summon", x -> summon()) : new JfxCursorButton("Activate Spell", x -> activateSpell());
-            setupDialog("Summon or set the card?", new JfxCursorButton("Cancel", x -> dialog.close()),
+            setupDialog(title, new JfxCursorButton("Cancel", x -> dialog.close()),
                     new JfxCursorButton("Set", x -> set()), firstButton);
             dialog.show();
         } catch (NoCardFoundInPositionException ex) {
@@ -244,13 +255,55 @@ public class DuelMenu implements Initializable {
     }
 
     private void set() {
-        // TODO: add
+        try {
+            gameController.getRound().setCard();
+            drawScene();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         dialog.close();
     }
 
     private void activateSpell() {
-        // TODO: add
+        try {
+            PlayableCard selectedCard = gameController.getRound().returnSelectedCard();
+            handleActivateSpellCallBack(gameController.getRound().activeSpell(), selectedCard);
+        } catch (OnlySpellCardsAllowedException | NoCardSelectedException | CardAlreadyAttackedException |
+                InvalidPhaseActionException | RitualSummonNotPossibleException | CantSpecialSummonException |
+                CantUseSpellException | SpellAlreadyActivatedException | SpellCardZoneFullException e) {
+            System.out.println(e.getMessage());
+        } catch (MonsterEffectMustBeHandledException e) {
+            //handleMonsterWithEffectCard(e.getCard());
+        }
         dialog.close();
+    }
+
+    private void handleActivateSpellCallBack(ActivateSpellCallback result, PlayableCard selectedCard) {
+        /*switch (result) {
+            case RITUAL:
+                CardSpecificMenus.handleRitualSpawn(gameController.getRound().getPlayerBoard(), selectedCard);
+                break;
+            case NORMAL:
+                if (selectedCard.getCard() instanceof MonsterReborn)
+                    CardSpecificMenus.handleMonsterReborn(gameController.getRound(), selectedCard);
+                if (selectedCard.getCard() instanceof Terraforming)
+                    CardSpecificMenus.handleTerraforming(gameController.getRound().getPlayerBoard(), selectedCard);
+                if (selectedCard.getCard() instanceof ChangeOfHeart)
+                    CardSpecificMenus.handleChangeOfHeart(gameController.getRound(), selectedCard);
+                if (selectedCard.getCard() instanceof TwinTwisters)
+                    CardSpecificMenus.handleTwinTwisters(gameController.getRound(), selectedCard);
+                if (selectedCard.getCard() instanceof MysticalSpaceTyphoon)
+                    CardSpecificMenus.handleMysticalSpaceTyphoon(gameController.getRound(), selectedCard);
+                break;
+            case EQUIP:
+                CardSpecificMenus.equip(gameController.getRound(), selectedCard);
+                break;
+            case TRAP:
+                if (selectedCard.getCard() instanceof CallOfTheHaunted)
+                    CardSpecificMenus.callOfTheHunted(gameController.getRound().getPlayerBoard(), selectedCard);
+                if (selectedCard.getCard() instanceof MindCrush)
+                    CardSpecificMenus.getMindCrushCard(gameController.getRound(), selectedCard);
+        }*/
     }
 
     public void nextPhase(MouseEvent mouseEvent) {
@@ -265,16 +318,114 @@ public class DuelMenu implements Initializable {
         if (nowPhase == GamePhase.END_PHASE) {
             cardInfo.setCard(null);
             blur();
+            updatePlayersLp();
             AlertsUtil.showSuccess("Pass the computer to " + gameController.getRound().getPlayerBoard().getPlayer().getUser().getNickname() + "!",
                     () -> stackPane.setEffect(null));
         }
         drawScene();
     }
 
+    /**
+     * Blurs the playground
+     */
     private void blur() {
         ColorAdjust adj = new ColorAdjust(0, -0.9, -0.5, 0);
         GaussianBlur blur = new GaussianBlur(55);
         adj.setInput(blur);
         stackPane.setEffect(adj);
+    }
+
+    private void rivalMonsterSelected(CardView card) {
+        if (attackingCard == null) {
+            attackToCard(card);
+            return;
+        }
+    }
+
+    private void playerMonsterSelected(CardView card) {
+        try {
+            gameController.getRound().selectCard(card.getIndex(), false, CardPlaceType.MONSTER);
+        } catch (NoCardFoundInPositionException e) {
+            throw new BooAnException(e);
+        }
+        if (gameController.getRound().getPhase() == GamePhase.BATTLE_PHASE)
+            attack(card);
+        if (gameController.getRound().getPhase() == GamePhase.MAIN1 || gameController.getRound().getPhase() == GamePhase.MAIN2)
+            swapCardPosition(card);
+    }
+
+    private void playerSpellSelected(CardView card) {
+
+    }
+
+    private void rivalSpellSelected(CardView card) {
+
+    }
+
+    private void attack(CardView card) {
+        if (gameController.getRound().getRivalBoard().isMonsterZoneEmpty()) {
+            directAttack(card.getIndex());
+            return;
+        }
+        AlertsUtil.showHelp("Select a card to attack to it!", null);
+        attackingCard = card;
+    }
+
+    /**
+     * Attacks to rival with selected card
+     */
+    private void directAttack(int index) {
+        index--;
+        try {
+            gameController.getRound().attackToPlayer();
+            ImageView swordImage = new ImageView(Assets.SWORD);
+            rootView.getChildren().add(swordImage);
+            TranslateTransition sword = new TranslateTransition(Duration.millis(800), swordImage);
+            sword.setFromX(CARD_X_OFFSETS[index] + CARD_PLACES_SWORD_OFFSET);
+            sword.setFromY(CARD_PLACES_MONSTER_PLAYER_Y);
+            sword.setToY(0);
+            sword.setToX(CARD_X_OFFSETS[index] + CARD_PLACES_SWORD_OFFSET);
+            sword.setOnFinished(x -> {
+                updatePlayersLp();
+                rootView.getChildren().remove(swordImage);
+            });
+            sword.play();
+        } catch (Exception ex) {
+            AlertsUtil.showError(ex);
+        }
+    }
+
+    private void swapCardPosition(CardView card) {
+        double start = gameController.getRound().returnSelectedCard().isAttacking() ? 0 : 90;
+        double end = Math.abs(90 - start);
+        try {
+            gameController.getRound().swapCardPosition();
+            RotateTransition rotateTransition = new RotateTransition(Duration.millis(500), card);
+            rotateTransition.setFromAngle(start);
+            rotateTransition.setToAngle(end);
+            rotateTransition.setOnFinished(x -> drawScene());
+            rotateTransition.play();
+        } catch (Exception ex) {
+            AlertsUtil.showError(ex);
+        }
+    }
+
+    private void attackToCard(CardView card) {
+        try {
+            gameController.getRound().attackToMonster(card.getIndex());
+        } catch (TrapCanBeActivatedException ex) {
+            // TODO
+           /* if (prepareTrap(ex.getAllowedCards())) {
+                MonsterAttackResult result = gameController.getRound().attackToMonsterForced(positionToAttack);
+                System.out.println(result.toString());
+                printBoard();
+            }*/
+        } catch (Exception e) {
+            AlertsUtil.showError(e);
+        }
+    }
+
+    private void disableAttackMode() {
+        this.attackingCard = null;
     }
 }
