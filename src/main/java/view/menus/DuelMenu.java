@@ -7,6 +7,7 @@ import javafx.animation.RotateTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.ImageView;
@@ -14,11 +15,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import model.PlayableCard;
+import model.PlayerBoard;
 import model.User;
 import model.cards.Card;
 import model.cards.MonsterCard;
@@ -52,7 +53,6 @@ public class DuelMenu implements Initializable {
     public AnchorPane rootView;
     public JFXDialog dialog;
     public Label dialogHeader;
-    public VBox dialogContainer;
     public JFXDialogLayout dialogContainerLayout;
     public StackPane stackPane;
     public Text phaseText;
@@ -153,7 +153,7 @@ public class DuelMenu implements Initializable {
      * Clears all components in the alert dialog
      */
     private void refreshDialog() {
-        dialogContainer.getChildren().clear();
+        dialogContainerLayout.getBody().clear();
         dialogContainerLayout.getActions().clear();
     }
 
@@ -285,7 +285,7 @@ public class DuelMenu implements Initializable {
         } catch (OnlySpellCardsAllowedException | NoCardSelectedException | CardAlreadyAttackedException |
                 InvalidPhaseActionException | RitualSummonNotPossibleException | CantSpecialSummonException |
                 CantUseSpellException | SpellAlreadyActivatedException | SpellCardZoneFullException e) {
-            System.out.println(e.getMessage());
+            AlertsUtil.showError(e);
         } catch (MonsterEffectMustBeHandledException e) {
             //handleMonsterWithEffectCard(e.getCard());
         }
@@ -468,5 +468,45 @@ public class DuelMenu implements Initializable {
 
     private void disableAttackMode() {
         this.attackingCard = null;
+    }
+
+    /**
+     * Shows the graveyard of a player in a dialog
+     *
+     * @param board Player's board
+     */
+    private void showGraveyard(PlayerBoard board) {
+        setupDialog(board.getPlayer().getUser().getNickname() + "'s graveyard", new JfxCursorButton("Close", x -> dialog.close()));
+        ArrayList<PlayableCard> cards = board.getGraveyard();
+        if (cards.isEmpty()) {
+            dialogContainerLayout.getBody().add(new Label("Empty graveyard!"));
+        } else {
+            ScrollPane scrollPane = new ScrollPane();
+            scrollPane.setMaxHeight(200);
+            dialogContainerLayout.getBody().add(scrollPane);
+            AnchorPane anchorPane = new AnchorPane();
+            scrollPane.setContent(anchorPane);
+            final int inEachRow = 4;
+            for (int i = 0; i < cards.size(); i++) {
+                ImageView cardImageView = new ImageView(Assets.getCardImage(cards.get(i).getCard()));
+                cardImageView.setFitWidth(70);
+                cardImageView.setFitHeight(100);
+                cardImageView.setX(85 * (i % inEachRow) + 10);
+                int c = i / inEachRow;
+                cardImageView.setY(115 * c + 10);
+                int finalI = i;
+                cardImageView.setOnMouseEntered(x -> cardInfo.setCard(cards.get(finalI).getCard()));
+                anchorPane.getChildren().add(cardImageView);
+            }
+        }
+        dialog.show();
+    }
+
+    public void clickedRivalGraveyard(MouseEvent mouseEvent) {
+        showGraveyard(gameController.getRound().getRivalBoard());
+    }
+
+    public void clickedPlayerGraveyard(MouseEvent mouseEvent) {
+        showGraveyard(gameController.getRound().getPlayerBoard());
     }
 }

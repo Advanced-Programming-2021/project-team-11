@@ -7,9 +7,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
-<?import view.components.CardInfo?>
-<?import view.components.DuelistInfo?>
-<?import view.components.JfxCursorButton?>
+<?import view.components.*?>
 <StackPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1"
            fx:controller="view.menus.DuelMenu" fx:id="stackPane" xmlns:fx="http://javafx.com/fxml/1">
     <JFXDialog fx:id="dialog">
@@ -17,14 +15,8 @@
             <heading>
                 <Label fx:id="dialogHeader"/>
             </heading>
-            <body>
-                <VBox fx:id="dialogContainer" spacing="20">
-
-                </VBox>
-            </body>
-            <actions>
-
-            </actions>
+            <body/>
+            <actions/>
         </JFXDialogLayout>
     </JFXDialog>
     <AnchorPane prefHeight="600.0" prefWidth="800.0" fx:id="rootView" styleClass="dark-background">
@@ -34,10 +26,17 @@
         <DuelistInfo fx:id="rivalInfo" AnchorPane.leftAnchor="10" AnchorPane.topAnchor="20"/>
         <DuelistInfo fx:id="playerInfo" AnchorPane.leftAnchor="10" AnchorPane.bottomAnchor="20"/>
         <CardInfo fx:id="cardInfo" AnchorPane.leftAnchor="10" AnchorPane.topAnchor="100"/>
-        <VBox maxHeight="60" maxWidth="110" minWidth="110" minHeight="60" styleClass="thin-rounded-card, dark-background"
+        <VBox maxHeight="60" maxWidth="110" minWidth="110" minHeight="60"
+              styleClass="thin-rounded-card, dark-background"
               AnchorPane.bottomAnchor="30" AnchorPane.rightAnchor="5" spacing="5" alignment="CENTER">
             <Text fill="white" fx:id="phaseText" text="Phase: Draw"/>
             <JfxCursorButton styleClass="jfx-button-blue" text="Next Phase" onMouseClicked="#nextPhase"/>
         </VBox>
+        <CursorImage layoutY="360" layoutX="715" onMouseClicked="#clickedPlayerGraveyard">
+            <Image url="@../assets/graveyard.png"/>
+        </CursorImage>
+        <CursorImage layoutY="190" layoutX="265" onMouseClicked="#clickedRivalGraveyard">
+            <Image url="@../assets/graveyard.png"/>
+        </CursorImage>
     </AnchorPane>
 </StackPane>
