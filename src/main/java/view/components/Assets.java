@@ -3,6 +3,7 @@ package view.components;
 import javafx.scene.ImageCursor;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import model.PlayableCard;
@@ -22,7 +23,7 @@ public class Assets {
     private final static Image COIN_TAILS = new Image(Objects.requireNonNull(RootMenu.class.getResource("/assets/coins/tails.png")).toExternalForm());
     private final static Image NORMAL_FIELD = new Image(Objects.requireNonNull(RootMenu.class.getResource("/assets/fields/Normal.bmp")).toExternalForm());
     public final static Image SWORD = new Image(Objects.requireNonNull(RootMenu.class.getResource("/assets/sword.png")).toExternalForm());
-    public final static ImageCursor SWORD_CURSOR = new ImageCursor(new Image(Objects.requireNonNull(RootMenu.class.getResource("/assets/sword.png")).toExternalForm()));
+    public final static Media MUSIC = new Media(Objects.requireNonNull(RootMenu.class.getResource("/assets/sfx/music.mp3")).toExternalForm());
 
     public static void setMenuBackgroundImage(Region borderPane) {
         borderPane.setBackground(new Background(new BackgroundImage(Assets.MENU_BACKGROUND, BackgroundRepeat.NO_REPEAT,

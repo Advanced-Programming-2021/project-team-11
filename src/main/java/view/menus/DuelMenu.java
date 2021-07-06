@@ -15,6 +15,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import model.PlayableCard;
@@ -42,6 +43,7 @@ public class DuelMenu implements Initializable {
     public static GameController gameController;
     public static User player1, player2;
     private final ArrayList<CardView> cardsOnGround = new ArrayList<>();
+    private final MediaPlayer musicPlayer = new MediaPlayer(Assets.MUSIC);
     private CardView attackingCard = null;
     public ImageView fieldImageView;
     public DuelistInfo rivalInfo;
@@ -57,6 +59,11 @@ public class DuelMenu implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        musicPlayer.setOnEndOfMedia(() -> {
+            musicPlayer.seek(Duration.ZERO);
+            musicPlayer.play();
+        });
+        musicPlayer.play();
         cardsOnGround.clear();
         SceneChanger.getScene().setOnKeyPressed(x -> {
             if (x.getCode() == KeyCode.ESCAPE)
@@ -152,7 +159,10 @@ public class DuelMenu implements Initializable {
 
     private void pause() {
         disableAttackMode();
-        setupDialog("Pause", new JfxCursorButton("Resume", x -> dialog.close()),
+        setupDialog("Pause", new JfxCursorButton("(Un)Pause music", x -> {
+                    musicPlayer.setMute(!musicPlayer.isMute());
+                    dialog.close();
+                }), new JfxCursorButton("Resume", x -> dialog.close()),
                 new JfxCursorButton("Surrender", x -> {
                     dialog.close();
                     surrender();
@@ -178,6 +188,7 @@ public class DuelMenu implements Initializable {
                 player2.increaseScore(results.getPlayer2Score());
                 player2.increaseMoney(results.getPlayer2Money());
                 SceneChanger.getScene().setOnKeyPressed(null);
+                musicPlayer.stop();
             }
             // TODO:
             // System.out.printf("%s won the game\n", roundStatus == GameStatus.PLAYER1_WON ? player1.getNickname() : player2.getNickname());
