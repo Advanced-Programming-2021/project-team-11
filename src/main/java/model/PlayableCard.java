@@ -14,8 +14,8 @@ import model.enums.CardPlaceType;
 public class PlayableCard {
     private final Card card;
     private CardPlaceType cardPlace;
-    private boolean hidden, isAttacking, hasAttacked, changedPosition, spellActivated;
     private int attackDelta, defenceDelta, effectActivateCounterTotal = 0, effectActivateCounterRound = 0;
+    private boolean hidden = true, isAttacking, hasAttacked = false, changedPosition = false, spellActivated = false;
     /**
      * This is only a temp card to mimic for when the card is {@link model.cards.monsters.ScannerCard}
      */
@@ -25,7 +25,6 @@ public class PlayableCard {
     public PlayableCard(Card card, CardPlaceType cardPlace) {
         this.card = card;
         this.cardPlace = cardPlace;
-        hidden = true;
     }
 
     public boolean isHidden() {
@@ -77,13 +76,15 @@ public class PlayableCard {
 
     public int getAttackPower(PlayerBoard myBoard, PlayableCard field) {
         if (getCard().getCardType() == CardType.MONSTER)
-            return ((MonsterCard) getCard()).getAttack() + getAttackDelta(myBoard) + getFieldEffectForAttack(myBoard, field) + getEquippedCardAttackDiff(myBoard);
+            return Math.max(0, ((MonsterCard) getCard()).getAttack() + getAttackDelta(myBoard)
+                    + getFieldEffectForAttack(myBoard, field) + getEquippedCardAttackDiff(myBoard));
         return 0;
     }
 
     public int getDefencePower(PlayerBoard myBoard, PlayableCard field) {
         if (getCard().getCardType() == CardType.MONSTER)
-            return ((MonsterCard) getCard()).getDefence() + getDefenceDelta(myBoard) + getFieldEffectForDefence(myBoard, field) + getEquippedCardDefenceDiff(myBoard);
+            return Math.max(0, ((MonsterCard) getCard()).getDefence() + getDefenceDelta()
+                    + getFieldEffectForDefence(myBoard, field) + getEquippedCardDefenceDiff(myBoard));
         return 0;
     }
 
@@ -128,7 +129,7 @@ public class PlayableCard {
         return defenceDelta;
     }
 
-    private int getDefenceDelta(PlayerBoard myBoard) {
+    private int getDefenceDelta() {
         int tempDelta = 0;
         return getDefenceDeltaRaw() + tempDelta;
     }
@@ -149,10 +150,6 @@ public class PlayableCard {
         return spellActivated;
     }
 
-    public void addDefenceDelta(int delta) {
-        defenceDelta += delta;
-    }
-
     public void addAttackDelta(int delta) {
         attackDelta += delta;
     }
@@ -162,18 +159,10 @@ public class PlayableCard {
     }
 
     public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard rivalCard) {
-        spellActivated = true;
         effectActivateCounterRound++;
         effectActivateCounterTotal++;
+        spellActivated = true;
         getCard().activateEffect(myBoard, rivalBoard, this, rivalCard, 0);
-        checkSpellAbsorption(myBoard, rivalBoard);
-    }
-
-    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard rivalCard, boolean isTotalTimeActivatedImportant) {
-        spellActivated = true;
-        effectActivateCounterRound++;
-        effectActivateCounterTotal++;
-        getCard().activateEffect(myBoard, rivalBoard, this, rivalCard, isTotalTimeActivatedImportant ? effectActivateCounterTotal : effectActivateCounterRound);
         checkSpellAbsorption(myBoard, rivalBoard);
     }
 

@@ -64,7 +64,6 @@ public class DuelMenu implements Initializable {
             musicPlayer.play();
         });
         musicPlayer.play();
-        cardsOnGround.clear();
         SceneChanger.getScene().setOnKeyPressed(x -> {
             if (x.getCode() == KeyCode.ESCAPE)
                 pause();
@@ -103,7 +102,7 @@ public class DuelMenu implements Initializable {
             view.setLayoutY(545);
             view.setLayoutX(260 + i * 70);
             final int finalI = i + 1;
-            if (gameController.getRound().getPhase() == GamePhase.MAIN1 || gameController.getRound().getPhase() == GamePhase.MAIN2)
+            if (gameController.getRound().getPhase() == GamePhase.MAIN1 || gameController.getRound().getPhase() == GamePhase.MAIN2 || gameController.getRound().getPhase() == GamePhase.BATTLE_PHASE)
                 view.setOnMouseClicked(x -> handCardSelected(finalI));
             rootView.getChildren().add(view);
             cardsOnGround.add(view);
@@ -273,7 +272,7 @@ public class DuelMenu implements Initializable {
             gameController.getRound().setCard();
             drawScene();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            AlertsUtil.showError(e);
         }
         dialog.close();
     }
@@ -318,6 +317,7 @@ public class DuelMenu implements Initializable {
                 if (selectedCard.getCard() instanceof MindCrush)
                     CardSpecificMenus.getMindCrushCard(gameController.getRound(), selectedCard);
         }*/
+        drawScene();
     }
 
     public void nextPhase(MouseEvent mouseEvent) {
