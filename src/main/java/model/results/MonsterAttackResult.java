@@ -27,10 +27,6 @@ public class MonsterAttackResult {
         this.result = attackResult;
     }
 
-    public int getDamageReceived() {
-        return damageReceived;
-    }
-
     /**
      * Get the card name which we attacked to
      *
@@ -47,6 +43,20 @@ public class MonsterAttackResult {
      */
     public AttackResult getBattleResult() {
         return result;
+    }
+
+    /**
+     * @return True if the card which we had attacked to was in attack position
+     */
+    public boolean isAttackedCardInAttackMode() {
+        return wasAttackCard;
+    }
+
+    /**
+     * @return Was the card which we attacked to hidden?
+     */
+    public boolean wasHidden() {
+        return wasHidden;
     }
 
     @Override
