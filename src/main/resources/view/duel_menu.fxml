@@ -35,7 +35,7 @@
         <DuelistInfo fx:id="playerInfo" AnchorPane.leftAnchor="10" AnchorPane.bottomAnchor="20"/>
         <CardInfo fx:id="cardInfo" AnchorPane.leftAnchor="10" AnchorPane.topAnchor="100"/>
         <VBox maxHeight="60" maxWidth="110" minWidth="110" minHeight="60" styleClass="thin-rounded-card, dark-background"
-              AnchorPane.bottomAnchor="20" AnchorPane.rightAnchor="5" spacing="5" alignment="CENTER">
+              AnchorPane.bottomAnchor="30" AnchorPane.rightAnchor="5" spacing="5" alignment="CENTER">
             <Text fill="white" fx:id="phaseText" text="Phase: Draw"/>
             <Button text="Next Phase" onMouseClicked="#nextPhase"/>
         </VBox>

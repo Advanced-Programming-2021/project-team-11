@@ -40,6 +40,13 @@ public class RootMenu extends Application {
     }
 
     public void clickedRegisterButton(MouseEvent mouseEvent) {
-        SceneChanger.changeScene(MenuNames.REGISTER);
+        User u1 = User.getUserByUsername("1");
+        User u2 = User.getUserByUsername("2");
+        DuelMenu.player1 = u1;
+        DuelMenu.player2 = u2;
+        DuelMenu.gameController = new GameController(u1, u2, GameRounds.ONE);
+        DuelMenu.gameController.setupNewRound();
+        SceneChanger.changeScene(MenuNames.DUEL);
+        //SceneChanger.changeScene(MenuNames.REGISTER);
     }
 }

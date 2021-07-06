@@ -5,6 +5,8 @@ import com.jfoenix.controls.JFXDialogLayout;
 import controller.GameController;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
@@ -85,7 +87,7 @@ public class DuelMenu implements Initializable {
         ArrayList<PlayableCard> cards = gameController.getRound().getPlayerBoard().getHand();
         for (int i = 0; i < cards.size(); i++) {
             CardView view = new CardView(cards.get(i), false, this::cardHovered);
-            view.setLayoutY(530);
+            view.setLayoutY(545);
             view.setLayoutX(260 + i * 70);
             final int finalI = i + 1;
             if (gameController.getRound().getPhase() == GamePhase.MAIN1 || gameController.getRound().getPhase() == GamePhase.MAIN2)
@@ -260,8 +262,19 @@ public class DuelMenu implements Initializable {
         checkRoundEnd();
         // Otherwise process the data
         phaseText.setText("Phase: " + nowPhase.toString());
-        if (nowPhase == GamePhase.END_PHASE) // TODO
-            System.out.printf("its %s's turn\n", gameController.getRound().getPlayerBoard().getPlayer().getUser().getNickname());
+        if (nowPhase == GamePhase.END_PHASE) {
+            cardInfo.setCard(null);
+            blur();
+            AlertsUtil.showSuccess("Pass the computer to " + gameController.getRound().getPlayerBoard().getPlayer().getUser().getNickname() + "!",
+                    () -> stackPane.setEffect(null));
+        }
         drawScene();
+    }
+
+    private void blur() {
+        ColorAdjust adj = new ColorAdjust(0, -0.9, -0.5, 0);
+        GaussianBlur blur = new GaussianBlur(55);
+        adj.setInput(blur);
+        stackPane.setEffect(adj);
     }
 }
