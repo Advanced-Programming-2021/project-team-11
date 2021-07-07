@@ -24,12 +24,14 @@ public class TorrentialTribute extends TrapCard {
 
     @Override
     public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {
+        rivalBoard.getHand().remove(rivalCard);
         Arrays.stream(myBoard.getMonsterCards()).filter(Objects::nonNull).forEach(myBoard::sendToGraveyard);
         Arrays.stream(rivalBoard.getMonsterCards()).filter(Objects::nonNull).forEach(rivalBoard::sendToGraveyard);
     }
 
     @Override
-    public void deactivateEffect() {}
+    public void deactivateEffect() {
+    }
 
     @Override
     public boolean isConditionMade(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, int activationCounter) {

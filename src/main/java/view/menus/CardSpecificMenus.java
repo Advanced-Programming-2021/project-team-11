@@ -31,10 +31,7 @@ import model.exceptions.*;
 import view.components.AlertsUtil;
 import view.components.Assets;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -213,8 +210,6 @@ public class CardSpecificMenus {
                 AlertsUtil.showError(ex);
             }
         }
-        Stage stage = new Stage();
-        stage.showAndWait();
         ArrayList<Integer> cards = getCardsToTribute(gameRoundController.getPlayerBoard().getMonsterCards(), tributes);
         if (cards == null)
             return;
@@ -242,7 +237,6 @@ public class CardSpecificMenus {
                 .filter(card -> card.getCard() instanceof RitualMonster).collect(Collectors.toCollection(ArrayList::new));
         int index;
         while (true) {
-            System.out.print(MenuUtils.CHOOSE_CARD_BY_INDEX);
             index = choosePlayableCard("Choose a monster to summon", list);
             if (index == -1)
                 return;
@@ -255,7 +249,7 @@ public class CardSpecificMenus {
         while (true) {
             indexesOfMonsters = getCardsToTribute(board.getMonsterCardsList(), 1); // kinda tricky; We specify 1 to make sure that user at least chooses one card and we check the level later
             // Check level
-            int sum = indexesOfMonsters.stream().mapToInt(i -> ((MonsterCard) board.getMonsterCardsList().get(i).getCard()).getLevel()).sum();
+            int sum = indexesOfMonsters.stream().mapToInt(i -> ((MonsterCard) board.getMonsterCardsList().get(i - 1).getCard()).getLevel()).sum();
             if (((RitualMonster) list.get(index).getCard()).getLevel() == sum)
                 break;
             else
@@ -479,7 +473,7 @@ public class CardSpecificMenus {
     }
 
     public static boolean activateTrap(GameRoundController roundController, String[] cards, PlayableCard rivalCard) {
-        if (!AlertsUtil.confirmAlert("Do you want to activate your trap or spell? (y/n)"))
+        if (!AlertsUtil.confirmAlert("Do you want to activate your trap or spell?"))
             return false;
         ArrayList<Card> cardsObject = Arrays.stream(cards).map(TrapCard::getTrapCardByName).collect(Collectors.toCollection(ArrayList::new));
         int index = chooseCard("Choose a trap card", cardsObject);
@@ -487,6 +481,8 @@ public class CardSpecificMenus {
             return false;
         TrapCard card = (TrapCard) cardsObject.get(index);
         card.activateEffect(roundController.getRivalBoard(), roundController.getPlayerBoard(), null, rivalCard, 0);
+        Optional<PlayableCard> trap = roundController.getRivalBoard().getSpellCardsList().stream().filter(playerCard -> playerCard.getCard() == card).findFirst();
+        trap.ifPresent(playableCard -> roundController.getRivalBoard().sendToGraveyard(playableCard));
         if (card instanceof NegateAttack) {
             try {
                 roundController.advancePhase();

@@ -95,7 +95,7 @@ public class AlertsUtil {
         for (int i = 0; i < buttonTypes.length; i++)
             buttonTypes[i] = new ButtonType(buttons[i], ButtonBar.ButtonData.values()[i]);
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, message, buttonTypes);
-        alert.setTitle(title);
+        alert.setContentText(title);
         Optional<ButtonType> result = alert.showAndWait();
         return result.map(buttonType -> buttonType.getButtonData().ordinal()).orElse(-1);
     }

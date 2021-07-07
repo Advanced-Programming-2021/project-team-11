@@ -215,6 +215,19 @@ public class DuelMenu implements Initializable {
                 gameController.getRound().nuke();
                 checkRoundEnd();
                 break;
+            case "DRAW":
+                if (gameController.getRound().getPlayerBoard().getHand().size() >= 6) {
+                    AlertsUtil.showError("You have so many cards! Use them at first");
+                    return;
+                }
+                String name = AlertsUtil.getTextAlert("Enter card name");
+                try {
+                    gameController.getRound().forceDrawCard(name);
+                    drawScene();
+                } catch (CardNotExistsException e) {
+                    AlertsUtil.showError(e);
+                }
+                break;
             default:
                 AlertsUtil.showError("Invalid cheat code");
         }
@@ -484,10 +497,12 @@ public class DuelMenu implements Initializable {
             playAttackAnimations(attackingCard, toAttackCard, attackResult);
             attackingCard = null;
         } catch (TrapCanBeActivatedException ex) {
-            if (prepareTrap(ex.getAllowedCards())) {
+            if (!prepareTrap(ex.getAllowedCards())) {
                 MonsterAttackResult attackResult = gameController.getRound().attackToMonsterForced(toAttackCard.getIndex());
                 playAttackAnimations(attackingCard, toAttackCard, attackResult);
                 attackingCard = null;
+            } else {
+                drawScene();
             }
         } catch (Exception e) {
             AlertsUtil.showError(e);

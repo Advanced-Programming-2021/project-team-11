@@ -26,7 +26,9 @@ public class TrapHole extends TrapCard {
     }
 
     @Override
-    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {}
+    public void activateEffect(PlayerBoard myBoard, PlayerBoard rivalBoard, PlayableCard thisCard, PlayableCard rivalCard, int activationCounter) {
+        rivalBoard.getHand().remove(rivalCard);
+    }
 
     @Override
     public void deactivateEffect() {}
