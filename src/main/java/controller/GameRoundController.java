@@ -277,8 +277,12 @@ public class GameRoundController {
     }
 
     private void setSpellCard() throws SpellCardZoneFullException {
-        if (selectedCard.getCard() instanceof FieldSpellCard)
+        if (selectedCard.getCard() instanceof FieldSpellCard) {
+            getPlayerBoard().removeHandCard(selectedCard);
             setFieldFromSelectedCard();
+            selectedCard = null;
+            return;
+        }
         if (getPlayerBoard().isSpellZoneFull())
             throw new SpellCardZoneFullException();
         else
@@ -399,6 +403,8 @@ public class GameRoundController {
                 throw new MonsterEffectMustBeHandledException(selectedCard);
         if (selectedCard.getCardPlace() == CardPlaceType.SPELL && GameUtils.canTrapCardEffectBeActivated(selectedCard.getCard()))
             return handleActivateTrapCard();
+        if (selectedCard.getCard() instanceof TrapCard)
+            throw new OnlySpellCardsAllowedException();
         if (!(selectedCard.getCardPlace() == CardPlaceType.SPELL || selectedCard.getCardPlace() == CardPlaceType.FIELD
                 || (selectedCard.getCardPlace() == CardPlaceType.HAND && selectedCard.getCard().getCardType() == CardType.SPELL)))
             throw new OnlySpellCardsAllowedException();
@@ -407,14 +413,14 @@ public class GameRoundController {
         if (selectedCard.getCardPlace() == CardPlaceType.HAND && getPlayerBoard().isSpellZoneFull())
             throw new SpellCardZoneFullException();
         if (selectedCard.getCardPlace() == CardPlaceType.HAND) { // Move to spell zone
+            getPlayerBoard().removeHandCard(selectedCard);
+            selectedCard.setCardPlace(CardPlaceType.SPELL);
+            selectedCard.makeVisible();
             if (selectedCard.getCard() instanceof FieldSpellCard) {
                 setFieldFromSelectedCard();
                 return ActivateSpellCallback.DONE;
             } else {
-                getPlayerBoard().removeHandCard(selectedCard);
-                selectedCard.setCardPlace(CardPlaceType.SPELL);
                 getPlayerBoard().addSpellCard(selectedCard);
-                selectedCard.makeVisible();
             }
         } else if (selectedCard.hasEffectActivated() || !selectedCard.isHidden())
             throw new SpellAlreadyActivatedException();
@@ -459,7 +465,10 @@ public class GameRoundController {
      */
     public void specialSummon(MonsterCard card, boolean isForPlayer) {
         PlayerBoard board = isForPlayer ? getPlayerBoard() : getRivalBoard();
-        board.addMonsterCard(new PlayableCard(card, CardPlaceType.MONSTER));
+        PlayableCard playableCard = new PlayableCard(card, CardPlaceType.MONSTER);
+        playableCard.setAttacking();
+        playableCard.makeVisible();
+        board.addMonsterCard(playableCard);
     }
 
     public Card getSelectedCard() throws NoCardSelectedYetException, CardHiddenException {

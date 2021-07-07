@@ -4,6 +4,7 @@ import model.cards.Card;
 import model.cards.TrapCard;
 import model.cards.spells.MessengerOfPeace;
 import model.cards.spells.SupplySquad;
+import model.cards.spells.SwordsOfRevealingLight;
 import model.enums.CardPlaceType;
 import model.exceptions.BooAnException;
 
@@ -11,12 +12,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class PlayerBoard {
-    private final Player player;
-    private final PlayableCard[] spellCard = new PlayableCard[5];
-    private final PlayableCard[] monsterCard = new PlayableCard[5];
-    private final ArrayList<PlayableCard> graveyard = new ArrayList<>();
     private final ArrayList<PlayableCard> hand = new ArrayList<>(6);
+    private final ArrayList<PlayableCard> graveyard = new ArrayList<>();
+    private final PlayableCard[] monsterCard = new PlayableCard[5];
+    private final PlayableCard[] spellCard = new PlayableCard[5];
     private final ArrayList<Card> deck;
+    private final Player player;
     private PlayableCard field;
     /**
      * The effect of {@link model.cards.spells.SwordsOfRevealingLight} stage
@@ -27,6 +28,7 @@ public class PlayerBoard {
     public PlayerBoard(Player player, ArrayList<Card> cards) {
         this.player = player;
         this.deck = cards;
+        shuffleDeck();
         // Setup hand
         for (int i = 0; i < 5; i++) {
             hand.add(new PlayableCard(cards.get(0), CardPlaceType.HAND));
@@ -125,8 +127,7 @@ public class PlayerBoard {
     }
 
     public ArrayList<PlayableCard> getMonsterCardsList() {
-        return Arrays.stream(monsterCard).filter(Objects::nonNull)
-                .collect(Collectors.toCollection(ArrayList::new));
+        return Arrays.stream(monsterCard).filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
     }
 
     public PlayableCard[] getSpellCards() {
@@ -134,8 +135,7 @@ public class PlayerBoard {
     }
 
     public ArrayList<PlayableCard> getSpellCardsList() {
-        return Arrays.stream(spellCard).filter(Objects::nonNull)
-                .collect(Collectors.toCollection(ArrayList::new));
+        return Arrays.stream(spellCard).filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
     }
 
     public ArrayList<Card> getDeck() {
@@ -151,7 +151,6 @@ public class PlayerBoard {
         for (int i = 0; i < spellCard.length; i++)
             if (card == spellCard[i])
                 spellCard[i] = null;
-        card.sendToGraveyard();
         if (card.getEquippedCard() != null)
             for (int i = 0; i < spellCard.length; i++)
                 if (spellCard[i] != null && spellCard[i].getCard() == card.getEquippedCard()) {
@@ -159,6 +158,7 @@ public class PlayerBoard {
                     spellCard[i] = null;
                     break;
                 }
+        card.sendToGraveyard();
         graveyard.add(card);
     }
 
@@ -170,8 +170,10 @@ public class PlayerBoard {
     public void tryIncreaseSwordOfRevealingLightRound() {
         if (this.effectOfSwordsOfRevealingLightStage != 0)
             this.effectOfSwordsOfRevealingLightStage++;
-        if (this.effectOfSwordsOfRevealingLightStage > 3 * 2) // 3 rounds for this player and 3 for the other
+        if (this.effectOfSwordsOfRevealingLightStage > 3 * 2) { // 3 rounds for this player and 3 for the other
             this.effectOfSwordsOfRevealingLightStage = 0;
+            getSpellCardsList().stream().filter(card -> card.getCard() instanceof SwordsOfRevealingLight).forEach(this::sendToGraveyard);
+        }
     }
 
     public boolean isEffectOfSwordOfRevealingLightActive() {
@@ -183,8 +185,7 @@ public class PlayerBoard {
     }
 
     public void tryApplyMessengerOfPeace() {
-        getMonsterCardsList().stream().filter(card -> !card.isHidden() && card.getCard() instanceof MessengerOfPeace)
-                .findFirst().ifPresent(card -> card.activateEffect(this, null, null));
+        getSpellCardsList().stream().filter(card -> !card.isHidden() && card.getCard() instanceof MessengerOfPeace).findFirst().ifPresent(card -> card.activateEffect(this, null, null));
     }
 
     public void removeSpellTrapCard(TrapCard card) {

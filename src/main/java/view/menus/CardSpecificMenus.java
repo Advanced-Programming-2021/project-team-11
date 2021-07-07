@@ -351,6 +351,7 @@ public class CardSpecificMenus {
             return false;
         TrapCard card = TrapCard.getTrapCardByName(cards[index]);
         card.activateEffect(roundController.getRivalBoard(), roundController.getPlayerBoard(), null, rivalCard, 0);
+        roundController.getRivalBoard().getSpellCardsList().stream().filter(playerCard -> playerCard.getCard() == card).findFirst().ifPresent(playableCard -> roundController.getRivalBoard().sendToGraveyard(playableCard));
         if (card instanceof NegateAttack) {
             try {
                 roundController.advancePhase();
