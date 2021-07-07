@@ -14,7 +14,9 @@ import java.util.Objects;
 
 public class RootMenu extends Application {
     public static Stage primaryStage;
+
     // Default constructor; DO NOT REMOVE
+    @SuppressWarnings("unused")
     public RootMenu() {
     }
 

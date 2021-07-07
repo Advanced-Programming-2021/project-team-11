@@ -219,17 +219,17 @@ public class DuelMenu2 extends Menu {
             System.out.println(e.getMessage());
         } catch (TributeNeededException e) {
             if (e.getCard() instanceof BeastKingBarbaros)
-                success = CardSpecificMenus.summonBeastKingBarbaros(gameController.getRound());
+                success = CardSpecificMenus2.summonBeastKingBarbaros(gameController.getRound());
             else
                 success = summonWithTribute(e.getNeededTributes());
         } catch (NotEnoughCardsToTributeException e) {
             if (e.getCard() instanceof BeastKingBarbaros)
-                success = CardSpecificMenus.summonBeastKingBarbaros(gameController.getRound());
+                success = CardSpecificMenus2.summonBeastKingBarbaros(gameController.getRound());
             else
                 System.out.println(e.getMessage());
         } catch (SpecialSummonNeededException e) {
             if (e.getToSummonCard().getCard() instanceof TheTricky)
-                success = CardSpecificMenus.spawnTheTricky(gameController.getRound().getPlayerBoard(), e.getToSummonCard());
+                success = CardSpecificMenus2.spawnTheTricky(gameController.getRound().getPlayerBoard(), e.getToSummonCard());
         } catch (TrapCanBeActivatedException ex) {
             success = !prepareTrap(ex.getAllowedCards());
             if (success)
@@ -238,7 +238,7 @@ public class DuelMenu2 extends Menu {
         if (success) {
             System.out.println("summoned successfully");
             if (spawnedCard instanceof TerratigerTheEmpoweredWarrior)
-                CardSpecificMenus.handleTerratigerTheEmpoweredWarriorSummon(gameController.getRound().getPlayerBoard());
+                CardSpecificMenus2.handleTerratigerTheEmpoweredWarriorSummon(gameController.getRound().getPlayerBoard());
             printBoard();
             // Remove selected card
             try {
@@ -324,7 +324,7 @@ public class DuelMenu2 extends Menu {
             PlayableCard selectedCard = gameController.getRound().returnSelectedCard();
             gameController.getRound().flipSummon();
             if (selectedCard.getCard() instanceof ManEaterBug)
-                CardSpecificMenus.handleManEaterBugRemoval(gameController.getRound().getRivalBoard(), (ManEaterBug) selectedCard.getCard());
+                CardSpecificMenus2.handleManEaterBugRemoval(gameController.getRound().getRivalBoard(), (ManEaterBug) selectedCard.getCard());
             System.out.println("flip summoned successfully");
             printBoard();
         } catch (Exception e) {
@@ -418,41 +418,41 @@ public class DuelMenu2 extends Menu {
     private void handleActivateSpellCallBack(ActivateSpellCallback result, PlayableCard selectedCard) {
         switch (result) {
             case RITUAL:
-                CardSpecificMenus.handleRitualSpawn(gameController.getRound().getPlayerBoard(), selectedCard);
+                CardSpecificMenus2.handleRitualSpawn(gameController.getRound().getPlayerBoard(), selectedCard);
                 break;
             case NORMAL:
                 if (selectedCard.getCard() instanceof MonsterReborn)
-                    CardSpecificMenus.handleMonsterReborn(gameController.getRound(), selectedCard);
+                    CardSpecificMenus2.handleMonsterReborn(gameController.getRound(), selectedCard);
                 if (selectedCard.getCard() instanceof Terraforming)
-                    CardSpecificMenus.handleTerraforming(gameController.getRound().getPlayerBoard(), selectedCard);
+                    CardSpecificMenus2.handleTerraforming(gameController.getRound().getPlayerBoard(), selectedCard);
                 if (selectedCard.getCard() instanceof ChangeOfHeart)
-                    CardSpecificMenus.handleChangeOfHeart(gameController.getRound(), selectedCard);
+                    CardSpecificMenus2.handleChangeOfHeart(gameController.getRound(), selectedCard);
                 if (selectedCard.getCard() instanceof TwinTwisters)
-                    CardSpecificMenus.handleTwinTwisters(gameController.getRound(), selectedCard);
+                    CardSpecificMenus2.handleTwinTwisters(gameController.getRound(), selectedCard);
                 if (selectedCard.getCard() instanceof MysticalSpaceTyphoon)
-                    CardSpecificMenus.handleMysticalSpaceTyphoon(gameController.getRound(), selectedCard);
+                    CardSpecificMenus2.handleMysticalSpaceTyphoon(gameController.getRound(), selectedCard);
                 break;
             case EQUIP:
-                CardSpecificMenus.equip(gameController.getRound(), selectedCard);
+                CardSpecificMenus2.equip(gameController.getRound(), selectedCard);
                 break;
             case TRAP:
                 if (selectedCard.getCard() instanceof CallOfTheHaunted)
-                    CardSpecificMenus.callOfTheHunted(gameController.getRound().getPlayerBoard(), selectedCard);
+                    CardSpecificMenus2.callOfTheHunted(gameController.getRound().getPlayerBoard(), selectedCard);
                 if (selectedCard.getCard() instanceof MindCrush)
-                    CardSpecificMenus.getMindCrushCard(gameController.getRound(), selectedCard);
+                    CardSpecificMenus2.getMindCrushCard(gameController.getRound(), selectedCard);
         }
     }
 
     private void handleMonsterWithEffectCard(PlayableCard card) {
         if (card.getCard() instanceof ScannerCard) {
             try {
-                CardSpecificMenus.handleScannerCardEffect(gameController.getRound().getRivalBoard().getGraveyard(), card);
+                CardSpecificMenus2.handleScannerCardEffect(gameController.getRound().getRivalBoard().getGraveyard(), card);
             } catch (CantActivateSpellException e) {
                 System.out.println(e.getMessage());
             }
         }
         if (card.getCard() instanceof HeraldOfCreation)
-            CardSpecificMenus.summonCardWithHeraldOfCreation(gameController.getRound().getPlayerBoard(), card);
+            CardSpecificMenus2.summonCardWithHeraldOfCreation(gameController.getRound().getPlayerBoard(), card);
     }
 
     private boolean nuke(String command) {
@@ -467,7 +467,7 @@ public class DuelMenu2 extends Menu {
     private boolean prepareTrap(String[] cards) {
         System.out.printf("now it will be %s's turn\n", gameController.getRound().getRivalBoard().getPlayer().getUser().getUsername());
         printBoard(gameController.getRound().getPlayerBoard(), gameController.getRound().getRivalBoard());
-        boolean trapActivated = CardSpecificMenus.activateTrap(gameController.getRound(), cards, gameController.getRound().returnSelectedCard());
+        boolean trapActivated = CardSpecificMenus2.activateTrap(gameController.getRound(), cards, gameController.getRound().returnSelectedCard());
         System.out.printf("now it will be %s's turn\n", gameController.getRound().getPlayerBoard().getPlayer().getUser().getUsername());
         printBoard();
         return trapActivated;

@@ -23,6 +23,7 @@ import model.PlayerBoard;
 import model.User;
 import model.cards.Card;
 import model.cards.MonsterCard;
+import model.cards.monsters.BeastKingBarbaros;
 import model.enums.*;
 import model.exceptions.*;
 import model.game.GameEndResults;
@@ -72,6 +73,7 @@ public class DuelMenu implements Initializable {
         });
         dialog.setDialogContainer(stackPane);
         drawScene();
+        summonWithTribute(2);
     }
 
     /**
@@ -246,15 +248,15 @@ public class DuelMenu implements Initializable {
                 | InvalidPhaseActionException | MonsterCardZoneFullException e) {
             AlertsUtil.showError(e);
         } catch (TributeNeededException e) {
-            /*if (e.getCard() instanceof BeastKingBarbaros)
-                success = CardSpecificMenus.summonBeastKingBarbaros(gameController.getRound());
+            if (e.getCard() instanceof BeastKingBarbaros)
+                CardSpecificMenus.summonBeastKingBarbaros(gameController.getRound());
             else
-                success = summonWithTribute(e.getNeededTributes());*/
+                summonWithTribute(e.getNeededTributes());
         } catch (NotEnoughCardsToTributeException e) {
-            /*if (e.getCard() instanceof BeastKingBarbaros)
-                success = CardSpecificMenus.summonBeastKingBarbaros(gameController.getRound());
+            if (e.getCard() instanceof BeastKingBarbaros)
+                CardSpecificMenus.summonBeastKingBarbaros(gameController.getRound());
             else
-                System.out.println(e.getMessage());*/
+                AlertsUtil.showError(e);
         } catch (SpecialSummonNeededException e) {
            /* if (e.getToSummonCard().getCard() instanceof TheTricky)
                 success = CardSpecificMenus.spawnTheTricky(gameController.getRound().getPlayerBoard(), e.getToSummonCard());*/
@@ -265,6 +267,21 @@ public class DuelMenu implements Initializable {
         }
         drawScene();
         dialog.close();
+    }
+
+    private void summonWithTribute(int neededTributes) {
+        ArrayList<Integer> cards = CardSpecificMenus.readCardsToTribute(gameController.getRound().getPlayerBoard().getMonsterCards(), neededTributes);
+        if (cards == null)
+            return;
+        // Try to tribute
+        try {
+            gameController.getRound().summonCard(cards, false);
+        } catch (NoMonsterOnTheseAddressesException e) {
+            System.out.println(e.getMessage());
+        } catch (TrapCanBeActivatedException ex) {
+            /*if (!prepareTrap(ex.getAllowedCards()))
+                gameController.getRound().forceSummonCard();*/
+        }
     }
 
     private void set() {
@@ -350,10 +367,8 @@ public class DuelMenu implements Initializable {
     }
 
     private void rivalMonsterSelected(CardView card) {
-        if (attackingCard != null) {
+        if (attackingCard != null)
             attackToCard(card);
-            return;
-        }
     }
 
     private void playerMonsterSelected(CardView card) {

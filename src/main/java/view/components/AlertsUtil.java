@@ -80,4 +80,23 @@ public class AlertsUtil {
         Optional<String> text = dialog.showAndWait();
         return text.orElse(null);
     }
+
+    /**
+     * Creates a dialog with specified buttons
+     * It uses showAndWait
+     *
+     * @param message Alert message
+     * @param title   Alert title
+     * @param buttons The button texts
+     * @return The index of selected button. Returns -1 if the dialog is dismissed
+     */
+    public static int customButtonAlert(String message, String title, String... buttons) {
+        ButtonType[] buttonTypes = new ButtonType[buttons.length];
+        for (int i = 0; i < buttonTypes.length; i++)
+            buttonTypes[i] = new ButtonType(buttons[i], ButtonBar.ButtonData.values()[i]);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, message, buttonTypes);
+        alert.setTitle(title);
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.map(buttonType -> buttonType.getButtonData().ordinal()).orElse(-1);
+    }
 }
