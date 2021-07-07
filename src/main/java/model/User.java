@@ -8,7 +8,6 @@ import model.cards.Card;
 import model.exceptions.UserDeckIsInvalidException;
 import model.exceptions.UserHaveNoActiveDeckException;
 import model.results.DeckListTableResult;
-import view.menus.MainMenu;
 
 import java.awt.*;
 import java.io.ByteArrayInputStream;

@@ -128,7 +128,7 @@ public class DuelMenu implements Initializable {
      * Renders all spells in the game board
      */
     private void addSpells() {
-        addMainCards(gameController.getRound().getRivalBoard().getSpellCards(), true, CARD_PLACES_SPELL_RIVAL_Y, this::rivalSpellSelected);
+        addMainCards(gameController.getRound().getRivalBoard().getSpellCards(), true, CARD_PLACES_SPELL_RIVAL_Y, null);
         addMainCards(gameController.getRound().getPlayerBoard().getSpellCards(), false, CARD_PLACES_SPELL_PLAYER_Y, this::playerSpellSelected);
     }
 
@@ -265,9 +265,8 @@ public class DuelMenu implements Initializable {
             if (e.getToSummonCard().getCard() instanceof TheTricky)
                 CardSpecificMenus.spawnTheTricky(gameController.getRound().getPlayerBoard(), e.getToSummonCard());
         } catch (TrapCanBeActivatedException ex) {
-            /*success = !prepareTrap(ex.getAllowedCards());
-            if (success)
-                gameController.getRound().forceSummonCard();*/
+            if (!prepareTrap(ex.getAllowedCards()))
+                gameController.getRound().forceSummonCard();
         }
         drawScene();
         dialog.close();
@@ -283,8 +282,8 @@ public class DuelMenu implements Initializable {
         } catch (NoMonsterOnTheseAddressesException e) {
             System.out.println(e.getMessage());
         } catch (TrapCanBeActivatedException ex) {
-            /*if (!prepareTrap(ex.getAllowedCards()))
-                gameController.getRound().forceSummonCard();*/
+            if (!prepareTrap(ex.getAllowedCards()))
+                gameController.getRound().forceSummonCard();
         }
     }
 
@@ -302,7 +301,7 @@ public class DuelMenu implements Initializable {
         try {
             PlayableCard selectedCard = gameController.getRound().returnSelectedCard();
             handleActivateSpellCallBack(gameController.getRound().activeSpell(), selectedCard);
-        } catch (OnlySpellCardsAllowedException | NoCardSelectedException | CardAlreadyAttackedException |
+        } catch (OnlySpellCardsAllowedException | NoCardSelectedException |
                 InvalidPhaseActionException | RitualSummonNotPossibleException | CantSpecialSummonException |
                 CantUseSpellException | SpellAlreadyActivatedException | SpellCardZoneFullException e) {
             AlertsUtil.showError(e);
@@ -352,6 +351,7 @@ public class DuelMenu implements Initializable {
         drawScene();
     }
 
+    @SuppressWarnings("unused")
     public void nextPhase(MouseEvent mouseEvent) {
         try {
             gameController.getRound().advancePhase();
@@ -382,7 +382,7 @@ public class DuelMenu implements Initializable {
     }
 
     private void rivalMonsterSelected(CardView card) {
-        if (attackingCard != null)
+        if (gameController.getRound().returnSelectedCard().getCardPlace() == CardPlaceType.MONSTER)
             attackToCard(card);
     }
 
@@ -428,10 +428,6 @@ public class DuelMenu implements Initializable {
             throw new BooAnException(e);
         }
         activateSpell();
-    }
-
-    private void rivalSpellSelected(CardView card) {
-
     }
 
     private void attack(CardView card) {
@@ -488,12 +484,11 @@ public class DuelMenu implements Initializable {
             playAttackAnimations(attackingCard, toAttackCard, attackResult);
             attackingCard = null;
         } catch (TrapCanBeActivatedException ex) {
-            // TODO
-           /* if (prepareTrap(ex.getAllowedCards())) {
-                MonsterAttackResult result = gameController.getRound().attackToMonsterForced(positionToAttack);
-                System.out.println(result.toString());
-                printBoard();
-            }*/
+            if (prepareTrap(ex.getAllowedCards())) {
+                MonsterAttackResult attackResult = gameController.getRound().attackToMonsterForced(toAttackCard.getIndex());
+                playAttackAnimations(attackingCard, toAttackCard, attackResult);
+                attackingCard = null;
+            }
         } catch (Exception e) {
             AlertsUtil.showError(e);
         }
@@ -560,11 +555,22 @@ public class DuelMenu implements Initializable {
         dialog.show();
     }
 
+    @SuppressWarnings("unused")
     public void clickedRivalGraveyard(MouseEvent mouseEvent) {
         showGraveyard(gameController.getRound().getRivalBoard());
     }
 
+    @SuppressWarnings("unused")
     public void clickedPlayerGraveyard(MouseEvent mouseEvent) {
         showGraveyard(gameController.getRound().getPlayerBoard());
+    }
+
+    private boolean prepareTrap(String[] cards) {
+        AlertsUtil.showSuccess(String.format("now it will be %s's turn", gameController.getRound().getRivalBoard().getPlayer().getUser().getUsername()));
+        blur();
+        boolean trapActivated = CardSpecificMenus.activateTrap(gameController.getRound(), cards, gameController.getRound().returnSelectedCard());
+        AlertsUtil.showSuccess(String.format("now it will be %s's turn\n", gameController.getRound().getPlayerBoard().getPlayer().getUser().getUsername()));
+        stackPane.setEffect(null);
+        return trapActivated;
     }
 }

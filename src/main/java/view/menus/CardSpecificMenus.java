@@ -25,6 +25,7 @@ import model.cards.monsters.ManEaterBug;
 import model.cards.spells.AdvancedRitualArt;
 import model.cards.spells.EquipSpellCard;
 import model.cards.traps.MindCrush;
+import model.cards.traps.NegateAttack;
 import model.enums.CardPlaceType;
 import model.exceptions.*;
 import view.components.AlertsUtil;
@@ -475,5 +476,24 @@ public class CardSpecificMenus {
         if (position == -1)
             return;
         ManEaterBug.getInstance().activateEffect(null, rivalBoard, null, rivalBoard.getMonsterCardsList().get(position), 0);
+    }
+
+    public static boolean activateTrap(GameRoundController roundController, String[] cards, PlayableCard rivalCard) {
+        if (!AlertsUtil.confirmAlert("Do you want to activate your trap or spell? (y/n)"))
+            return false;
+        ArrayList<Card> cardsObject = Arrays.stream(cards).map(TrapCard::getTrapCardByName).collect(Collectors.toCollection(ArrayList::new));
+        int index = chooseCard("Choose a trap card", cardsObject);
+        if (index == -1)
+            return false;
+        TrapCard card = (TrapCard) cardsObject.get(index);
+        card.activateEffect(roundController.getRivalBoard(), roundController.getPlayerBoard(), null, rivalCard, 0);
+        if (card instanceof NegateAttack) {
+            try {
+                roundController.advancePhase();
+            } catch (PlayerTimeSealedException e) {
+                throw new BooAnException(e.getMessage());
+            }
+        }
+        return true;
     }
 }

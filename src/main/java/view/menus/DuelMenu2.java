@@ -405,7 +405,7 @@ public class DuelMenu2 extends Menu {
         try {
             PlayableCard selectedCard = gameController.getRound().returnSelectedCard();
             handleActivateSpellCallBack(gameController.getRound().activeSpell(), selectedCard);
-        } catch (OnlySpellCardsAllowedException | NoCardSelectedException | CardAlreadyAttackedException |
+        } catch (OnlySpellCardsAllowedException | NoCardSelectedException |
                 InvalidPhaseActionException | RitualSummonNotPossibleException | CantSpecialSummonException |
                 CantUseSpellException | SpellAlreadyActivatedException | SpellCardZoneFullException e) {
             System.out.println(e.getMessage());
