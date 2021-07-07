@@ -23,6 +23,7 @@ import model.cards.*;
 import model.cards.monsters.BeastKingBarbaros;
 import model.cards.spells.AdvancedRitualArt;
 import model.cards.spells.EquipSpellCard;
+import model.cards.traps.MindCrush;
 import model.enums.CardPlaceType;
 import model.exceptions.*;
 import view.components.AlertsUtil;
@@ -389,5 +390,78 @@ public class CardSpecificMenus {
             return;
         round.getRivalBoard().sendToGraveyard(cards.get(index));
         round.getPlayerBoard().sendToGraveyard(thisCard);
+    }
+
+    /**
+     * Sets the scanner as a card
+     *
+     * @param rivalGraveyard Rival's graveyard cards
+     * @param scannerCard    The scanner card which we want to mimic
+     * @throws CantActivateSpellException If the graveyard does not contain any monster cards
+     */
+    public static void handleScannerCardEffect(ArrayList<PlayableCard> rivalGraveyard, PlayableCard scannerCard) throws CantActivateSpellException {
+        ArrayList<PlayableCard> monsters = rivalGraveyard.stream().filter(card -> card.getCard().getCardType() == CardType.MONSTER)
+                .collect(Collectors.toCollection(ArrayList::new));
+        if (monsters.isEmpty())
+            throw new CantActivateSpellException();
+        // Show the graveyard and ask a user for a card
+        int index = choosePlayableCard("Choose a card to mimic it!", monsters, Assets.RADAR);
+        if (index == -1)
+            return;
+        scannerCard.activateEffect(null, null, monsters.get(index));
+    }
+
+    /**
+     * Tries to move a card from graveyard to your hand with Herald Of Creation card
+     *
+     * @param playerBoard The board of player who has this card
+     * @param thisCard    This card
+     */
+    public static void summonCardWithHeraldOfCreation(PlayerBoard playerBoard, PlayableCard thisCard) {
+        // Throw a card out from hand
+        int handIndex = choosePlayableCard("Choose a card from your hand to throw it out", playerBoard.getHand(), Assets.DEATH);
+        if (handIndex == -1)
+            return;
+        // Now show the graveyard
+        int graveyardIndex = choosePlayableCard("Choose a card from graveyard to revive it", playerBoard.getGraveyard(), Assets.REVIVE);
+        if (graveyardIndex == -1)
+            return;
+        // Do the effect
+        playerBoard.getHand().remove(handIndex);
+        PlayableCard toMoveCard = playerBoard.getGraveyard().remove(graveyardIndex);
+        toMoveCard.setCardPlace(CardPlaceType.HAND);
+        playerBoard.getHand().add(toMoveCard);
+        thisCard.activateEffect(null, null, null); // has no effect here
+    }
+
+    public static void callOfTheHunted(PlayerBoard board, PlayableCard thisCard) {
+        ArrayList<PlayableCard> monsters = board.getGraveyard().stream()
+                .filter(card -> card.getCard().getCardType() == CardType.MONSTER).collect(Collectors.toCollection(ArrayList::new));
+        int index = choosePlayableCard("Choose a card to revive it", monsters, Assets.REVIVE);
+        if (index == -1)
+            return;
+        // Activate the effect
+        board.sendToGraveyard(thisCard);
+        PlayableCard toSummon = new PlayableCard(monsters.get(index).getCard(), CardPlaceType.MONSTER);
+        toSummon.makeVisible();
+        toSummon.setAttacking();
+        board.addMonsterCard(toSummon);
+    }
+
+    /**
+     * Player should randomly choose a card
+     * If the rival had it, it will remove all of that cards from rival's hand and deck
+     * Otherwise we should randomly throw a card out of our hand
+     *
+     * @param gameRoundController Game round
+     * @param thisCard            The mind crush card
+     */
+    public static void getMindCrushCard(GameRoundController gameRoundController, PlayableCard thisCard) {
+        ArrayList<Card> cards = Card.getAllCards();
+        int index = chooseCard("Choose a card (place your bet)", cards);
+        if (index == -1)
+            return;
+        MindCrush.getInstance().activateEffect(gameRoundController.getPlayerBoard(), gameRoundController.getRivalBoard(), null, new PlayableCard(cards.get(index), CardPlaceType.HAND), 0);
+        gameRoundController.getPlayerBoard().sendToGraveyard(thisCard);
     }
 }

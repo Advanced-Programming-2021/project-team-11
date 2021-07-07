@@ -28,6 +28,7 @@ public class Assets {
     public final static Image REVIVE = new Image(Objects.requireNonNull(RootMenu.class.getResource("/assets/revive.png")).toExternalForm());
     public final static Image HEARTBLEED = new Image(Objects.requireNonNull(RootMenu.class.getResource("/assets/heartbleed.png")).toExternalForm());
     public final static Image TORNADO = new Image(Objects.requireNonNull(RootMenu.class.getResource("/assets/tornado.png")).toExternalForm());
+    public final static Image RADAR = new Image(Objects.requireNonNull(RootMenu.class.getResource("/assets/radar.png")).toExternalForm());
     public final static Media MUSIC = new Media(Objects.requireNonNull(RootMenu.class.getResource("/assets/sfx/music.mp3")).toExternalForm());
 
     public static void setMenuBackgroundImage(Region borderPane) {

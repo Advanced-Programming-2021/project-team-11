@@ -24,8 +24,12 @@ import model.User;
 import model.cards.Card;
 import model.cards.MonsterCard;
 import model.cards.monsters.BeastKingBarbaros;
+import model.cards.monsters.HeraldOfCreation;
+import model.cards.monsters.ScannerCard;
 import model.cards.monsters.TheTricky;
 import model.cards.spells.*;
+import model.cards.traps.CallOfTheHaunted;
+import model.cards.traps.MindCrush;
 import model.enums.*;
 import model.exceptions.*;
 import model.game.GameEndResults;
@@ -39,6 +43,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 // TODO: traps!
+// TODO: flip summon
 
 public class DuelMenu implements Initializable {
     private static final double CARD_PLACES_WIDTH = 78, CARD_PLACES_FIRST_X = 800 + 107.5 - 570, PLAYER_DOWN_OFFSET = 60,
@@ -260,7 +265,7 @@ public class DuelMenu implements Initializable {
             else
                 AlertsUtil.showError(e);
         } catch (SpecialSummonNeededException e) {
-           if (e.getToSummonCard().getCard() instanceof TheTricky)
+            if (e.getToSummonCard().getCard() instanceof TheTricky)
                 CardSpecificMenus.spawnTheTricky(gameController.getRound().getPlayerBoard(), e.getToSummonCard());
         } catch (TrapCanBeActivatedException ex) {
             /*success = !prepareTrap(ex.getAllowedCards());
@@ -305,9 +310,20 @@ public class DuelMenu implements Initializable {
                 CantUseSpellException | SpellAlreadyActivatedException | SpellCardZoneFullException e) {
             AlertsUtil.showError(e);
         } catch (MonsterEffectMustBeHandledException e) {
-            //handleMonsterWithEffectCard(e.getCard());
+            handleMonsterWithEffectCard(e.getCard());
         }
         dialog.close();
+    }
+
+    private void handleMonsterWithEffectCard(PlayableCard card) {
+        if (card.getCard() instanceof ScannerCard)
+            try {
+                CardSpecificMenus.handleScannerCardEffect(gameController.getRound().getRivalBoard().getGraveyard(), card);
+            } catch (CantActivateSpellException e) {
+                AlertsUtil.showError(e);
+            }
+        if (card.getCard() instanceof HeraldOfCreation)
+            CardSpecificMenus.summonCardWithHeraldOfCreation(gameController.getRound().getPlayerBoard(), card);
     }
 
     private void handleActivateSpellCallBack(ActivateSpellCallback result, PlayableCard selectedCard) {
@@ -331,10 +347,10 @@ public class DuelMenu implements Initializable {
                 CardSpecificMenus.equip(gameController.getRound(), selectedCard);
                 break;
             case TRAP:
-                /*if (selectedCard.getCard() instanceof CallOfTheHaunted)
+                if (selectedCard.getCard() instanceof CallOfTheHaunted)
                     CardSpecificMenus.callOfTheHunted(gameController.getRound().getPlayerBoard(), selectedCard);
                 if (selectedCard.getCard() instanceof MindCrush)
-                    CardSpecificMenus.getMindCrushCard(gameController.getRound(), selectedCard);*/
+                    CardSpecificMenus.getMindCrushCard(gameController.getRound(), selectedCard);
         }
         drawScene();
     }
