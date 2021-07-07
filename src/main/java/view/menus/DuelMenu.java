@@ -3,6 +3,7 @@ package view.menus;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
 import controller.GameController;
+import javafx.animation.ParallelTransition;
 import javafx.animation.RotateTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.Initializable;
@@ -23,10 +24,7 @@ import model.PlayerBoard;
 import model.User;
 import model.cards.Card;
 import model.cards.MonsterCard;
-import model.cards.monsters.BeastKingBarbaros;
-import model.cards.monsters.HeraldOfCreation;
-import model.cards.monsters.ScannerCard;
-import model.cards.monsters.TheTricky;
+import model.cards.monsters.*;
 import model.cards.spells.*;
 import model.cards.traps.CallOfTheHaunted;
 import model.cards.traps.MindCrush;
@@ -43,7 +41,6 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 // TODO: traps!
-// TODO: flip summon
 
 public class DuelMenu implements Initializable {
     private static final double CARD_PLACES_WIDTH = 78, CARD_PLACES_FIRST_X = 800 + 107.5 - 570, PLAYER_DOWN_OFFSET = 60,
@@ -397,8 +394,31 @@ public class DuelMenu implements Initializable {
         }
         if (gameController.getRound().getPhase() == GamePhase.BATTLE_PHASE)
             attack(card);
-        if (gameController.getRound().getPhase() == GamePhase.MAIN1 || gameController.getRound().getPhase() == GamePhase.MAIN2)
-            swapCardPosition(card);
+        if (gameController.getRound().getPhase() == GamePhase.MAIN1 || gameController.getRound().getPhase() == GamePhase.MAIN2) {
+            if (gameController.getRound().returnSelectedCard().isHidden()) {
+                flipSummon(card);
+            } else {
+                swapCardPosition(card);
+            }
+        }
+    }
+
+    private void flipSummon(CardView card) {
+        try {
+            PlayableCard selectedCard = gameController.getRound().returnSelectedCard();
+            gameController.getRound().flipSummon();
+            if (selectedCard.getCard() instanceof ManEaterBug)
+                CardSpecificMenus.handleManEaterBugRemoval(gameController.getRound().getRivalBoard());
+            CardFlipTransition flip = new CardFlipTransition(card);
+            RotateTransition rotateTransition = new RotateTransition(Duration.millis(500), card);
+            rotateTransition.setFromAngle(90);
+            rotateTransition.setToAngle(0);
+            ParallelTransition transitions = new ParallelTransition(rotateTransition, flip);
+            transitions.setOnFinished(x -> drawScene());
+            transitions.play();
+        } catch (Exception e) {
+            AlertsUtil.showError(e);
+        }
     }
 
     private void playerSpellSelected(CardView card) {

@@ -21,6 +21,7 @@ import model.PlayableCard;
 import model.PlayerBoard;
 import model.cards.*;
 import model.cards.monsters.BeastKingBarbaros;
+import model.cards.monsters.ManEaterBug;
 import model.cards.spells.AdvancedRitualArt;
 import model.cards.spells.EquipSpellCard;
 import model.cards.traps.MindCrush;
@@ -463,5 +464,16 @@ public class CardSpecificMenus {
             return;
         MindCrush.getInstance().activateEffect(gameRoundController.getPlayerBoard(), gameRoundController.getRivalBoard(), null, new PlayableCard(cards.get(index), CardPlaceType.HAND), 0);
         gameRoundController.getPlayerBoard().sendToGraveyard(thisCard);
+    }
+
+    public static void handleManEaterBugRemoval(PlayerBoard rivalBoard) {
+        // At first check if the rival board is empty; Can't do anything if the board is empty!
+        if (rivalBoard.isMonsterZoneEmpty())
+            return;
+        // Now ask the user to remove one card from rival
+        int position = choosePlayableCard("Choose a card to eat it!", rivalBoard.getMonsterCardsList(), Assets.DEATH);
+        if (position == -1)
+            return;
+        ManEaterBug.getInstance().activateEffect(null, rivalBoard, null, rivalBoard.getMonsterCardsList().get(position), 0);
     }
 }
