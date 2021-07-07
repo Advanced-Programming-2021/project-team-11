@@ -24,6 +24,7 @@ public class Assets {
     private final static Image NORMAL_FIELD = new Image(Objects.requireNonNull(RootMenu.class.getResource("/assets/fields/Normal.bmp")).toExternalForm());
     public final static Image SWORD = new Image(Objects.requireNonNull(RootMenu.class.getResource("/assets/sword.png")).toExternalForm());
     public final static Image DEATH = new Image(Objects.requireNonNull(RootMenu.class.getResource("/assets/death.png")).toExternalForm());
+    public final static Image CHECKMARK = new Image(Objects.requireNonNull(RootMenu.class.getResource("/assets/checkmark.png")).toExternalForm());
     public final static Media MUSIC = new Media(Objects.requireNonNull(RootMenu.class.getResource("/assets/sfx/music.mp3")).toExternalForm());
 
     public static void setMenuBackgroundImage(Region borderPane) {

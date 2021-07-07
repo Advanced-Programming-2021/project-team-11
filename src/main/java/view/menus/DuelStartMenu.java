@@ -14,6 +14,7 @@ import model.enums.CoinFlipResult;
 import model.enums.GameRounds;
 import model.exceptions.UserDeckIsInvalidException;
 import model.exceptions.UserHaveNoActiveDeckException;
+import view.animation.CoinFlip;
 import view.components.*;
 
 import java.net.URL;

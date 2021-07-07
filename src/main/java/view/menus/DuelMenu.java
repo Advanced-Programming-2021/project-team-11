@@ -24,6 +24,7 @@ import model.User;
 import model.cards.Card;
 import model.cards.MonsterCard;
 import model.cards.monsters.BeastKingBarbaros;
+import model.cards.monsters.TheTricky;
 import model.enums.*;
 import model.exceptions.*;
 import model.game.GameEndResults;
@@ -35,6 +36,8 @@ import view.components.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+
+// TODO: traps!
 
 public class DuelMenu implements Initializable {
     private static final double CARD_PLACES_WIDTH = 78, CARD_PLACES_FIRST_X = 800 + 107.5 - 570, PLAYER_DOWN_OFFSET = 60,
@@ -73,7 +76,6 @@ public class DuelMenu implements Initializable {
         });
         dialog.setDialogContainer(stackPane);
         drawScene();
-        summonWithTribute(2);
     }
 
     /**
@@ -241,7 +243,6 @@ public class DuelMenu implements Initializable {
     }
 
     private void summon() {
-        // TODO: fix this mess
         try {
             gameController.getRound().summonCard();
         } catch (AlreadySummonedException | NoCardSelectedYetException | CantSummonCardException
@@ -258,8 +259,8 @@ public class DuelMenu implements Initializable {
             else
                 AlertsUtil.showError(e);
         } catch (SpecialSummonNeededException e) {
-           /* if (e.getToSummonCard().getCard() instanceof TheTricky)
-                success = CardSpecificMenus.spawnTheTricky(gameController.getRound().getPlayerBoard(), e.getToSummonCard());*/
+           if (e.getToSummonCard().getCard() instanceof TheTricky)
+                CardSpecificMenus.spawnTheTricky(gameController.getRound().getPlayerBoard(), e.getToSummonCard());
         } catch (TrapCanBeActivatedException ex) {
             /*success = !prepareTrap(ex.getAllowedCards());
             if (success)
@@ -270,7 +271,7 @@ public class DuelMenu implements Initializable {
     }
 
     private void summonWithTribute(int neededTributes) {
-        ArrayList<Integer> cards = CardSpecificMenus.readCardsToTribute(gameController.getRound().getPlayerBoard().getMonsterCards(), neededTributes);
+        ArrayList<Integer> cards = CardSpecificMenus.getCardsToTribute(gameController.getRound().getPlayerBoard().getMonsterCards(), neededTributes);
         if (cards == null)
             return;
         // Try to tribute
@@ -309,12 +310,12 @@ public class DuelMenu implements Initializable {
     }
 
     private void handleActivateSpellCallBack(ActivateSpellCallback result, PlayableCard selectedCard) {
-        /*switch (result) {
+        switch (result) {
             case RITUAL:
                 CardSpecificMenus.handleRitualSpawn(gameController.getRound().getPlayerBoard(), selectedCard);
                 break;
             case NORMAL:
-                if (selectedCard.getCard() instanceof MonsterReborn)
+                /*if (selectedCard.getCard() instanceof MonsterReborn)
                     CardSpecificMenus.handleMonsterReborn(gameController.getRound(), selectedCard);
                 if (selectedCard.getCard() instanceof Terraforming)
                     CardSpecificMenus.handleTerraforming(gameController.getRound().getPlayerBoard(), selectedCard);
@@ -323,17 +324,17 @@ public class DuelMenu implements Initializable {
                 if (selectedCard.getCard() instanceof TwinTwisters)
                     CardSpecificMenus.handleTwinTwisters(gameController.getRound(), selectedCard);
                 if (selectedCard.getCard() instanceof MysticalSpaceTyphoon)
-                    CardSpecificMenus.handleMysticalSpaceTyphoon(gameController.getRound(), selectedCard);
+                    CardSpecificMenus.handleMysticalSpaceTyphoon(gameController.getRound(), selectedCard);*/
                 break;
             case EQUIP:
                 CardSpecificMenus.equip(gameController.getRound(), selectedCard);
                 break;
             case TRAP:
-                if (selectedCard.getCard() instanceof CallOfTheHaunted)
+                /*if (selectedCard.getCard() instanceof CallOfTheHaunted)
                     CardSpecificMenus.callOfTheHunted(gameController.getRound().getPlayerBoard(), selectedCard);
                 if (selectedCard.getCard() instanceof MindCrush)
-                    CardSpecificMenus.getMindCrushCard(gameController.getRound(), selectedCard);
-        }*/
+                    CardSpecificMenus.getMindCrushCard(gameController.getRound(), selectedCard);*/
+        }
         drawScene();
     }
 
@@ -384,7 +385,12 @@ public class DuelMenu implements Initializable {
     }
 
     private void playerSpellSelected(CardView card) {
-
+        try {
+            gameController.getRound().selectCard(card.getIndex(), false, CardPlaceType.SPELL);
+        } catch (NoCardFoundInPositionException e) {
+            throw new BooAnException(e);
+        }
+        activateSpell();
     }
 
     private void rivalSpellSelected(CardView card) {
