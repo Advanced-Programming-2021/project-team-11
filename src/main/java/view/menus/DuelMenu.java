@@ -363,7 +363,7 @@ public class DuelMenu extends Menu {
             System.out.println(result.toString());
             printBoard();
         } catch (TrapCanBeActivatedException ex) {
-            if (prepareTrap(ex.getAllowedCards())) {
+            if (!prepareTrap(ex.getAllowedCards())) {
                 MonsterAttackResult result = gameController.getRound().attackToMonsterForced(positionToAttack);
                 System.out.println(result.toString());
                 printBoard();
