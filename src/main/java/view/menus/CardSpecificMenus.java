@@ -2,25 +2,28 @@ package view.menus;
 
 import com.jfoenix.controls.JFXButton;
 import controller.GameRoundController;
+import controller.GameUtils;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import model.PlayableCard;
 import model.PlayerBoard;
-import model.cards.MonsterCard;
-import model.cards.RitualMonster;
+import model.cards.*;
 import model.cards.monsters.BeastKingBarbaros;
 import model.cards.spells.AdvancedRitualArt;
 import model.cards.spells.EquipSpellCard;
+import model.enums.CardPlaceType;
 import model.exceptions.*;
 import view.components.AlertsUtil;
 import view.components.Assets;
@@ -52,6 +55,7 @@ public class CardSpecificMenus {
         // Create a new stage for this
         Stage stage = new Stage();
         stage.setResizable(false);
+        stage.setTitle("Choose cards");
         BorderPane borderPane = new BorderPane();
         borderPane.setPadding(new Insets(5));
         Scene scene = new Scene(borderPane);
@@ -115,7 +119,7 @@ public class CardSpecificMenus {
      * @param chosenImage Image to show when a card is choosen
      * @return The index of card selected or -1 if canceled
      */
-    public static int chooseCard(String title, ArrayList<PlayableCard> cards, Image chosenImage) {
+    public static int chooseCard(String title, ArrayList<Card> cards, Image chosenImage) {
         // Create a new stage for this
         Stage stage = new Stage();
         stage.setResizable(false);
@@ -123,15 +127,17 @@ public class CardSpecificMenus {
         borderPane.setPadding(new Insets(5));
         Scene scene = new Scene(borderPane);
         stage.setScene(scene);
+        stage.setTitle("Choose a card");
         borderPane.setTop(new Label(title));
-        HBox cardBox = new HBox(5);
+        AnchorPane cardPane = new AnchorPane();
         AtomicReference<Integer> result = new AtomicReference<>(-1);
         ArrayList<ImageView> chosenImages = new ArrayList<>(); // list of checkmarks to disable all of them
+        final int inEachRow = 4;
         for (int i = 0; i < cards.size(); i++) {
             final int index = i;
             ImageView checkMarkIcon = new ImageView(chosenImage);
             checkMarkIcon.setVisible(false);
-            ImageView card = new ImageView(Assets.getCardImage(cards.get(i).getCard()));
+            ImageView card = new ImageView(Assets.getCardImage(cards.get(i)));
             card.setFitHeight(100);
             card.setFitWidth(70);
             card.setOnMouseClicked(x -> {
@@ -140,9 +146,17 @@ public class CardSpecificMenus {
                 chosenImages.get(index).setVisible(true);
             });
             chosenImages.add(checkMarkIcon);
-            cardBox.getChildren().add(new StackPane(card, checkMarkIcon));
+            StackPane stackPane = new StackPane(card, checkMarkIcon);
+            stackPane.setLayoutX(85 * (i % inEachRow) + 10);
+            int c = i / inEachRow;
+            stackPane.setLayoutY(115 * c + 10);
+            cardPane.getChildren().add(stackPane);
         }
-        borderPane.setCenter(cardBox);
+        ScrollPane scrollPane = new ScrollPane(cardPane);
+        scrollPane.setPrefViewportWidth(350);
+        scrollPane.setMaxHeight(200);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        borderPane.setCenter(scrollPane);
         HBox buttons = new HBox(5);
         buttons.setPadding(new Insets(5, 0, 0, 0));
         buttons.setAlignment(Pos.CENTER);
@@ -161,8 +175,17 @@ public class CardSpecificMenus {
         return result.get();
     }
 
-    public static int chooseCard(String title, ArrayList<PlayableCard> cards) {
+    public static int chooseCard(String title, ArrayList<Card> cards) {
         return chooseCard(title, cards, Assets.CHECKMARK);
+    }
+
+    public static int choosePlayableCard(String title, ArrayList<PlayableCard> cards) {
+        return choosePlayableCard(title, cards, Assets.CHECKMARK);
+    }
+
+    public static int choosePlayableCard(String title, ArrayList<PlayableCard> cards, Image chosenImage) {
+        ArrayList<Card> fixedCards = cards.stream().map(PlayableCard::getCard).collect(Collectors.toCollection(ArrayList::new));
+        return chooseCard(title, fixedCards, chosenImage);
     }
 
     /**
@@ -217,7 +240,7 @@ public class CardSpecificMenus {
         int index;
         while (true) {
             System.out.print(MenuUtils.CHOOSE_CARD_BY_INDEX);
-            index = chooseCard("Choose a monster to summon", list);
+            index = choosePlayableCard("Choose a monster to summon", list);
             if (index == -1)
                 return;
             if (AdvancedRitualArt.getInstance().isConditionMade(board, null, list.get(index), 0))
@@ -263,7 +286,7 @@ public class CardSpecificMenus {
         // Get the card
         int index;
         while (true) {
-            index = chooseCard("Choose a card to throw it out", playerBoard.getHand(), Assets.DEATH);
+            index = choosePlayableCard("Choose a card to throw it out", playerBoard.getHand(), Assets.DEATH);
             if (index == -1)
                 return;
             if (playerBoard.getHand().get(index) == thisCard)
@@ -285,9 +308,86 @@ public class CardSpecificMenus {
      */
     public static void equip(GameRoundController roundController, PlayableCard thisCard) {
         ArrayList<PlayableCard> monsters = roundController.getPlayerBoard().getMonsterCardsList();
-        int index = chooseCard("Choose a card to equip it:", monsters);
+        int index = choosePlayableCard("Choose a card to equip it:", monsters);
         if (index == -1)
             return;
         monsters.get(index).setEquippedCard((EquipSpellCard) thisCard.getCard());
+    }
+
+    /**
+     * Uses {@link model.cards.spells.MonsterReborn} to revive a monster from graveyard
+     *
+     * @param gameRoundController Game round
+     * @param thisCard            The {@link model.cards.spells.MonsterReborn}
+     */
+    public static void handleMonsterReborn(GameRoundController gameRoundController, PlayableCard thisCard) {
+        // Get the graveyards, mix them and then show them
+        ArrayList<PlayableCard> cards = new ArrayList<>();
+        cards.addAll(gameRoundController.getPlayerBoard().getGraveyard());
+        cards.addAll(gameRoundController.getRivalBoard().getGraveyard());
+        // Let the player choose a card
+        int index = choosePlayableCard("Choose a card to \"revive\" it:", cards, Assets.REVIVE);
+        if (index == -1)
+            return;
+        // Summon that card
+        gameRoundController.specialSummon((MonsterCard) cards.get(index).getCard(), true);
+        gameRoundController.getPlayerBoard().sendToGraveyard(thisCard);
+    }
+
+    /**
+     * Adds a card from deck to hand
+     *
+     * @param board    Player's board
+     * @param thisCard The {@link model.cards.spells.Terraforming} card
+     */
+    public static void handleTerraforming(PlayerBoard board, PlayableCard thisCard) {
+        ArrayList<Card> list = board.getDeck().stream()
+                .filter(card -> card instanceof SpellCard && ((SpellCard) card).getSpellCardType() == SpellCardType.FIELD)
+                .collect(Collectors.toCollection(ArrayList::new));
+        int index = chooseCard("Choose a card to add it to your hand.", list);
+        if (index == -1)
+            return;
+        // Remove that card from hand
+        board.getDeck().remove(list.get(index));
+        board.getHand().add(new PlayableCard(list.get(index), CardPlaceType.HAND));
+        board.shuffleDeck();
+        board.sendToGraveyard(thisCard);
+    }
+
+    /**
+     * Applies change of heart on a card
+     *
+     * @param roundController Game round
+     * @param thisCard        The {@link model.cards.spells.ChangeOfHeart} card
+     */
+    public static void handleChangeOfHeart(GameRoundController roundController, PlayableCard thisCard) {
+        ArrayList<PlayableCard> monsters = roundController.getRivalBoard().getMonsterCardsList();
+        int index = choosePlayableCard("Choose a card", monsters, Assets.HEARTBLEED);
+        if (index == -1)
+            return;
+        roundController.changeOfHeartSwapOwner(monsters.get(index));
+        roundController.getPlayerBoard().sendToGraveyard(thisCard);
+    }
+
+    public static void handleTwinTwisters(GameRoundController round, PlayableCard thisCard) {
+        ArrayList<PlayableCard> cards = round.getRivalBoard().getSpellCardsList();
+        DuelMenuUtils.printNumberedCardList(cards);
+        int index1 = choosePlayableCard("Choose your first card", cards, Assets.TORNADO);
+        int index2 = choosePlayableCard("Choose your second card", cards, Assets.TORNADO);
+        if (index1 != -1)
+            round.getRivalBoard().sendToGraveyard(cards.get(index1));
+        if (index1 != index2 && index2 != -1)
+            round.getRivalBoard().sendToGraveyard(cards.get(index2));
+        round.getPlayerBoard().getHand().remove(GameUtils.random.nextInt(round.getPlayerBoard().getHand().size()));
+        round.getPlayerBoard().sendToGraveyard(thisCard);
+    }
+
+    public static void handleMysticalSpaceTyphoon(GameRoundController round, PlayableCard thisCard) {
+        ArrayList<PlayableCard> cards = round.getRivalBoard().getSpellCardsList();
+        int index = choosePlayableCard("Choose a card to destroy it", cards, Assets.TORNADO);
+        if (index == -1)
+            return;
+        round.getRivalBoard().sendToGraveyard(cards.get(index));
+        round.getPlayerBoard().sendToGraveyard(thisCard);
     }
 }

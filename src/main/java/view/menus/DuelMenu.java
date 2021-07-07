@@ -25,6 +25,7 @@ import model.cards.Card;
 import model.cards.MonsterCard;
 import model.cards.monsters.BeastKingBarbaros;
 import model.cards.monsters.TheTricky;
+import model.cards.spells.*;
 import model.enums.*;
 import model.exceptions.*;
 import model.game.GameEndResults;
@@ -315,7 +316,7 @@ public class DuelMenu implements Initializable {
                 CardSpecificMenus.handleRitualSpawn(gameController.getRound().getPlayerBoard(), selectedCard);
                 break;
             case NORMAL:
-                /*if (selectedCard.getCard() instanceof MonsterReborn)
+                if (selectedCard.getCard() instanceof MonsterReborn)
                     CardSpecificMenus.handleMonsterReborn(gameController.getRound(), selectedCard);
                 if (selectedCard.getCard() instanceof Terraforming)
                     CardSpecificMenus.handleTerraforming(gameController.getRound().getPlayerBoard(), selectedCard);
@@ -324,7 +325,7 @@ public class DuelMenu implements Initializable {
                 if (selectedCard.getCard() instanceof TwinTwisters)
                     CardSpecificMenus.handleTwinTwisters(gameController.getRound(), selectedCard);
                 if (selectedCard.getCard() instanceof MysticalSpaceTyphoon)
-                    CardSpecificMenus.handleMysticalSpaceTyphoon(gameController.getRound(), selectedCard);*/
+                    CardSpecificMenus.handleMysticalSpaceTyphoon(gameController.getRound(), selectedCard);
                 break;
             case EQUIP:
                 CardSpecificMenus.equip(gameController.getRound(), selectedCard);
