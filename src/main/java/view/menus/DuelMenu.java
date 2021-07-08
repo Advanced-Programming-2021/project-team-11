@@ -187,6 +187,8 @@ public class DuelMenu implements Initializable {
         GameStatus roundStatus = gameController.isRoundEnded();
         if (roundStatus != GameStatus.ONGOING) {
             GameEndResults results = gameController.isGameEnded();
+            musicPlayer.stop();
+            SceneChanger.getScene().setOnKeyPressed(null);
             if (results != null) {
                 // Apply the results
                 AlertsUtil.showSuccess(String.format("%s won the whole match with score: %d-%d", results.didPlayer1Won() ? player1.getNickname() : player2.getNickname(),
@@ -195,11 +197,13 @@ public class DuelMenu implements Initializable {
                 player1.increaseMoney(results.getPlayer1Money());
                 player2.increaseScore(results.getPlayer2Score());
                 player2.increaseMoney(results.getPlayer2Money());
-                SceneChanger.getScene().setOnKeyPressed(null);
-                musicPlayer.stop();
+            } else {
+                // Open the deck changer
+                AlertsUtil.showSuccess(String.format("%s won the game", roundStatus == GameStatus.PLAYER1_WON ? player1.getNickname() : player2.getNickname()));
+                DuelSideDeckChanger.setUsers(player1, player2);
+                AlertsUtil.showHelp("Pass the computer to " + player1.getNickname());
+                SceneChanger.changeScene(MenuNames.DUEL_SIDE_DECK_CHANGER);
             }
-            // TODO:
-            // System.out.printf("%s won the game\n", roundStatus == GameStatus.PLAYER1_WON ? player1.getNickname() : player2.getNickname());
         }
     }
 
