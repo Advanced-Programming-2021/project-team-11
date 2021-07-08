@@ -3,6 +3,7 @@ package view.menus;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
 import controller.GameController;
+import controller.GameUtils;
 import javafx.animation.ParallelTransition;
 import javafx.animation.RotateTransition;
 import javafx.animation.TranslateTransition;
@@ -333,6 +334,7 @@ public class DuelMenu implements Initializable {
             }
         if (card.getCard() instanceof HeraldOfCreation)
             CardSpecificMenus.summonCardWithHeraldOfCreation(gameController.getRound().getPlayerBoard(), card);
+        drawScene();
     }
 
     private void handleActivateSpellCallBack(ActivateSpellCallback result, PlayableCard selectedCard) {
@@ -368,7 +370,8 @@ public class DuelMenu implements Initializable {
     public void nextPhase(MouseEvent mouseEvent) {
         try {
             gameController.getRound().advancePhase();
-        } catch (PlayerTimeSealedException ignored) {
+        } catch (PlayerTimeSealedException ex) {
+            AlertsUtil.showError(ex);
         }
         GamePhase nowPhase = gameController.getRound().getPhase();
         checkRoundEnd();
@@ -405,15 +408,30 @@ public class DuelMenu implements Initializable {
         } catch (NoCardFoundInPositionException e) {
             throw new BooAnException(e);
         }
+        ArrayList<JfxCursorButton> buttons = new ArrayList<>();
+        if (GameUtils.canMonsterCardEffectBeActivated(gameController.getRound().returnSelectedCard().getCard()))
+            buttons.add(new JfxCursorButton("Activate Effect", x -> activateSpell()));
         if (gameController.getRound().getPhase() == GamePhase.BATTLE_PHASE)
-            attack(card);
+            buttons.add(new JfxCursorButton("Attack", x -> {
+                dialog.close();
+                attack(card);
+            }));
         if (gameController.getRound().getPhase() == GamePhase.MAIN1 || gameController.getRound().getPhase() == GamePhase.MAIN2) {
             if (gameController.getRound().returnSelectedCard().isHidden()) {
-                flipSummon(card);
+                buttons.add(new JfxCursorButton("Flip Summon", x -> {
+                    dialog.close();
+                    flipSummon(card);
+                }));
             } else {
-                swapCardPosition(card);
+                buttons.add(new JfxCursorButton("Swap position", x -> {
+                    dialog.close();
+                    swapCardPosition(card);
+                }));
             }
         }
+        // Create the alert
+        setupDialog("What do you want to do?", buttons.toArray(new JfxCursorButton[0]));
+        dialog.show();
     }
 
     private void flipSummon(CardView card) {
@@ -581,8 +599,8 @@ public class DuelMenu implements Initializable {
     }
 
     private boolean prepareTrap(String[] cards) {
-        AlertsUtil.showSuccess(String.format("now it will be %s's turn", gameController.getRound().getRivalBoard().getPlayer().getUser().getUsername()));
         blur();
+        AlertsUtil.showSuccess(String.format("now it will be %s's turn", gameController.getRound().getRivalBoard().getPlayer().getUser().getUsername()));
         boolean trapActivated = CardSpecificMenus.activateTrap(gameController.getRound(), cards, gameController.getRound().returnSelectedCard());
         AlertsUtil.showSuccess(String.format("now it will be %s's turn\n", gameController.getRound().getPlayerBoard().getPlayer().getUser().getUsername()));
         stackPane.setEffect(null);

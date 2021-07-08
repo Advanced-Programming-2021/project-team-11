@@ -419,18 +419,28 @@ public class GameRoundController {
         if (selectedCard.getCardPlace() == CardPlaceType.HAND && getPlayerBoard().isSpellZoneFull())
             throw new SpellCardZoneFullException();
         if (selectedCard.getCardPlace() == CardPlaceType.HAND) { // Move to spell zone
-            getPlayerBoard().removeHandCard(selectedCard);
-            selectedCard.setCardPlace(CardPlaceType.SPELL);
-            selectedCard.makeVisible();
             if (selectedCard.getCard() instanceof FieldSpellCard) {
+                getPlayerBoard().removeHandCard(selectedCard);
+                selectedCard.setCardPlace(CardPlaceType.SPELL);
+                selectedCard.makeVisible();
                 setFieldFromSelectedCard();
                 return ActivateSpellCallback.DONE;
             } else {
+                ActivateSpellCallback callback = handleActivateSpellCard();
+                getPlayerBoard().removeHandCard(selectedCard);
+                selectedCard.setCardPlace(CardPlaceType.SPELL);
+                selectedCard.makeVisible();
                 getPlayerBoard().addSpellCard(selectedCard);
+                if (callback == ActivateSpellCallback.DONE)
+                    selectedCard.activateEffect(getPlayerBoard(), getRivalBoard(), null);
+                return callback;
             }
         } else if (selectedCard.hasEffectActivated() || !selectedCard.isHidden())
             throw new SpellAlreadyActivatedException();
-        return handleActivateSpellCard();
+        ActivateSpellCallback callback = handleActivateSpellCard();
+        if (callback == ActivateSpellCallback.DONE)
+            selectedCard.activateEffect(getPlayerBoard(), getRivalBoard(), null);
+        return callback;
     }
 
     private ActivateSpellCallback handleActivateTrapCard() throws CantUseSpellException {
@@ -455,11 +465,12 @@ public class GameRoundController {
         if (!selectedCard.isEffectConditionMet(getPlayerBoard(), getPlayerBoard(), false))
             if (selectedCard.getCard() instanceof SpellCard)
                 ((SpellCard) selectedCard.getCard()).throwConditionNotMadeException();
+            else
+                throw new CantUseSpellException();
         if (selectedCard.getCard() instanceof EquipSpellCard)
             return ActivateSpellCallback.EQUIP;
         if (selectedCard.getCard() instanceof SpellCard && ((SpellCard) selectedCard.getCard()).getUserNeedInteraction())
             return ActivateSpellCallback.NORMAL;
-        selectedCard.activateEffect(getPlayerBoard(), getRivalBoard(), null);
         return ActivateSpellCallback.DONE;
     }
 

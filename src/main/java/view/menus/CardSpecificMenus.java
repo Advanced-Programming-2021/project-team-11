@@ -368,7 +368,6 @@ public class CardSpecificMenus {
 
     public static void handleTwinTwisters(GameRoundController round, PlayableCard thisCard) {
         ArrayList<PlayableCard> cards = round.getRivalBoard().getSpellCardsList();
-        DuelMenuUtils.printNumberedCardList(cards);
         int index1 = choosePlayableCard("Choose your first card", cards, Assets.TORNADO);
         int index2 = choosePlayableCard("Choose your second card", cards, Assets.TORNADO);
         if (index1 != -1)
