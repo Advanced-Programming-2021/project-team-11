@@ -60,6 +60,8 @@ public class CardSpecificMenus {
         borderPane.setPadding(new Insets(5));
         Scene scene = new Scene(borderPane);
         stage.setScene(scene);
+        stage.setTitle("Tribute some cards");
+        scene.getStylesheets().addAll("/style/global.css", "/style/tables.css");
         borderPane.setTop(new Label("Select cards to tribute: (" + cardsNeeded + " cards needed)"));
         HBox cardBox = new HBox(5);
         TreeSet<Integer> toTributeCards = new TreeSet<>();
@@ -127,6 +129,7 @@ public class CardSpecificMenus {
         borderPane.setPadding(new Insets(5));
         Scene scene = new Scene(borderPane);
         stage.setScene(scene);
+        scene.getStylesheets().addAll("/style/global.css", "/style/tables.css");
         stage.setTitle("Choose a card");
         borderPane.setTop(new Label(title));
         AnchorPane cardPane = new AnchorPane();

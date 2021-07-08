@@ -39,6 +39,7 @@ public class Main {
         try {
             UsersDatabase.saveUsers();
             UsersDatabase.closeDatabase();
+            CardLoader.saveCards();
         } catch (SQLException ex) {
             System.out.println("Cannot save the database: " + ex.getMessage());
         }
