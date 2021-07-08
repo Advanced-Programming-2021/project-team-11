@@ -148,7 +148,7 @@ public class User {
 
     private ByteArrayInputStream getProfilePicByteStream() {
         if (getProfilePicBytes() == null) {
-            long hash = getNickname().hashCode() + 100000; // some problems with library. It doesn't accept numbers less than 100000
+            long hash = getUsername().hashCode() + 100000; // some problems with library. It doesn't accept numbers less than 100000
             Color picColor = profilePicColors[new Random(hash).nextInt(profilePicColors.length)];
             return new ByteArrayInputStream(GitHubAvatar.newAvatarBuilder().color(picColor).build().createAsPngBytes(hash));
         } else

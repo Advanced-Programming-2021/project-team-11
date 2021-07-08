@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.*?>
-
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.text.Text?>
+<?import com.jfoenix.controls.*?>
 <?import javafx.geometry.Insets?>
-<?import view.components.JfxCursorButton?>
-<?import com.jfoenix.controls.JFXDialog?>
-<?import com.jfoenix.controls.JFXDialogLayout?>
 <?import javafx.scene.control.Label?>
-<?import com.jfoenix.controls.JFXTextField?>
-<?import com.jfoenix.controls.JFXPasswordField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<?import view.components.*?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="view.menus.ProfileMenu"
@@ -26,7 +24,8 @@
                         <VBox spacing="20">
                             <JFXPasswordField fx:id="oldPasswordText" labelFloat="true" promptText="Old Password"/>
                             <JFXPasswordField fx:id="newPasswordText" labelFloat="true" promptText="New Password"/>
-                            <JFXPasswordField fx:id="newPasswordTextConfirm" labelFloat="true" promptText="Confirm New Password"/>
+                            <JFXPasswordField fx:id="newPasswordTextConfirm" labelFloat="true"
+                                              promptText="Confirm New Password"/>
                         </VBox>
                     </body>
                     <actions>
@@ -49,25 +48,23 @@
                     </actions>
                 </JFXDialogLayout>
             </JFXDialog>
-            <VBox alignment="CENTER" spacing="10">
-                <VBox maxHeight="500" maxWidth="200" alignment="CENTER" spacing="10"
-                      styleClass="rounded-card">
-                    <ImageView fitHeight="150" fitWidth="150" fx:id="profilePic"/>
-                    <Text fx:id="usernameText" textAlignment="CENTER"/>
-                    <Text fx:id="nicknameText" textAlignment="CENTER"/>
-                    <JfxCursorButton styleClass="jfx-button-raised" text="Change Nickname"
-                                     onMouseClicked="#clickedChangeNickname"/>
-                    <JfxCursorButton styleClass="jfx-button-raised" text="Change Password"
-                                     onMouseClicked="#clickedChangePassword"/>
-                    <JfxCursorButton styleClass="jfx-button-raised" text="Upload Picture"
-                                     onMouseClicked="#clickedUploadFile"/>
-                    <JfxCursorButton styleClass="jfx-button-raised" text="Remove Picture"
-                                     onMouseClicked="#clickedRemoveProfilePic"/>
-                    <JfxCursorButton styleClass="jfx-button-flat" text="Back" onMouseClicked="#clickedBackButton"/>
-                    <padding>
-                        <Insets bottom="10" top="10" left="10" right="10"/>
-                    </padding>
-                </VBox>
+            <VBox maxHeight="500" maxWidth="200" alignment="CENTER" spacing="10"
+                  styleClass="rounded-card">
+                <ImageView fitHeight="150" fitWidth="150" fx:id="profilePic"/>
+                <Text fx:id="usernameText" textAlignment="CENTER"/>
+                <Text fx:id="nicknameText" textAlignment="CENTER"/>
+                <JfxCursorButton styleClass="jfx-button-raised" text="Change Nickname"
+                                 onMouseClicked="#clickedChangeNickname"/>
+                <JfxCursorButton styleClass="jfx-button-raised" text="Change Password"
+                                 onMouseClicked="#clickedChangePassword"/>
+                <JfxCursorButton styleClass="jfx-button-raised" text="Upload Picture"
+                                 onMouseClicked="#clickedUploadFile"/>
+                <JfxCursorButton styleClass="jfx-button-raised" text="Remove Picture"
+                                 onMouseClicked="#clickedRemoveProfilePic"/>
+                <JfxCursorButton styleClass="jfx-button-flat" text="Back" onMouseClicked="#clickedBackButton"/>
+                <padding>
+                    <Insets bottom="10" top="10" left="10" right="10"/>
+                </padding>
             </VBox>
         </StackPane>
     </center>

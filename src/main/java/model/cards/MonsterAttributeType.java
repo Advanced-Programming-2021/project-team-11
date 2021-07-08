@@ -1,5 +1,7 @@
 package model.cards;
 
+import controller.GeneralUtil;
+
 public enum MonsterAttributeType {
     EARTH,
     WATER,
@@ -10,5 +12,10 @@ public enum MonsterAttributeType {
 
     public static MonsterAttributeType valueOfCaseInsensitive(String value) {
         return MonsterAttributeType.valueOf(value.replace('-', '_').toUpperCase());
+    }
+
+    @Override
+    public String toString() {
+        return GeneralUtil.formatEnumName(super.toString());
     }
 }

@@ -89,4 +89,8 @@ public class ImportExportMenu implements Initializable {
             AlertsUtil.showError(ex);
         }
     }
+
+    public void clickedCardCreatorButton(MouseEvent mouseEvent) {
+        SceneChanger.changeScene(MenuNames.CARD_CREATOR);
+    }
 }

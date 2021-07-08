@@ -41,8 +41,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-// TODO: traps!
-
 public class DuelMenu implements Initializable {
     private static final double CARD_PLACES_WIDTH = 78, CARD_PLACES_FIRST_X = 800 + 107.5 - 570, PLAYER_DOWN_OFFSET = 60,
             CARD_PLACES_SPELL_RIVAL_Y = 106, CARD_PLACES_SPELL_PLAYER_Y = 600 - CARD_PLACES_SPELL_RIVAL_Y - PLAYER_DOWN_OFFSET,

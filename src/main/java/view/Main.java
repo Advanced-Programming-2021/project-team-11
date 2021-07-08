@@ -1,5 +1,6 @@
 package view;
 
+import com.beust.jcommander.JCommander;
 import model.database.CardLoader;
 import model.database.UsersDatabase;
 import model.exceptions.BooAnException;
@@ -15,7 +16,9 @@ public class Main {
     }
 
     private static CommandLineArguments parseCommandLineArgs(String[] args) {
-        return new CommandLineArguments();
+        CommandLineArguments arguments = new CommandLineArguments();
+        JCommander.newBuilder().addObject(arguments).build().parse(args);
+        return arguments;
     }
 
     private static void loader(CommandLineArguments args) {
