@@ -46,15 +46,13 @@ public class DeckDetailsMenu implements Initializable {
 
     private void addCards(ArrayList<Card> cards, AnchorPane anchorPane, ScrollPane scrollPane, int inEachRow, DraggableDeckCard.CardPlace cardPlace) {
         anchorPane.getChildren().clear();
-        ArrayList<DraggableDeckCard> cardsImages = new ArrayList<>();
         for (int i = 0; i < cards.size(); i++) {
             DraggableDeckCard cardImageView = new DraggableDeckCard(cards.get(i), cardPlace);
             cardImageView.setX(85 * (i % inEachRow) + 10);
             int c = i / inEachRow;
             cardImageView.setY(115 * c + 10);
-            cardsImages.add(cardImageView);
+            anchorPane.getChildren().add(cardImageView);
         }
-        anchorPane.getChildren().addAll(cardsImages);
         setDragAcceptable(scrollPane, cardPlace);
         JFXScrollPane.smoothScrolling(scrollPane);
     }

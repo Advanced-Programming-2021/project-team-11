@@ -29,7 +29,8 @@ public class DraggableDeckCard extends ImageView {
     private void setupDrag(Card card) {
         final DraggableDeckCard draggableDeckCard = this;
         setOnDragDetected(event -> {
-            Dragboard db = draggableDeckCard.startDragAndDrop(TransferMode.ANY);
+            Dragboard db = draggableDeckCard.startDragAndDrop(TransferMode.MOVE);
+            db.setDragView(draggableDeckCard.snapshot(null, null));
             ClipboardContent content = new ClipboardContent();
             content.putString(card.getName());
             db.setContent(content);
