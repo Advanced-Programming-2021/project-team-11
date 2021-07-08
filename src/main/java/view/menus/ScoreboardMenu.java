@@ -11,6 +11,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import model.results.UserForScoreboard;
+import view.global.SoundEffects;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -47,6 +48,7 @@ public class ScoreboardMenu implements Initializable {
     }
 
     public void clickedBackButton(MouseEvent mouseEvent) {
+        SoundEffects.playMedia(SoundEffects.CLICK);
         SceneChanger.changeScene(MenuNames.MAIN);
     }
 }

@@ -13,6 +13,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import view.global.Assets;
+import view.global.SoundEffects;
 import view.menus.SceneChanger;
 
 import java.io.IOException;
@@ -117,6 +119,7 @@ public class HoverButton extends StackPane implements Initializable {
         };
         animation.play();
         SceneChanger.getScene().setCursor(Cursor.HAND);
+        SoundEffects.playMedia(SoundEffects.HOVER);
     }
 
     private void onMouseExited() {

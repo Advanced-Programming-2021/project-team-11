@@ -7,6 +7,7 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import model.cards.Card;
+import view.global.Assets;
 
 public class DraggableDeckCard extends ImageView {
     public enum CardPlace {

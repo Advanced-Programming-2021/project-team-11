@@ -36,6 +36,8 @@ import model.results.MonsterAttackResult;
 import view.animation.CardDestroyedTransition;
 import view.animation.CardFlipTransition;
 import view.components.*;
+import view.global.Assets;
+import view.global.SoundEffects;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -70,6 +72,7 @@ public class DuelMenu implements Initializable {
             musicPlayer.play();
         });
         musicPlayer.play();
+        SoundEffects.playMedia(SoundEffects.DRAW);
         SceneChanger.getScene().setOnKeyPressed(x -> {
             if (x.getCode() == KeyCode.ESCAPE)
                 pause();
@@ -188,7 +191,9 @@ public class DuelMenu implements Initializable {
         if (roundStatus != GameStatus.ONGOING) {
             GameEndResults results = gameController.isGameEnded();
             musicPlayer.stop();
+            musicPlayer.dispose();
             SceneChanger.getScene().setOnKeyPressed(null);
+            SoundEffects.playMedia(SoundEffects.DUEL_END);
             if (results != null) {
                 // Apply the results
                 AlertsUtil.showSuccess(String.format("%s won the whole match with score: %d-%d", results.didPlayer1Won() ? player1.getNickname() : player2.getNickname(),
@@ -264,6 +269,7 @@ public class DuelMenu implements Initializable {
     private void summon() {
         try {
             gameController.getRound().summonCard();
+            SoundEffects.playMedia(SoundEffects.SUMMON);
         } catch (AlreadySummonedException | NoCardSelectedYetException | CantSummonCardException
                 | InvalidPhaseActionException | MonsterCardZoneFullException e) {
             AlertsUtil.showError(e);
@@ -295,6 +301,7 @@ public class DuelMenu implements Initializable {
         // Try to tribute
         try {
             gameController.getRound().summonCard(cards, false);
+            SoundEffects.playMedia(SoundEffects.SUMMON);
         } catch (NoMonsterOnTheseAddressesException e) {
             System.out.println(e.getMessage());
         } catch (TrapCanBeActivatedException ex) {
@@ -306,6 +313,7 @@ public class DuelMenu implements Initializable {
     private void set() {
         try {
             gameController.getRound().setCard();
+            SoundEffects.playMedia(SoundEffects.SET);
             drawScene();
         } catch (Exception e) {
             AlertsUtil.showError(e);
@@ -317,12 +325,14 @@ public class DuelMenu implements Initializable {
         try {
             PlayableCard selectedCard = gameController.getRound().returnSelectedCard();
             handleActivateSpellCallBack(gameController.getRound().activeSpell(), selectedCard);
+            SoundEffects.playMedia(SoundEffects.EFFECT);
         } catch (OnlySpellCardsAllowedException | NoCardSelectedException |
                 InvalidPhaseActionException | RitualSummonNotPossibleException | CantSpecialSummonException |
                 CantUseSpellException | SpellAlreadyActivatedException | SpellCardZoneFullException e) {
             AlertsUtil.showError(e);
         } catch (MonsterEffectMustBeHandledException e) {
             handleMonsterWithEffectCard(e.getCard());
+            SoundEffects.playMedia(SoundEffects.EFFECT);
         }
         dialog.close();
     }
@@ -376,6 +386,8 @@ public class DuelMenu implements Initializable {
             AlertsUtil.showError(ex);
         }
         GamePhase nowPhase = gameController.getRound().getPhase();
+        if (nowPhase == GamePhase.DRAW)
+            SoundEffects.playMedia(SoundEffects.DRAW);
         checkRoundEnd();
         // Otherwise process the data
         phaseText.setText("Phase: " + nowPhase.toString());
@@ -449,6 +461,7 @@ public class DuelMenu implements Initializable {
             ParallelTransition transitions = new ParallelTransition(rotateTransition, flip);
             transitions.setOnFinished(x -> drawScene());
             transitions.play();
+            SoundEffects.playMedia(SoundEffects.CARD_FLIP);
         } catch (Exception e) {
             AlertsUtil.showError(e);
         }
@@ -491,6 +504,7 @@ public class DuelMenu implements Initializable {
                 rootView.getChildren().remove(swordImage);
             });
             sword.play();
+            SoundEffects.playMedia(SoundEffects.DIRECT_ATTACK);
         } catch (Exception ex) {
             AlertsUtil.showError(ex);
         }
@@ -506,6 +520,7 @@ public class DuelMenu implements Initializable {
             rotateTransition.setToAngle(end);
             rotateTransition.setOnFinished(x -> drawScene());
             rotateTransition.play();
+            SoundEffects.playMedia(SoundEffects.SWAP_POSITION);
         } catch (Exception ex) {
             AlertsUtil.showError(ex);
         }
@@ -552,6 +567,7 @@ public class DuelMenu implements Initializable {
                 transition.setOnFinished(x -> drawScene());
             transition.play();
         }
+        SoundEffects.playMedia(SoundEffects.ATTACK);
     }
 
     private void disableAttackMode() {

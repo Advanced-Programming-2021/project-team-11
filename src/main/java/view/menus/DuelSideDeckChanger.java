@@ -13,6 +13,7 @@ import model.exceptions.*;
 import view.components.AlertsUtil;
 import view.components.DeckViewUtil;
 import view.components.DraggableDeckCard;
+import view.global.SoundEffects;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -58,6 +59,7 @@ public class DuelSideDeckChanger implements Initializable {
     }
 
     public void clickedContinueButton(MouseEvent mouseEvent) {
+        SoundEffects.playMedia(SoundEffects.COIN_FLIP);
         // Check deck size
         if (deck.getMainDeck().size() != initialMainDeckSize) {
             AlertsUtil.showError("Your initialize main deck size is not the same as current main deck size.\nThe initialize size was " + initialMainDeckSize + " but the current size is " + deck.getMainDeck().size());

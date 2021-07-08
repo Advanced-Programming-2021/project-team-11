@@ -29,7 +29,7 @@ import model.cards.traps.NegateAttack;
 import model.enums.CardPlaceType;
 import model.exceptions.*;
 import view.components.AlertsUtil;
-import view.components.Assets;
+import view.global.Assets;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;

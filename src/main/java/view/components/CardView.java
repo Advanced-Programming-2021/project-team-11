@@ -5,6 +5,7 @@ import javafx.scene.image.ImageView;
 import model.PlayableCard;
 import model.cards.MonsterCard;
 import model.enums.CardPlaceType;
+import view.global.Assets;
 import view.menus.SceneChanger;
 
 public class CardView extends ImageView {

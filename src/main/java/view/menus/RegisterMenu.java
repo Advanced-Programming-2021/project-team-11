@@ -10,7 +10,7 @@ import model.exceptions.NicknameExistsException;
 import model.exceptions.PasswordsDontMatchException;
 import model.exceptions.UsernameExistsException;
 import view.components.AlertsUtil;
-import view.components.Assets;
+import view.global.Assets;
 
 import java.net.URL;
 import java.util.ResourceBundle;

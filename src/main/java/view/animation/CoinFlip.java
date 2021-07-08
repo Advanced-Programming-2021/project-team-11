@@ -5,7 +5,7 @@ import javafx.animation.Transition;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 import model.enums.CoinFlipResult;
-import view.components.Assets;
+import view.global.Assets;
 
 public class CoinFlip extends Circle {
     public interface CoinFlipCallback {

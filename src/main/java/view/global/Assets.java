@@ -1,4 +1,4 @@
-package view.components;
+package view.global;
 
 import javafx.scene.ImageCursor;
 import javafx.scene.image.Image;

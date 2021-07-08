@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
+import view.global.SoundEffects;
 import view.menus.SceneChanger;
 
 import java.io.IOException;

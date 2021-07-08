@@ -16,6 +16,8 @@ import model.exceptions.UserDeckIsInvalidException;
 import model.exceptions.UserHaveNoActiveDeckException;
 import view.animation.CoinFlip;
 import view.components.*;
+import view.global.Assets;
+import view.global.SoundEffects;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -54,6 +56,7 @@ public class DuelStartMenu implements Initializable {
     }
 
     private void startGame(GameRounds rounds) {
+        SoundEffects.playMedia(SoundEffects.CLICK);
         DuelStartMenu.rounds = rounds;
         guest = User.getUserByUsername(otherName.getText());
         if (guest == null) {
@@ -87,6 +90,7 @@ public class DuelStartMenu implements Initializable {
     }
 
     public void clickedBackButton(MouseEvent mouseEvent) {
+        SoundEffects.playMedia(SoundEffects.CLICK);
         SceneChanger.changeScene(MenuNames.MAIN);
     }
 
@@ -105,6 +109,7 @@ public class DuelStartMenu implements Initializable {
     }
 
     private void flip() {
+        SoundEffects.playMedia(SoundEffects.COIN_FLIP);
         ((CoinFlip) dialogContainer.getChildren().get(0)).flip();
         dialogCancelButton.setDisable(true);
         dialogHeadsButton.setDisable(true);

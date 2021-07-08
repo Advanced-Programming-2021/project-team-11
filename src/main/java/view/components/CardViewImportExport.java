@@ -9,6 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import model.cards.Card;
+import view.global.Assets;
 import view.menus.SceneChanger;
 
 public class CardViewImportExport extends HBox {

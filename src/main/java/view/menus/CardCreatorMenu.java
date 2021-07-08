@@ -13,7 +13,7 @@ import model.cards.MonsterType;
 import model.cards.RitualMonster;
 import model.cards.SimpleMonster;
 import view.components.AlertsUtil;
-import view.components.Assets;
+import view.global.Assets;
 
 import java.net.URL;
 import java.util.ResourceBundle;

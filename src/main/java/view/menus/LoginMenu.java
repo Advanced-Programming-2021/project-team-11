@@ -8,7 +8,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import model.exceptions.InvalidCredentialException;
 import view.components.AlertsUtil;
-import view.components.Assets;
+import view.global.Assets;
+import view.global.SoundEffects;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -24,10 +25,12 @@ public class LoginMenu implements Initializable {
     }
 
     public void clickedBackButton(MouseEvent mouseEvent) {
+        SoundEffects.playMedia(SoundEffects.CLICK);
         SceneChanger.changeScene(MenuNames.ROOT);
     }
 
     public void clickedLoginButton(MouseEvent mouseEvent) {
+        SoundEffects.playMedia(SoundEffects.CLICK);
         try {
             MainMenu.loggedInUser = LoginMenuController.login(username.getText(), password.getText());
             SceneChanger.changeScene(MenuNames.MAIN);

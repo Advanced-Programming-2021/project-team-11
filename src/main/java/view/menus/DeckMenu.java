@@ -18,6 +18,7 @@ import model.exceptions.DeckExistsException;
 import model.results.DeckListTableResult;
 import view.components.AlertsUtil;
 import view.components.TableButton;
+import view.global.SoundEffects;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -122,10 +123,12 @@ public class DeckMenu implements Initializable {
     }
 
     public void clickedBackButton(MouseEvent mouseEvent) {
+        SoundEffects.playMedia(SoundEffects.COIN_FLIP);
         SceneChanger.changeScene(MenuNames.MAIN);
     }
 
     public void clickedNewDeckButton(MouseEvent mouseEvent) {
+        SoundEffects.playMedia(SoundEffects.COIN_FLIP);
         String deckName = AlertsUtil.getTextAlert("Enter your deck name");
         if (deckName == null)
             return;

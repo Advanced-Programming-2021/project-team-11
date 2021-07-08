@@ -16,6 +16,7 @@ import model.exceptions.InvalidCardToImportException;
 import view.components.AlertsUtil;
 import view.components.CardViewImportExport;
 import view.components.UserBadge;
+import view.global.SoundEffects;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,10 +65,12 @@ public class ImportExportMenu implements Initializable {
     }
 
     public void clickedBackButton(MouseEvent mouseEvent) {
+        SoundEffects.playMedia(SoundEffects.CLICK);
         SceneChanger.changeScene(MenuNames.MAIN);
     }
 
     public void clickedImportButton(MouseEvent mouseEvent) {
+        SoundEffects.playMedia(SoundEffects.CLICK);
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select The File To Import");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON", "*.json"));
@@ -91,6 +94,7 @@ public class ImportExportMenu implements Initializable {
     }
 
     public void clickedCardCreatorButton(MouseEvent mouseEvent) {
+        SoundEffects.playMedia(SoundEffects.CLICK);
         SceneChanger.changeScene(MenuNames.CARD_CREATOR);
     }
 }

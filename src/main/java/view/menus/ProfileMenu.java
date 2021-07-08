@@ -17,7 +17,7 @@ import model.exceptions.NicknameExistsException;
 import model.exceptions.PasswordsDontMatchException;
 import model.exceptions.SameNewPasswordException;
 import view.components.AlertsUtil;
-import view.components.Assets;
+import view.global.Assets;
 
 import java.io.File;
 import java.io.IOException;

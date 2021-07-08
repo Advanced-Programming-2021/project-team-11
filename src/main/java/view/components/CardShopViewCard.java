@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import model.cards.Card;
+import view.global.Assets;
 import view.menus.SceneChanger;
 
 public class CardShopViewCard extends HBox {

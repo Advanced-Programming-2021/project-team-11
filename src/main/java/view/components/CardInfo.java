@@ -7,6 +7,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import model.cards.Card;
+import view.global.Assets;
 
 import java.io.IOException;
 import java.net.URL;

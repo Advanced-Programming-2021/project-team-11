@@ -19,6 +19,7 @@ import model.exceptions.InsufficientBalanceException;
 import view.components.AlertsUtil;
 import view.components.CardShopViewCard;
 import view.components.UserBadge;
+import view.global.SoundEffects;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -83,6 +84,7 @@ public class ShopMenu implements Initializable {
     public void clickedBuyDialogChange(MouseEvent mouseEvent) {
         try {
             ShopMenuController.buyCardForUser(MainMenu.loggedInUser, selectedCard.getCard().getName());
+            SoundEffects.playMedia(SoundEffects.CARD_BOUGHT);
         } catch (CardNotExistsException | InsufficientBalanceException e) {
             throw new BooAnException(e);
         }
@@ -94,6 +96,7 @@ public class ShopMenu implements Initializable {
     }
 
     public void clickedBackButton(MouseEvent mouseEvent) {
+        SoundEffects.playMedia(SoundEffects.CLICK);
         SceneChanger.changeScene(MenuNames.MAIN);
     }
 }

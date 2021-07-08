@@ -6,6 +6,8 @@ import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import view.global.Assets;
+import view.global.SoundEffects;
 
 import java.util.Objects;
 
@@ -32,13 +34,18 @@ public class RootMenu extends Application {
         primaryStage.show();
         SceneChanger.setScene(scene);
         RootMenu.primaryStage = primaryStage;
+        // Warmup
+        Util.forceInit(Assets.class);
+        Util.forceInit(SoundEffects.class);
     }
 
     public void clickedLoginButton(MouseEvent mouseEvent) {
+        SoundEffects.playMedia(SoundEffects.CLICK);
         SceneChanger.changeScene(MenuNames.LOGIN);
     }
 
     public void clickedRegisterButton(MouseEvent mouseEvent) {
+        SoundEffects.playMedia(SoundEffects.CLICK);
         SceneChanger.changeScene(MenuNames.REGISTER);
     }
 }
