@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class CardSpecificMenus {
-    public static ArrayList<Integer> getCardsToTribute(ArrayList<PlayableCard> cards, int cardsNeeded) {
+    public static ArrayList<Integer> getCardsToTribute(List<PlayableCard> cards, int cardsNeeded) {
         return getCardsToTribute(cards.toArray(new PlayableCard[0]), cardsNeeded);
     }
 
@@ -121,7 +121,7 @@ public class CardSpecificMenus {
      * @param chosenImage Image to show when a card is choosen
      * @return The index of card selected or -1 if canceled
      */
-    public static int chooseCard(String title, ArrayList<Card> cards, Image chosenImage) {
+    public static int chooseCard(String title, List<Card> cards, Image chosenImage) {
         // Create a new stage for this
         Stage stage = new Stage();
         stage.setResizable(false);
@@ -178,15 +178,15 @@ public class CardSpecificMenus {
         return result.get();
     }
 
-    public static int chooseCard(String title, ArrayList<Card> cards) {
+    public static int chooseCard(String title, List<Card> cards) {
         return chooseCard(title, cards, Assets.CHECKMARK);
     }
 
-    public static int choosePlayableCard(String title, ArrayList<PlayableCard> cards) {
+    public static int choosePlayableCard(String title, List<PlayableCard> cards) {
         return choosePlayableCard(title, cards, Assets.CHECKMARK);
     }
 
-    public static int choosePlayableCard(String title, ArrayList<PlayableCard> cards, Image chosenImage) {
+    public static int choosePlayableCard(String title, List<PlayableCard> cards, Image chosenImage) {
         ArrayList<Card> fixedCards = cards.stream().map(PlayableCard::getCard).collect(Collectors.toCollection(ArrayList::new));
         return chooseCard(title, fixedCards, chosenImage);
     }
@@ -326,7 +326,7 @@ public class CardSpecificMenus {
         cards.addAll(gameRoundController.getPlayerBoard().getGraveyard());
         cards.addAll(gameRoundController.getRivalBoard().getGraveyard());
         // Let the player choose a card
-        int index = choosePlayableCard("Choose a card to \"revive\" it:", cards, Assets.REVIVE);
+        int index = choosePlayableCard("Choose a card to \"revive\" it:", cards.stream().filter(card -> card.getCard() instanceof MonsterCard).collect(Collectors.toList()), Assets.REVIVE);
         if (index == -1)
             return;
         // Summon that card
