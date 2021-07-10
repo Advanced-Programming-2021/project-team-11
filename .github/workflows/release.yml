@@ -1,9 +1,11 @@
 name: Release-JAR
 
-on: release
+on:
+  release:
+    types: [ created ]
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -12,13 +14,23 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
-      - name: Build with Maven
-        run: mvn clean compile assembly:single
-      - name: Pack release
-        run: tar cfJ YuGiOh.tar.xz -C target YuGiOh.jar -C ../config $(ls config)
+      - name: Build Client
+        run: mvn clean compile assembly:single --file client/pom.xml
+      - name: Pack Client
+        run: tar cfJ YuGiOh-Client.tar.xz -C client/target YuGiOh.jar -C ../config $(ls config)
       - name: Upload to release
         uses: JasonEtco/upload-to-release@master
         with:
-          args: YuGiOh.tar.xz application/x-tar
+          args: YuGiOh-Client.tar.xz application/x-tar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build Server
+        run: mvn clean compile assembly:single --file server/pom.xml
+      - name: Pack Server
+        run: tar cfJ YuGiOh-Server.tar.xz -C server/target YuGiOh.jar -C ../config $(ls config)
+      - name: Upload to release
+        uses: JasonEtco/upload-to-release@master
+        with:
+          args: YuGiOh-Server.tar.xz application/x-tar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

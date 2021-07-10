@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -16,5 +16,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
-      - name: Test with Maven
-        run: mvn test
+      - name: Test Client
+        run: mvn test --file client/pom.xml
+      - name: Test Server
+        run: mvn test --file server/pom.xml
