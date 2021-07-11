@@ -18,5 +18,5 @@ jobs:
           distribution: 'adopt'
       - name: Build Client
         run: mvn -B package -DskipTests --file client/pom.xml
-      - name: Build Client
+      - name: Build Server
         run: mvn -B package -DskipTests --file server/pom.xml
