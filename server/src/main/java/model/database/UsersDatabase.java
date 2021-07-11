@@ -4,10 +4,12 @@ import com.google.gson.Gson;
 import model.Deck;
 import model.User;
 import model.cards.Card;
+import model.cards.CardShopDetails;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.Map;
 
 public class UsersDatabase {
@@ -24,6 +26,7 @@ public class UsersDatabase {
         statement.setQueryTimeout(30);
         statement.executeUpdate("CREATE TABLE IF NOT EXISTS users (username VARCHAR(255) PRIMARY KEY, password TEXT NOT NULL, nickname TEXT NOT NULL, score INT NOT NULL DEFAULT 0, money INT NOT NULL DEFAULT 100000, active_deck VARCHAR(255) DEFAULT NULL, cards JSON NOT NULL DEFAULT (JSON_ARRAY()), profile_pic TEXT DEFAULT NULL)");
         statement.executeUpdate("CREATE TABLE IF NOT EXISTS decks (id INTEGER PRIMARY KEY AUTOINCREMENT, owner VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, side_deck JSON NOT NULL DEFAULT (JSON_ARRAY()), main_deck JSON NOT NULL DEFAULT (JSON_ARRAY()), FOREIGN KEY (owner) REFERENCES users (username))");
+        statement.executeUpdate("CREATE TABLE IF NOT EXISTS cards (name VARCHAR(255) PRIMARY KEY, stock INT NOT NULL DEFAULT 0, forbidden INT NOT NULL DEFAULT 0)");
         statement.close();
     }
 
@@ -99,7 +102,6 @@ public class UsersDatabase {
         statement.executeUpdate("DELETE FROM decks");
         statement.executeUpdate("DELETE FROM users");
         statement.close();
-
         // Save each user
         for (User user : User.getUsers())
             saveUser(user);
@@ -135,6 +137,50 @@ public class UsersDatabase {
         ArrayList<String> result = new ArrayList<>(cards.size());
         cards.forEach(card -> result.add(card.getName()));
         return new Gson().toJson(result.toArray(new String[0]));
+    }
+
+    public static HashMap<String, CardShopDetails> getCardStocks() {
+        HashMap<String, CardShopDetails> result = new HashMap<>();
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT name, stock, forbidden FROM cards");
+            while (rs.next()) {
+                CardShopDetails cardShopDetails = new CardShopDetails();
+                cardShopDetails.setCardName(rs.getString("name"));
+                cardShopDetails.setForbidden(rs.getInt("forbidden") == 1);
+                cardShopDetails.setStock(rs.getInt("stock"));
+                result.put(cardShopDetails.getCardName(), cardShopDetails);
+            }
+            rs.close();
+            statement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return result;
+    }
+
+    public static void increaseCardStock(String name, int delta) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("UPDATE cards SET stock=stock + ? WHERE name=?");
+            statement.setInt(1, delta);
+            statement.setString(2, name);
+            statement.executeUpdate();
+            statement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static void changeCardStatus(String name, boolean forbidden) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("UPDATE cards SET forbidden=? WHERE name=?");
+            statement.setInt(1, forbidden ? 1 : 0);
+            statement.setString(2, name);
+            statement.executeUpdate();
+            statement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public static void closeDatabase() throws SQLException {

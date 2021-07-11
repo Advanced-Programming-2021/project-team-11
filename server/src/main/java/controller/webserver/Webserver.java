@@ -1,6 +1,7 @@
 package controller.webserver;
 
 import controller.webserver.chat.ChatController;
+import controller.webserver.routes.ShopRoute;
 import controller.webserver.routes.UsersRoute;
 import io.javalin.Javalin;
 import model.database.CardLoader;
@@ -11,6 +12,7 @@ import java.sql.SQLException;
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class Webserver {
+    public final static String TOKEN_HEADER = "token";
     private static String adminToken;
 
     public static void startWebserver(int port, String adminToken) {
@@ -33,6 +35,11 @@ public class Webserver {
                 get("active", UsersRoute::activeUsers);
             });
             ws("chat", ChatController::handleWebsocket);
+            path("shop", () -> {
+                get("cards", ShopRoute::getCards);
+                post("increase_stock", ShopRoute::increaseStock);
+                post("forbid", ShopRoute::changeForbidStatus);
+            });
         }).start(port);
         Runtime.getRuntime().addShutdownHook(new Thread(app::stop));
         app.events(event -> event.serverStopping(Webserver::saver));
@@ -46,5 +53,9 @@ public class Webserver {
         } catch (SQLException ex) {
             System.out.println("Cannot save the database: " + ex.getMessage());
         }
+    }
+
+    public static String getAdminToken() {
+        return adminToken;
     }
 }

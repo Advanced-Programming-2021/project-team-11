@@ -5,6 +5,7 @@ import controller.menucontrollers.ProfileMenuController;
 import controller.menucontrollers.ScoreboardMenuController;
 import controller.webserver.TokenManager;
 import controller.webserver.Types;
+import controller.webserver.Webserver;
 import io.javalin.http.Context;
 import model.User;
 import model.exceptions.*;
@@ -12,7 +13,6 @@ import model.exceptions.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class UsersRoute {
-    private final static String TOKEN_HEADER = "token";
     private final static AtomicInteger onlineUsers = new AtomicInteger(0);
 
     public static void register(Context context) {
@@ -46,7 +46,7 @@ public class UsersRoute {
     }
 
     public static void updateProfileNickname(Context context) {
-        User user = TokenManager.getInstance().getUser(context.header(TOKEN_HEADER));
+        User user = TokenManager.getInstance().getUser(context.header(Webserver.TOKEN_HEADER));
         if (user == null) {
             context.status(401);
             return;
@@ -61,7 +61,7 @@ public class UsersRoute {
     }
 
     public static void updateProfilePassword(Context context) {
-        User user = TokenManager.getInstance().getUser(context.header(TOKEN_HEADER));
+        User user = TokenManager.getInstance().getUser(context.header(Webserver.TOKEN_HEADER));
         if (user == null) {
             context.status(401);
             return;
@@ -76,7 +76,7 @@ public class UsersRoute {
     }
 
     public static void updateProfileImage(Context context) {
-        User user = TokenManager.getInstance().getUser(context.header(TOKEN_HEADER));
+        User user = TokenManager.getInstance().getUser(context.header(Webserver.TOKEN_HEADER));
         if (user == null) {
             context.status(401);
             return;

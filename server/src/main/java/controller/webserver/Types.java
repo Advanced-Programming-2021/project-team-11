@@ -23,6 +23,22 @@ public class Types {
         public String getPasswordConfirm() {
             return passwordConfirm;
         }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public void setNickname(String nickname) {
+            this.nickname = nickname;
+        }
+
+        public void setPasswordConfirm(String passwordConfirm) {
+            this.passwordConfirm = passwordConfirm;
+        }
     }
 
     public static class ErrorMessage {
@@ -59,6 +75,14 @@ public class Types {
         public String getUsername() {
             return username;
         }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
     }
 
     public static class LoginResponse {
@@ -79,6 +103,10 @@ public class Types {
         public String getNickname() {
             return nickname;
         }
+
+        public void setNickname(String nickname) {
+            this.nickname = nickname;
+        }
     }
 
     public static class ChangePasswordBody {
@@ -94,6 +122,18 @@ public class Types {
 
         public String getOldPassword() {
             return oldPassword;
+        }
+
+        public void setNewPassword(String newPassword) {
+            this.newPassword = newPassword;
+        }
+
+        public void setNewPasswordConfirm(String newPasswordConfirm) {
+            this.newPasswordConfirm = newPasswordConfirm;
+        }
+
+        public void setOldPassword(String oldPassword) {
+            this.oldPassword = oldPassword;
         }
     }
 
@@ -134,6 +174,48 @@ public class Types {
 
         public String getPic() {
             return pic;
+        }
+    }
+
+    public static class ShopIncreaseStockRequest {
+        private String cardName;
+        private int delta;
+
+        public String getCardName() {
+            return cardName;
+        }
+
+        public int getDelta() {
+            return delta;
+        }
+
+        public void setCardName(String cardName) {
+            this.cardName = cardName;
+        }
+
+        public void setDelta(int delta) {
+            this.delta = delta;
+        }
+    }
+
+    public static class ShopChangeStatusRequest {
+        private String cardName;
+        private boolean forbidden;
+
+        public String getCardName() {
+            return cardName;
+        }
+
+        public boolean isForbidden() {
+            return forbidden;
+        }
+
+        public void setCardName(String cardName) {
+            this.cardName = cardName;
+        }
+
+        public void setForbidden(boolean forbidden) {
+            this.forbidden = forbidden;
         }
     }
 }
