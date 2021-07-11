@@ -1,8 +1,6 @@
 package model;
 
 import com.talanlabs.avatargenerator.GitHubAvatar;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import model.cards.Card;
 import model.exceptions.UserDeckIsInvalidException;
 import model.exceptions.UserHaveNoActiveDeckException;
@@ -116,11 +114,11 @@ public class User {
         return decks;
     }
 
-    public ObservableList<DeckListTableResult> getDecksForTable() {
+    public ArrayList<DeckListTableResult> getDecksForTable() {
         ArrayList<DeckListTableResult> result = new ArrayList<>();
         getDecks().forEach((deckName, deck) -> result.add(new DeckListTableResult(deckName, deck, deckName.equals(activeDeck))));
         result.sort(Comparator.comparing(DeckListTableResult::getName));
-        return FXCollections.observableArrayList(result);
+        return result;
     }
 
     public String getActiveDeckName() {

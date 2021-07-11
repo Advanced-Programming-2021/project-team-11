@@ -1,5 +1,6 @@
 package controller.webserver;
 
+import controller.webserver.chat.ChatController;
 import controller.webserver.routes.UsersRoute;
 import io.javalin.Javalin;
 import model.database.CardLoader;
@@ -31,9 +32,7 @@ public class Webserver {
                 });
                 get("active", UsersRoute::activeUsers);
             });
-            ws("chat", websocket -> {
-
-            });
+            ws("chat", ChatController::handleWebsocket);
         }).start(port);
         Runtime.getRuntime().addShutdownHook(new Thread(app::stop));
         app.events(event -> event.serverStopping(Webserver::saver));

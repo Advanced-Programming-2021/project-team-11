@@ -12,6 +12,7 @@ import model.exceptions.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class UsersRoute {
+    private final static String TOKEN_HEADER = "token";
     private final static AtomicInteger onlineUsers = new AtomicInteger(0);
 
     public static void register(Context context) {
@@ -41,11 +42,11 @@ public class UsersRoute {
         String token = TokenManager.getInstance().addUser(user);
         Types.LoginResponse response = new Types.LoginResponse();
         response.setToken(token);
-        context.json(token);
+        context.result(token);
     }
 
     public static void updateProfileNickname(Context context) {
-        User user = TokenManager.getInstance().getUser(context.header("token"));
+        User user = TokenManager.getInstance().getUser(context.header(TOKEN_HEADER));
         if (user == null) {
             context.status(401);
             return;
@@ -60,7 +61,7 @@ public class UsersRoute {
     }
 
     public static void updateProfilePassword(Context context) {
-        User user = TokenManager.getInstance().getUser(context.header("token"));
+        User user = TokenManager.getInstance().getUser(context.header(TOKEN_HEADER));
         if (user == null) {
             context.status(401);
             return;
@@ -75,7 +76,7 @@ public class UsersRoute {
     }
 
     public static void updateProfileImage(Context context) {
-        User user = TokenManager.getInstance().getUser(context.header("token"));
+        User user = TokenManager.getInstance().getUser(context.header(TOKEN_HEADER));
         if (user == null) {
             context.status(401);
             return;
