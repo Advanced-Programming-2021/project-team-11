@@ -2,6 +2,7 @@ package controller.webserver;
 
 import controller.webserver.chat.ChatController;
 import controller.webserver.routes.DeckRoute;
+import controller.webserver.routes.PresenceController;
 import controller.webserver.routes.ShopRoute;
 import controller.webserver.routes.UsersRoute;
 import io.javalin.Javalin;
@@ -13,7 +14,6 @@ import java.sql.SQLException;
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class Webserver {
-    public final static String TOKEN_HEADER = "token";
     private static String adminToken;
 
     public static void startWebserver(int port, String adminToken) {
@@ -29,11 +29,13 @@ public class Webserver {
                     post("image", UsersRoute::updateProfileImage);
                     get(UsersRoute::getProfile);
                 });
-                ws("presence", websocket -> {
-                    websocket.onConnect(x -> UsersRoute.addOnlineUsers());
-                    websocket.onClose(x -> UsersRoute.decreaseOnlineUsers());
+                path("presence", () -> {
+                    get(PresenceController::getActiveUsers);
+                    ws(websocket -> {
+                        websocket.onConnect(PresenceController::handleConnectWs);
+                        websocket.onClose(PresenceController::handleCloseWs);
+                    });
                 });
-                get("active", UsersRoute::activeUsers);
             });
             ws("chat", ChatController::handleWebsocket);
             path("shop", () -> {

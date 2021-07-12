@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class TokenManager {
+    public final static String TOKEN_HEADER = "token";
     private final static TokenManager tokenManager = new TokenManager();
     private final HashMap<String, User> users = new HashMap<>();
 

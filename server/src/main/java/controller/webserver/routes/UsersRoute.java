@@ -10,11 +10,7 @@ import io.javalin.http.Context;
 import model.User;
 import model.exceptions.*;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 public class UsersRoute {
-    private final static AtomicInteger onlineUsers = new AtomicInteger(0);
-
     public static void register(Context context) {
         Types.RegisterRequest body = context.bodyAsClass(Types.RegisterRequest.class);
         try {
@@ -46,7 +42,7 @@ public class UsersRoute {
     }
 
     public static void updateProfileNickname(Context context) {
-        User user = TokenManager.getInstance().getUser(context.header(Webserver.TOKEN_HEADER));
+        User user = TokenManager.getInstance().getUser(context.header(TokenManager.TOKEN_HEADER));
         if (user == null) {
             context.status(401);
             return;
@@ -61,7 +57,7 @@ public class UsersRoute {
     }
 
     public static void updateProfilePassword(Context context) {
-        User user = TokenManager.getInstance().getUser(context.header(Webserver.TOKEN_HEADER));
+        User user = TokenManager.getInstance().getUser(context.header(TokenManager.TOKEN_HEADER));
         if (user == null) {
             context.status(401);
             return;
@@ -76,7 +72,7 @@ public class UsersRoute {
     }
 
     public static void updateProfileImage(Context context) {
-        User user = TokenManager.getInstance().getUser(context.header(Webserver.TOKEN_HEADER));
+        User user = TokenManager.getInstance().getUser(context.header(TokenManager.TOKEN_HEADER));
         if (user == null) {
             context.status(401);
             return;
@@ -93,17 +89,5 @@ public class UsersRoute {
         Types.ProfileDetails body = new Types.ProfileDetails();
         body.setUser(user);
         context.json(user);
-    }
-
-    public static void activeUsers(Context context) {
-        context.result("" + onlineUsers.get());
-    }
-
-    public static void addOnlineUsers() {
-        onlineUsers.incrementAndGet();
-    }
-
-    public static void decreaseOnlineUsers() {
-        onlineUsers.decrementAndGet();
     }
 }

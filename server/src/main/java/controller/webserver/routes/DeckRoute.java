@@ -3,14 +3,13 @@ package controller.webserver.routes;
 import controller.menucontrollers.DeckMenuController;
 import controller.webserver.TokenManager;
 import controller.webserver.Types;
-import controller.webserver.Webserver;
 import io.javalin.http.Context;
 import model.User;
 import model.exceptions.*;
 
 public class DeckRoute {
     public static void getDeck(Context context) {
-        User user = TokenManager.getInstance().getUser(context.header(Webserver.TOKEN_HEADER));
+        User user = TokenManager.getInstance().getUser(context.header(TokenManager.TOKEN_HEADER));
         if (user == null) {
             context.status(401);
             return;
@@ -22,7 +21,7 @@ public class DeckRoute {
     }
 
     public static void createDeck(Context context) {
-        User user = TokenManager.getInstance().getUser(context.header(Webserver.TOKEN_HEADER));
+        User user = TokenManager.getInstance().getUser(context.header(TokenManager.TOKEN_HEADER));
         if (user == null) {
             context.status(401);
             return;
@@ -36,7 +35,7 @@ public class DeckRoute {
     }
 
     public static void deleteDeck(Context context) {
-        User user = TokenManager.getInstance().getUser(context.header(Webserver.TOKEN_HEADER));
+        User user = TokenManager.getInstance().getUser(context.header(TokenManager.TOKEN_HEADER));
         if (user == null) {
             context.status(401);
             return;
@@ -50,7 +49,7 @@ public class DeckRoute {
     }
 
     public static void addCard(Context context) {
-        User user = TokenManager.getInstance().getUser(context.header(Webserver.TOKEN_HEADER));
+        User user = TokenManager.getInstance().getUser(context.header(TokenManager.TOKEN_HEADER));
         if (user == null) {
             context.status(401);
             return;
@@ -65,7 +64,7 @@ public class DeckRoute {
     }
 
     public static void removeCard(Context context) {
-        User user = TokenManager.getInstance().getUser(context.header(Webserver.TOKEN_HEADER));
+        User user = TokenManager.getInstance().getUser(context.header(TokenManager.TOKEN_HEADER));
         if (user == null) {
             context.status(401);
             return;
@@ -80,7 +79,7 @@ public class DeckRoute {
     }
 
     public static void swapCard(Context context) {
-        User user = TokenManager.getInstance().getUser(context.header(Webserver.TOKEN_HEADER));
+        User user = TokenManager.getInstance().getUser(context.header(TokenManager.TOKEN_HEADER));
         if (user == null) {
             context.status(401);
             return;
@@ -95,7 +94,7 @@ public class DeckRoute {
     }
 
     public static void setActive(Context context) {
-        User user = TokenManager.getInstance().getUser(context.header(Webserver.TOKEN_HEADER));
+        User user = TokenManager.getInstance().getUser(context.header(TokenManager.TOKEN_HEADER));
         if (user == null) {
             context.status(401);
             return;

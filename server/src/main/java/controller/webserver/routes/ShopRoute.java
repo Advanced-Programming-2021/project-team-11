@@ -21,7 +21,7 @@ public class ShopRoute {
     }
 
     public static void increaseStock(Context context) {
-        if (!Objects.equals(context.header(Webserver.TOKEN_HEADER), Webserver.getAdminToken())) {
+        if (!Objects.equals(context.header(TokenManager.TOKEN_HEADER), Webserver.getAdminToken())) {
             context.status(401);
             return;
         }
@@ -35,7 +35,7 @@ public class ShopRoute {
     }
 
     public static void changeForbidStatus(Context context) {
-        if (!Objects.equals(context.header(Webserver.TOKEN_HEADER), Webserver.getAdminToken())) {
+        if (!Objects.equals(context.header(TokenManager.TOKEN_HEADER), Webserver.getAdminToken())) {
             context.status(401);
             return;
         }
@@ -49,7 +49,7 @@ public class ShopRoute {
     }
 
     public static void buyCard(Context context) {
-        User user = TokenManager.getInstance().getUser(context.header(Webserver.TOKEN_HEADER));
+        User user = TokenManager.getInstance().getUser(context.header(TokenManager.TOKEN_HEADER));
         if (user == null) {
             context.status(401);
             return;
@@ -68,7 +68,7 @@ public class ShopRoute {
     }
 
     public static void sellCard(Context context) {
-        User user = TokenManager.getInstance().getUser(context.header(Webserver.TOKEN_HEADER));
+        User user = TokenManager.getInstance().getUser(context.header(TokenManager.TOKEN_HEADER));
         if (user == null) {
             context.status(401);
             return;
