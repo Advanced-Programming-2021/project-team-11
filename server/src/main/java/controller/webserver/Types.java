@@ -5,7 +5,7 @@ import model.User;
 import java.util.Base64;
 
 public class Types {
-    public static class RegisterBody {
+    public static class RegisterRequest {
         private String username, password, passwordConfirm, nickname;
 
         public String getUsername() {
@@ -97,7 +97,7 @@ public class Types {
         }
     }
 
-    public static class ChangeNicknameBody {
+    public static class ChangeNickname {
         private String nickname;
 
         public String getNickname() {
@@ -109,7 +109,7 @@ public class Types {
         }
     }
 
-    public static class ChangePasswordBody {
+    public static class ChangePassword {
         private String oldPassword, newPassword, newPasswordConfirm;
 
         public String getNewPassword() {
@@ -137,7 +137,7 @@ public class Types {
         }
     }
 
-    public static class ProfilePictureBody {
+    public static class ProfilePicture {
         private String pic;
 
         public void setPic(byte[] pic) {
@@ -177,7 +177,7 @@ public class Types {
         }
     }
 
-    public static class ShopIncreaseStockRequest {
+    public static class ShopIncreaseStock {
         private String cardName;
         private int delta;
 
@@ -198,7 +198,7 @@ public class Types {
         }
     }
 
-    public static class ShopChangeStatusRequest {
+    public static class ShopChangeStatus {
         private String cardName;
         private boolean forbidden;
 
@@ -216,6 +216,76 @@ public class Types {
 
         public void setForbidden(boolean forbidden) {
             this.forbidden = forbidden;
+        }
+    }
+
+    public static class ShopCard {
+        private String card;
+
+        public void setCard(String card) {
+            this.card = card;
+        }
+
+        public String getCard() {
+            return card;
+        }
+    }
+
+    public static class DeckAddRemoveCard {
+        private String deckName, cardName;
+        private boolean side;
+
+        public String getCardName() {
+            return cardName;
+        }
+
+        public String getDeckName() {
+            return deckName;
+        }
+
+        public boolean isSide() {
+            return side;
+        }
+
+        public void setCardName(String cardName) {
+            this.cardName = cardName;
+        }
+
+        public void setDeckName(String deckName) {
+            this.deckName = deckName;
+        }
+
+        public void setSide(boolean side) {
+            this.side = side;
+        }
+    }
+
+    public static class DeckSwapCard {
+        private String deckName, cardName;
+        private boolean fromSide;
+
+        public String getDeckName() {
+            return deckName;
+        }
+
+        public String getCardName() {
+            return cardName;
+        }
+
+        public boolean isFromSide() {
+            return fromSide;
+        }
+
+        public void setDeckName(String deckName) {
+            this.deckName = deckName;
+        }
+
+        public void setCardName(String cardName) {
+            this.cardName = cardName;
+        }
+
+        public void setFromSide(boolean fromSide) {
+            this.fromSide = fromSide;
         }
     }
 }

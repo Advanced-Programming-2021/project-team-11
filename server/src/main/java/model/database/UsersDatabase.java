@@ -5,6 +5,9 @@ import model.Deck;
 import model.User;
 import model.cards.Card;
 import model.cards.CardShopDetails;
+import model.exceptions.CardNotExistsException;
+import model.exceptions.ForbiddenCardException;
+import model.exceptions.OutOfStockException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UsersDatabase {
+    private static final Object cardStockMutex = new Object();
     private static Connection connection;
 
     /**
@@ -159,28 +163,49 @@ public class UsersDatabase {
         return result;
     }
 
-    public static void increaseCardStock(String name, int delta) {
-        try {
-            PreparedStatement statement = connection.prepareStatement("UPDATE cards SET stock=stock + ? WHERE name=?");
-            statement.setInt(1, delta);
-            statement.setString(2, name);
+    public static void increaseCardStock(String name, int delta) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("UPDATE cards SET stock=stock + ? WHERE name=?");
+        statement.setInt(1, delta);
+        statement.setString(2, name);
+        statement.executeUpdate();
+        statement.close();
+    }
+
+    public static void tryDecreaseCardStock(String name) throws SQLException, CardNotExistsException, OutOfStockException, ForbiddenCardException {
+        synchronized (cardStockMutex) {
+            PreparedStatement statement = connection.prepareStatement("SELECT stock,forbidden FROM cards WHERE name=?");
+            statement.setString(1, name);
+            ResultSet result = statement.executeQuery();
+            if (!result.next())
+                throw new CardNotExistsException("card does not exists");
+            if (result.getInt("stock") <= 0)
+                throw new OutOfStockException();
+            if (result.getInt("forbidden") == 1)
+                throw new ForbiddenCardException();
+            result.close();
+            statement.close();
+            statement = connection.prepareStatement("UPDATE cards SET stock=stock-1 WHERE name=?");
+            statement.setString(1, name);
             statement.executeUpdate();
             statement.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
         }
     }
 
-    public static void changeCardStatus(String name, boolean forbidden) {
-        try {
-            PreparedStatement statement = connection.prepareStatement("UPDATE cards SET forbidden=? WHERE name=?");
-            statement.setInt(1, forbidden ? 1 : 0);
-            statement.setString(2, name);
+    public static void tryIncreaseCardStock(String name) throws SQLException {
+        synchronized (cardStockMutex) {
+            PreparedStatement statement = connection.prepareStatement("UPDATE cards SET stock=stock+1 WHERE name=?");
+            statement.setString(1, name);
             statement.executeUpdate();
             statement.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
         }
+    }
+
+    public static void changeCardStatus(String name, boolean forbidden) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("UPDATE cards SET forbidden=? WHERE name=?");
+        statement.setInt(1, forbidden ? 1 : 0);
+        statement.setString(2, name);
+        statement.executeUpdate();
+        statement.close();
     }
 
     public static void closeDatabase() throws SQLException {

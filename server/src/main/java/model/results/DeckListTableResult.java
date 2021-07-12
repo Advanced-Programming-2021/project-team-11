@@ -3,9 +3,13 @@ package model.results;
 import model.Deck;
 
 public class DeckListTableResult {
-    private final String name, deckSummery;
-    private final int mainDeckSize, sideDeckSize;
-    private final boolean isValid, isActive;
+    private String name, deckSummery;
+    private int mainDeckSize, sideDeckSize;
+    private boolean isValid, isActive;
+
+    public DeckListTableResult() {
+
+    }
 
     public DeckListTableResult(String name, Deck deck, boolean isActive) {
         this.name = name;

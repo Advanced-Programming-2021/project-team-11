@@ -16,7 +16,7 @@ public class UsersRoute {
     private final static AtomicInteger onlineUsers = new AtomicInteger(0);
 
     public static void register(Context context) {
-        Types.RegisterBody body = context.bodyAsClass(Types.RegisterBody.class);
+        Types.RegisterRequest body = context.bodyAsClass(Types.RegisterRequest.class);
         try {
             LoginMenuController.register(body.getUsername(), body.getPassword(), body.getPasswordConfirm(), body.getNickname());
         } catch (NicknameExistsException | PasswordsDontMatchException | UsernameExistsException e) {
@@ -42,7 +42,7 @@ public class UsersRoute {
         String token = TokenManager.getInstance().addUser(user);
         Types.LoginResponse response = new Types.LoginResponse();
         response.setToken(token);
-        context.result(token);
+        context.json(response);
     }
 
     public static void updateProfileNickname(Context context) {
@@ -52,7 +52,7 @@ public class UsersRoute {
             return;
         }
         try {
-            Types.ChangeNicknameBody body = context.bodyAsClass(Types.ChangeNicknameBody.class);
+            Types.ChangeNickname body = context.bodyAsClass(Types.ChangeNickname.class);
             ProfileMenuController.changeNickname(user, body.getNickname());
         } catch (NicknameExistsException e) {
             context.status(400);
@@ -67,7 +67,7 @@ public class UsersRoute {
             return;
         }
         try {
-            Types.ChangePasswordBody body = context.bodyAsClass(Types.ChangePasswordBody.class);
+            Types.ChangePassword body = context.bodyAsClass(Types.ChangePassword.class);
             ProfileMenuController.changePassword(user, body.getOldPassword(), body.getNewPassword(), body.getNewPasswordConfirm());
         } catch (CurrentPasswordInvalidException | PasswordsDontMatchException | SameNewPasswordException e) {
             context.status(400);
@@ -81,7 +81,7 @@ public class UsersRoute {
             context.status(401);
             return;
         }
-        user.setProfilePicBytes(context.bodyAsClass(Types.ProfilePictureBody.class).getPic());
+        user.setProfilePicBytes(context.bodyAsClass(Types.ProfilePicture.class).getPic());
     }
 
     public static void getProfile(Context context) {

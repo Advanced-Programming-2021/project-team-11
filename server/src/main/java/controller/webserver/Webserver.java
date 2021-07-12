@@ -1,6 +1,7 @@
 package controller.webserver;
 
 import controller.webserver.chat.ChatController;
+import controller.webserver.routes.DeckRoute;
 import controller.webserver.routes.ShopRoute;
 import controller.webserver.routes.UsersRoute;
 import io.javalin.Javalin;
@@ -37,8 +38,19 @@ public class Webserver {
             ws("chat", ChatController::handleWebsocket);
             path("shop", () -> {
                 get("cards", ShopRoute::getCards);
+                post("buy", ShopRoute::buyCard);
+                post("sell", ShopRoute::sellCard);
                 post("increase_stock", ShopRoute::increaseStock);
                 post("forbid", ShopRoute::changeForbidStatus);
+            });
+            path("deck", () -> {
+                get(DeckRoute::getDeck);
+                put(DeckRoute::createDeck);
+                delete(DeckRoute::deleteDeck);
+                post("add-card", DeckRoute::addCard);
+                post("remove-card", DeckRoute::removeCard);
+                post("swap-card", DeckRoute::swapCard);
+                put("set-active", DeckRoute::setActive);
             });
         }).start(port);
         Runtime.getRuntime().addShutdownHook(new Thread(app::stop));

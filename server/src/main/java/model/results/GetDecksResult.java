@@ -5,8 +5,12 @@ import model.Deck;
 import java.util.TreeSet;
 
 public class GetDecksResult {
-    private final DeckResult activeDeck;
-    private final TreeSet<DeckResult> otherDeck;
+    private DeckResult activeDeck;
+    private TreeSet<DeckResult> otherDeck;
+
+    public GetDecksResult() {
+
+    }
 
     public GetDecksResult(DeckResult activeDeck, TreeSet<DeckResult> otherDeckNames) {
         this.activeDeck = activeDeck;
@@ -22,9 +26,13 @@ public class GetDecksResult {
     }
 
     public static class DeckResult implements Comparable<DeckResult> {
-        private final String name;
-        private final boolean isValid;
-        private final int sideCount, mainCount;
+        private String name;
+        private boolean isValid;
+        private int sideCount, mainCount;
+
+        public DeckResult() {
+
+        }
 
         public DeckResult(String name, Deck deck) {
             this.name = name;

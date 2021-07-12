@@ -18,6 +18,16 @@ public class ShopMenuController {
         user.getAvailableCards().add(card);
     }
 
+    public static void sellCardForUser(User user, String cardName) throws CardNotExistsException {
+        Card card = Card.getCardByName(cardName);
+        if (card == null)
+            throw new CardNotExistsException("there is no card with this name", cardName);
+        if (!user.getAvailableCards().contains(card))
+            throw new CardNotExistsException("you don't have this card to sell");
+        user.increaseMoney(card.getPrice());
+        user.getAvailableCards().remove(card);
+    }
+
     public static void increaseMoneyCheat(User user) {
         user.increaseMoney(INCREASE_MONEY_CHEAT_DIFF);
     }
