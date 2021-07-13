@@ -13,20 +13,29 @@ import java.util.Objects;
 public class PresenceController {
     private static final HashMap<WsContext, User> onlineUsers = new HashMap<>();
 
-    private static synchronized void registerWebsocket(WsContext ws, User user) {
-        onlineUsers.put(ws, user);
+    private static void registerWebsocket(WsContext ws, User user) {
+        synchronized (onlineUsers) {
+            onlineUsers.put(ws, user);
+        }
     }
 
-    public static synchronized long onlineUsers() {
-        return onlineUsers.values().stream().filter(Objects::nonNull).count();
+    public static long onlineUsers() {
+        synchronized (onlineUsers) {
+            return onlineUsers.values().stream().filter(Objects::nonNull).count();
+        }
     }
 
-    public static synchronized boolean isUserOnline(String username) {
-        return onlineUsers.values().stream().anyMatch(user -> user.getUsername().equals(username));
+    public static boolean isUserOnline(String username) {
+        synchronized (onlineUsers) {
+            return onlineUsers.values().stream().anyMatch(user -> user.getUsername().equals(username));
+        }
     }
 
-    private static synchronized void removeUser(WsContext ws) {
-        onlineUsers.remove(ws);
+    private static void removeUser(WsContext ws) {
+        synchronized (onlineUsers) {
+            onlineUsers.remove(ws);
+        }
+        ScoreboardWebsockets.updateWebsockets();
     }
 
     public static void handleConnectWs(WsConnectContext wsConnectContext) {

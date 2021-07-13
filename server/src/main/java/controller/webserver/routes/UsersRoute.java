@@ -21,10 +21,6 @@ public class UsersRoute {
         }
     }
 
-    public static void scoreboard(Context context) {
-        context.json(ScoreboardMenuController.getScoreboardRows());
-    }
-
     public static void login(Context context) {
         Types.LoginBody body = context.bodyAsClass(Types.LoginBody.class);
         User user;

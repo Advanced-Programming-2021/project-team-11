@@ -6,16 +6,13 @@ import io.javalin.websocket.WsContext;
 import io.javalin.websocket.WsHandler;
 import model.User;
 
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ChatController {
     private final static Gson gson = new Gson();
     private final static int MAX_MESSAGES_SIZE = 100;
-    private final static Deque<ChatMessage> messages = new LinkedList<>();
+    private final static Queue<ChatMessage> messages = new LinkedList<>();
     private final static HashMap<WsContext, User> websockets = new HashMap<>();
 
     private static void addMessage(User from, String message) {
@@ -23,7 +20,7 @@ public class ChatController {
         synchronized (messages) {
             messages.add(messageObject);
             if (message.length() > MAX_MESSAGES_SIZE)
-                messages.removeFirst();
+                messages.remove();
         }
         MessageUpdate update = new MessageUpdate(messageObject);
         synchronized (websockets) {

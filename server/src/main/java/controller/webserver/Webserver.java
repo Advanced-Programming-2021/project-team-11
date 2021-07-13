@@ -1,10 +1,7 @@
 package controller.webserver;
 
 import controller.webserver.chat.ChatController;
-import controller.webserver.routes.DeckRoute;
-import controller.webserver.routes.PresenceController;
-import controller.webserver.routes.ShopRoute;
-import controller.webserver.routes.UsersRoute;
+import controller.webserver.routes.*;
 import io.javalin.Javalin;
 import model.database.CardLoader;
 import model.database.UsersDatabase;
@@ -21,7 +18,7 @@ public class Webserver {
         Javalin app = Javalin.create(config -> config.asyncRequestTimeout = 10_000L).routes(() -> {
             path("users", () -> {
                 post("register", UsersRoute::register);
-                get("scoreboard", UsersRoute::scoreboard);
+                ws("scoreboard", ScoreboardWebsockets::registerWebsocket);
                 post("login", UsersRoute::login);
                 path("profile", () -> {
                     post("nickname", UsersRoute::updateProfileNickname);
