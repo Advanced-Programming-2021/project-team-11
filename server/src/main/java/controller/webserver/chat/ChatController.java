@@ -10,8 +10,10 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ChatController {
+    private final static Gson gson = new Gson();
     private final static int MAX_MESSAGES_SIZE = 100;
     private final static Deque<ChatMessage> messages = new LinkedList<>();
     private final static HashMap<WsContext, User> websockets = new HashMap<>();
@@ -23,9 +25,9 @@ public class ChatController {
             if (message.length() > MAX_MESSAGES_SIZE)
                 messages.removeFirst();
         }
-        Gson gson = new Gson();
+        MessageUpdate update = new MessageUpdate(messageObject);
         synchronized (websockets) {
-            websockets.entrySet().stream().filter(set -> set.getKey().session.isOpen() && set.getValue() != null).forEach(ws -> ws.getKey().send(gson.toJson(messageObject)));
+            websockets.keySet().stream().filter(set -> set.session.isOpen()).forEach(ws -> ws.send(gson.toJson(update)));
         }
     }
 
@@ -35,30 +37,91 @@ public class ChatController {
         }
     }
 
+    private static void deleteMessage(User from, int id) {
+        boolean removed;
+        synchronized (messages) {
+            removed = messages.removeIf(msg -> msg.getMessageId() == id && msg.getUsername().equals(from.getUsername()));
+        }
+        if (!removed)
+            return;
+        ChatMessage message = new ChatMessage();
+        message.setMessageId(id);
+        MessageUpdate update = new MessageUpdate(message, MessageUpdate.MessageUpdateType.DELETE);
+        synchronized (websockets) {
+            websockets.keySet().stream().filter(set -> set.session.isOpen()).forEach(ws -> ws.send(gson.toJson(update)));
+        }
+    }
+
+    private static void editMessage(User from, int id, String newText) {
+        AtomicInteger editCounter = new AtomicInteger(0);
+        synchronized (messages) {
+            messages.stream().filter(msg -> msg.getMessageId() == id && msg.getUsername().equals(from.getUsername())).forEach(msg -> {
+                msg.setMessage(newText);
+                editCounter.incrementAndGet();
+            });
+        }
+        if (editCounter.get() == 0)
+            return;
+        ChatMessage message = new ChatMessage();
+        message.setMessageId(id);
+        message.setMessage(newText);
+        MessageUpdate update = new MessageUpdate(message, MessageUpdate.MessageUpdateType.EDIT);
+        synchronized (websockets) {
+            websockets.keySet().stream().filter(set -> set.session.isOpen()).forEach(ws -> ws.send(gson.toJson(update)));
+        }
+    }
+
+    private static void pinMessage(User from, int id) {
+        synchronized (messages) {
+            AtomicInteger editCounter = new AtomicInteger(0);
+            messages.stream().filter(msg -> msg.getMessageId() == id && msg.getUsername().equals(from.getUsername())).forEach(msg -> {
+                msg.setPinned(true);
+                editCounter.incrementAndGet();
+            });
+            if (editCounter.get() == 0)
+                return;
+            messages.forEach(msg -> msg.setPinned(false));
+        }
+        ChatMessage message = new ChatMessage();
+        message.setMessageId(id);
+        MessageUpdate update = new MessageUpdate(message, MessageUpdate.MessageUpdateType.PIN);
+        synchronized (websockets) {
+            websockets.keySet().stream().filter(set -> set.session.isOpen()).forEach(ws -> ws.send(gson.toJson(update)));
+        }
+    }
+
     public static void handleWebsocket(WsHandler websocket) {
         websocket.onConnect(ctx -> {
-            synchronized (websockets) {
-                websockets.put(ctx, null);
-            }
-        });
-        websocket.onMessage(ctx -> {
-            User user = websockets.get(ctx);
-            if (user == null) { // Try to authorize
-                user = TokenManager.getInstance().getUser(ctx.message().trim());
-                if (user == null) {
-                    ctx.send("sike");
-                    ctx.session.close();
-                } else {
-                    synchronized (websockets) {
-                        websockets.put(ctx, user);
-                    }
-                    // Send old messages to user
-                    ctx.send(new Gson().toJson(getMessages()));
-                }
+            User user = TokenManager.getInstance().getUser(ctx.header(TokenManager.TOKEN_HEADER));
+            if (user == null) {
+                ctx.session.close();
                 return;
             }
-            // Otherwise this is a simple message
-            addMessage(user, ctx.message().trim());
+            synchronized (websockets) {
+                websockets.put(ctx, user);
+            }
+            // Send messages
+            ctx.send(gson.toJson(getMessages()));
+        });
+        websocket.onMessage(ctx -> {
+            User user;
+            synchronized (websockets) {
+                user = websockets.get(ctx);
+            }
+            MessageUpdate update = gson.fromJson(ctx.message().trim(), MessageUpdate.class);
+            switch (update.getType()) {
+                case NEW:
+                    addMessage(user, update.getMessage().getMessage());
+                    break;
+                case EDIT:
+                    editMessage(user, update.getMessage().getMessageId(), update.getMessage().getMessage());
+                    break;
+                case DELETE:
+                    deleteMessage(user, update.getMessage().getMessageId());
+                    break;
+                case PIN:
+                    pinMessage(user, update.getMessage().getMessageId());
+            }
         });
         websocket.onClose(ctx -> {
             synchronized (websockets) {
