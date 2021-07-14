@@ -12,10 +12,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
-import model.exceptions.CurrentPasswordInvalidException;
-import model.exceptions.NicknameExistsException;
-import model.exceptions.PasswordsDontMatchException;
-import model.exceptions.SameNewPasswordException;
+import model.exceptions.*;
 import view.components.AlertsUtil;
 import view.global.Assets;
 
@@ -70,8 +67,10 @@ public class ProfileMenu implements Initializable {
         File image = fileChooser.showOpenDialog(RootMenu.primaryStage);
         if (image != null) {
             try {
-                MainMenu.loggedInUser.setProfilePicBytes(Files.readAllBytes(image.toPath()));
+                final byte[] imageBytes = Files.readAllBytes(image.toPath());
+                MainMenu.loggedInUser.setProfilePicBytes(imageBytes);
                 profilePic.setImage(MainMenu.loggedInUser.getProfilePicImage());
+                new Thread(() -> ProfileMenuController.setProfilePic(imageBytes)).start();
             } catch (IOException exception) {
                 exception.printStackTrace();
             }
@@ -81,6 +80,7 @@ public class ProfileMenu implements Initializable {
     public void clickedRemoveProfilePic(MouseEvent mouseEvent) {
         MainMenu.loggedInUser.setProfilePicBytes(null);
         profilePic.setImage(MainMenu.loggedInUser.getProfilePicImage());
+        new Thread(() -> ProfileMenuController.setProfilePic(null)).start();
     }
 
     public void clickedChangePassword(MouseEvent mouseEvent) {
@@ -96,10 +96,10 @@ public class ProfileMenu implements Initializable {
 
     public void clickedPasswordDialogChange(MouseEvent mouseEvent) {
         try {
-            ProfileMenuController.changePassword(MainMenu.loggedInUser, oldPasswordText.getText(), newPasswordText.getText(), newPasswordTextConfirm.getText());
+            ProfileMenuController.changePassword(oldPasswordText.getText(), newPasswordText.getText(), newPasswordTextConfirm.getText());
             passwordDialog.close();
             AlertsUtil.showSuccess("Password changed!");
-        } catch (CurrentPasswordInvalidException | SameNewPasswordException | PasswordsDontMatchException e) {
+        } catch (NetworkErrorException e) {
             AlertsUtil.showError(e);
         }
     }
@@ -115,7 +115,8 @@ public class ProfileMenu implements Initializable {
 
     public void clickedNicknameDialogChange(MouseEvent mouseEvent) {
         try {
-            ProfileMenuController.changeNickname(MainMenu.loggedInUser, newNicknameText.getText());
+            ProfileMenuController.changeNickname(newNicknameText.getText());
+            MainMenu.loggedInUser.setNickname(newNicknameText.getText());
             nicknameDialog.close();
             nicknameText.setText("Nickname:\n" + MainMenu.loggedInUser.getNickname());
             AlertsUtil.showSuccess("Nickname changed!");

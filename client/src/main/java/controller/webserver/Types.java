@@ -172,8 +172,8 @@ public class Types {
             return score;
         }
 
-        public String getPic() {
-            return pic;
+        public byte[] getPic() {
+            return GeneralUtil.decodeFromBase64(pic);
         }
 
         public int getMoney() {

@@ -16,31 +16,37 @@ import view.menus.SceneChanger;
 public class CardShopViewCard extends HBox {
     private final Card card;
     private boolean canAffordThisCard;
-    private long userStock;
+    private final boolean isForbidden;
     private final ImageView cardImageView = new ImageView();
     private final Text cardNameText = new Text(), cardPriceText = new Text(), cardTypeText = new Text(),
             cardDescriptionText = new Text(), playerStock = new Text();
-    private final JFXButton buyButton = new JFXButton("Buy");
+    private final JFXButton buyButton = new JFXButton("Buy"), sellButton = new JFXButton("Sell");
 
-    public CardShopViewCard(Card card, int userBalance, CardShopViewCardClickedListener onClicked) {
+    public CardShopViewCard(Card card, int userBalance, CardShopViewCardClickedListener onBuyClicked, CardShopViewCardClickedListener onSellClicked, boolean isForbidden) {
         super(5);
         this.card = card;
+        this.isForbidden = isForbidden;
         super.setAlignment(Pos.CENTER_LEFT);
         super.getStyleClass().add("thin-rounded-card");
         super.setPadding(new Insets(3));
-        initializeComponents(onClicked);
+        initializeComponents(onBuyClicked, onSellClicked);
         setCardDetails();
         setUserBalance(userBalance);
+        if (isForbidden)
+            buyButton.setText("Forbidden");
     }
 
-    private void initializeComponents(CardShopViewCardClickedListener onClicked) {
+    private void initializeComponents(CardShopViewCardClickedListener onBuyClicked, CardShopViewCardClickedListener onSellClicked) {
         VBox cardInfoVBox = new VBox(5);
-        HBox buyButtonHBox = new HBox();
+        HBox buyButtonHBox = new HBox(5);
         buyButton.setPadding(new Insets(3, 15, 3, 15));
         buyButton.setOnMouseExited(x -> SceneChanger.getScene().setCursor(Cursor.DEFAULT));
-        buyButton.setOnMouseClicked(x -> onClicked.clicked(this));
+        buyButton.setOnMouseClicked(x -> onBuyClicked.clicked(this));
+        sellButton.setPadding(new Insets(3, 15, 3, 15));
+        sellButton.setOnMouseExited(x -> SceneChanger.getScene().setCursor(Cursor.DEFAULT));
+        sellButton.setOnMouseClicked(x -> onBuyClicked.clicked(this));
         buyButtonHBox.setAlignment(Pos.CENTER);
-        buyButtonHBox.getChildren().add(buyButton);
+        buyButtonHBox.getChildren().addAll(buyButton, sellButton);
         cardInfoVBox.getChildren().addAll(cardNameText, cardPriceText, cardDescriptionText, cardTypeText, buyButtonHBox);
         VBox imageAndStockBox = new VBox(playerStock, cardImageView);
         imageAndStockBox.setAlignment(Pos.CENTER);
@@ -48,7 +54,7 @@ public class CardShopViewCard extends HBox {
     }
 
     public void setUserBalance(int balance) {
-        canAffordThisCard = balance >= card.getPrice();
+        canAffordThisCard = balance >= card.getPrice() && !isForbidden;
         // Reset everything
         cardPriceText.setStyle("");
         buyButton.getStyleClass().clear();
@@ -61,6 +67,8 @@ public class CardShopViewCard extends HBox {
             buyButton.getStyleClass().add("jfx-button-buy-ok");
             buyButton.setOnMouseEntered(x -> SceneChanger.getScene().setCursor(Cursor.HAND));
         }
+        sellButton.getStyleClass().add("jfx-button-buy-ok");
+        sellButton.setOnMouseEntered(x -> SceneChanger.getScene().setCursor(Cursor.HAND));
     }
 
     private void setCardDetails() {
@@ -75,22 +83,25 @@ public class CardShopViewCard extends HBox {
     }
 
     /**
-     * Sets how many cards does this player have
+     * Sets how many cards does market have
      *
      * @param i The number of cards which this user have
      */
-    public void setCardStockOfPlayer(long i) {
-        userStock = i;
-        playerStock.setText("Your stock: " + i);
-    }
-
-    public void increaseUserStock() {
-        userStock++;
-        setCardStockOfPlayer(userStock);
+    public void setCardStockOfMarket(int i) {
+        if (i <= 0) {
+            buyButton.getStyleClass().clear();
+            buyButton.getStyleClass().add("jfx-button-buy-not-ok");
+            buyButton.setOnMouseEntered(x -> SceneChanger.getScene().setCursor(Assets.UNAVAILABLE_CURSOR));
+        }
+        playerStock.setText("Market stock: " + i);
     }
 
     public String getBuyDialogMessage() {
         return "Are you sure you want to buy " + card.getName() + " card for " + card.getPrice() + " units?";
+    }
+
+    public String getSellDialogMessage() {
+        return "Are you sure you want to sell " + card.getName() + " card for " + card.getPrice() + " units?";
     }
 
     public boolean canUserAffordCard() {

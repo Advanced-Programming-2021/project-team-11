@@ -1,28 +1,42 @@
 package controller.menucontrollers;
 
-import model.User;
-import model.cards.Card;
-import model.exceptions.CardNotExistsException;
-import model.exceptions.InsufficientBalanceException;
+import controller.webserver.GsonHelper;
+import controller.webserver.Types;
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
+import model.cards.CardShopDetails;
+import model.exceptions.NetworkErrorException;
+
+import java.util.HashMap;
 
 public class ShopMenuController {
-    private static final int INCREASE_MONEY_CHEAT_DIFF = 100000;
-
-    public static void buyCardForUser(User user, String cardName) throws CardNotExistsException, InsufficientBalanceException {
-        Card card = Card.getCardByName(cardName);
-        if (card == null)
-            throw new CardNotExistsException("there is no card with this name", cardName);
-        if (user.getMoney() < card.getPrice())
-            throw new InsufficientBalanceException();
-        user.decreaseMoney(card.getPrice());
-        user.getAvailableCards().add(card);
+    public static void buyCard(String cardName) throws NetworkErrorException {
+        Types.ShopCard card = new Types.ShopCard();
+        card.setCard(cardName);
+        HttpResponse<String> response = Unirest.post("/shop/buy")
+                .header(LoginMenuController.TOKEN_HEADER, LoginMenuController.getToken())
+                .header("Content-Type", "application/json")
+                .body(card)
+                .asString();
+        if (response.getStatus() != 200)
+            throw new NetworkErrorException(response);
     }
 
-    public static void increaseMoneyCheat(User user) {
-        user.increaseMoney(INCREASE_MONEY_CHEAT_DIFF);
+    public static void sellCard(String cardName) throws NetworkErrorException {
+        Types.ShopCard card = new Types.ShopCard();
+        card.setCard(cardName);
+        HttpResponse<String> response = Unirest.post("/shop/sell")
+                .header(LoginMenuController.TOKEN_HEADER, LoginMenuController.getToken())
+                .header("Content-Type", "application/json")
+                .body(card)
+                .asString();
+        if (response.getStatus() != 200)
+            throw new NetworkErrorException(response);
     }
 
-    public static void addAllCardsCheat(User user) {
-        Card.getAllCards().forEach(user::addCardToPlayer);
+    public static HashMap<String, CardShopDetails> getAllCards() {
+        HttpResponse<String> response = Unirest.get("/shop/cards")
+                .asString();
+        return GsonHelper.fromMap(response.getBody(), String.class, CardShopDetails.class);
     }
 }

@@ -58,7 +58,7 @@ public class DuelStartMenu implements Initializable {
     private void startGame(GameRounds rounds) {
         SoundEffects.playMedia(SoundEffects.CLICK);
         DuelStartMenu.rounds = rounds;
-        guest = User.getUserByUsername(otherName.getText());
+        guest = null; // TODO
         if (guest == null) {
             AlertsUtil.showError("User with this username does not exists!");
             return;

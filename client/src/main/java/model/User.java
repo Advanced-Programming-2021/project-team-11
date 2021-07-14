@@ -18,7 +18,6 @@ import java.util.Random;
 
 public class User {
     private final static Color[] profilePicColors = {Color.BLACK, Color.MAGENTA, Color.PINK, Color.GREEN, Color.red};
-    private final static ArrayList<User> users = new ArrayList<>();
     private final ArrayList<Card> availableCards = new ArrayList<>();
     private final HashMap<String, Deck> decks = new HashMap<>();
     private final String username;
@@ -34,25 +33,6 @@ public class User {
         this.username = username;
         this.password = password;
         this.nickname = nickname;
-        users.add(this);
-    }
-
-    public static User getUserByUsername(String username) {
-        for (User user : users)
-            if (user.getUsername().equals(username))
-                return user;
-        return null;
-    }
-
-    public static User getUserByNickname(String nickname) {
-        for (User user : users)
-            if (user.getNickname().equals(nickname))
-                return user;
-        return null;
-    }
-
-    public static ArrayList<User> getUsers() {
-        return users;
     }
 
     public String getUsername() {

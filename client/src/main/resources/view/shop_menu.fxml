@@ -33,7 +33,7 @@
         <JFXDialog fx:id="buyConfirmDialog">
             <JFXDialogLayout>
                 <heading>
-                    <Label>Buy This Card?</Label>
+                    <Label fx:id="dialogLabel" />
                 </heading>
                 <body>
                     <VBox spacing="20">

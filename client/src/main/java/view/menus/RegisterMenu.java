@@ -1,14 +1,13 @@
 package view.menus;
 
 import controller.menucontrollers.LoginMenuController;
+import javafx.application.Platform;
 import javafx.fxml.Initializable;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import model.exceptions.NicknameExistsException;
-import model.exceptions.PasswordsDontMatchException;
-import model.exceptions.UsernameExistsException;
+import model.exceptions.NetworkErrorException;
 import view.components.AlertsUtil;
 import view.global.Assets;
 
@@ -16,6 +15,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class RegisterMenu implements Initializable {
+    private static boolean doingTask = false;
     public TextField username;
     public PasswordField password;
     public PasswordField passwordConfirm;
@@ -30,13 +30,22 @@ public class RegisterMenu implements Initializable {
     public void clickedRegisterButton(MouseEvent mouseEvent) {
         if (username.getText().isEmpty() || password.getText().isEmpty() || passwordConfirm.getText().isEmpty() || nickname.getText().isEmpty())
             return;
-        try {
-            LoginMenuController.register(username.getText(), password.getText(), passwordConfirm.getText(), nickname.getText());
-            AlertsUtil.showSuccess("You have been registered!");
-            clickedBackButton(null);
-        } catch (UsernameExistsException | NicknameExistsException | PasswordsDontMatchException e) {
-            AlertsUtil.showError(e);
-        }
+        if (doingTask)
+            return;
+        doingTask = true;
+        new Thread(() -> {
+            try {
+                LoginMenuController.register(username.getText(), password.getText(), passwordConfirm.getText(), nickname.getText());
+                Platform.runLater(() -> {
+                    AlertsUtil.showSuccess("You have been registered!");
+                    clickedBackButton(null);
+                });
+            } catch (NetworkErrorException e) {
+                Platform.runLater(() -> AlertsUtil.showError(e));
+            } finally {
+                doingTask = false;
+            }
+        }).start();
     }
 
     public void clickedBackButton(MouseEvent mouseEvent) {
