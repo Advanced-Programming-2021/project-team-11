@@ -1,5 +1,7 @@
 package controller;
 
+import java.util.Base64;
+
 public class GeneralUtil {
     /**
      * Formats an enum name like "BRO_SUP" to "Bro Sup"
@@ -16,5 +18,17 @@ public class GeneralUtil {
             formatted.append(' ');
         }
         return formatted.toString().trim();
+    }
+
+    public static byte[] decodeFromBase64(String str) {
+        if (str == null)
+            return null;
+        return Base64.getDecoder().decode(str);
+    }
+
+    public static String encodeToBase64(byte[] bytes) {
+        if (bytes == null)
+            return null;
+        return Base64.getEncoder().encodeToString(bytes);
     }
 }

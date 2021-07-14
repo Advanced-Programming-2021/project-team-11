@@ -84,6 +84,6 @@ public class UsersRoute {
         }
         Types.ProfileDetails body = new Types.ProfileDetails();
         body.setUser(user);
-        context.json(user);
+        context.json(body);
     }
 }

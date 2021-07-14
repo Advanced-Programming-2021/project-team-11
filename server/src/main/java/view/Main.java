@@ -37,6 +37,7 @@ public class Main {
         try {
             UsersDatabase.connectToDatabase(config.getDatabase());
             UsersDatabase.loadUsers();
+            UsersDatabase.loadCards();
         } catch (SQLException ex) {
             System.out.println("Cannot connect/read database: " + ex.getMessage());
             System.exit(1);

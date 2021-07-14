@@ -55,6 +55,15 @@ public class UsersDatabase {
         statement.close();
     }
 
+    public static void loadCards() throws SQLException {
+        for (Card card : Card.getAllCards()) {
+            PreparedStatement statement = connection.prepareStatement("INSERT OR IGNORE INTO cards (name) VALUES(?)");
+            statement.setString(1, card.getName());
+            statement.execute();
+            statement.close();
+        }
+    }
+
     private static void registerUser(String username, String password, String nickname, int score, int money, String activeDeck, String cardsArray, String profilePicBase64) throws SQLException {
         User user = new User(username, password, nickname);
         user.setProfilePicBytes(profilePicBase64 == null ? null : Base64.getDecoder().decode(profilePicBase64));

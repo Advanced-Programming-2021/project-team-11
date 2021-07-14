@@ -1,8 +1,7 @@
 package controller.webserver;
 
+import controller.GeneralUtil;
 import model.User;
-
-import java.util.Base64;
 
 public class Types {
     public static class RegisterRequest {
@@ -141,11 +140,11 @@ public class Types {
         private String pic;
 
         public void setPic(byte[] pic) {
-            this.pic = Base64.getEncoder().encodeToString(pic);
+            this.pic = GeneralUtil.encodeToBase64(pic);
         }
 
         public byte[] getPic() {
-            return Base64.getDecoder().decode(this.pic);
+            return GeneralUtil.decodeFromBase64(this.pic);
         }
     }
 
@@ -156,7 +155,7 @@ public class Types {
         public void setUser(User user) {
             this.username = user.getUsername();
             this.nickname = user.getNickname();
-            this.pic = Base64.getEncoder().encodeToString(user.getProfilePicBytes());
+            this.pic = GeneralUtil.encodeToBase64(user.getProfilePicBytes());
             this.score = user.getScore();
         }
 
