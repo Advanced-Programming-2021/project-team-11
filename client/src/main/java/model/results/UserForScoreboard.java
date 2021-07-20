@@ -3,13 +3,12 @@ package model.results;
 import model.User;
 
 public class UserForScoreboard implements Comparable<UserForScoreboard> {
-    private final String nickname;
-    private final int score;
-    private int rank;
+    private String nickname;
+    private int score, rank;
+    private boolean isOnline;
 
-    public UserForScoreboard(User user) {
-        this.nickname = user.getNickname();
-        this.score = user.getScore();
+    public UserForScoreboard() {
+
     }
 
     public String getNickname() {
@@ -28,6 +27,10 @@ public class UserForScoreboard implements Comparable<UserForScoreboard> {
         return score;
     }
 
+    public boolean isOnline() {
+        return isOnline;
+    }
+
     @Override
     public String toString() {
         return String.format("- %s: %d", this.nickname, this.score);
@@ -35,6 +38,6 @@ public class UserForScoreboard implements Comparable<UserForScoreboard> {
 
     @Override
     public int compareTo(UserForScoreboard u) {
-        return this.score != u.score ? u.score - this.score: this.nickname.compareTo(u.nickname);
+        return this.score != u.score ? u.score - this.score : this.nickname.compareTo(u.nickname);
     }
 }

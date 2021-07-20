@@ -19,10 +19,10 @@ public class ScoreboardWebsockets {
 
     public static void registerWebsocket(WsHandler ws) {
         ws.onConnect(ctx -> {
-            gson.toJson(ScoreboardMenuController.getScoreboardRows());
             synchronized (websockets) {
                 websockets.add(ctx);
             }
+            ctx.send(gson.toJson(ScoreboardMenuController.getScoreboardRows()));
         });
     }
 }
