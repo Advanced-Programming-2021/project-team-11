@@ -1,6 +1,6 @@
 {
   "port": 8888,
-  "admin_token": "abcdefg",
+  "adminToken": "abcdefg",
   "monsters": "Monster.csv",
   "spells": "Spell.csv",
   "database": "database.db"

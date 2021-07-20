@@ -74,3 +74,4 @@ fabric.properties
 **/*.db
 **/*.json
 !server/config/config.json
+!admin_panel/config/config.json
