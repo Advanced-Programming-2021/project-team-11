@@ -10,9 +10,7 @@ import org.java_websocket.handshake.ServerHandshake;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ScoreboardWebsocket extends WebSocketClient {
     public interface Receiver {
@@ -22,14 +20,8 @@ public class ScoreboardWebsocket extends WebSocketClient {
     private final Receiver onMessageCallback;
 
     public ScoreboardWebsocket(String serverUri, Receiver onMessageCallback) {
-        super(URI.create(serverUri), getHeaders());
+        super(URI.create(serverUri), LoginMenuController.getHeaders());
         this.onMessageCallback = onMessageCallback;
-    }
-
-    private static Map<String, String> getHeaders() {
-        HashMap<String, String> map = new HashMap<>();
-        map.put(LoginMenuController.TOKEN_HEADER, LoginMenuController.getToken());
-        return map;
     }
 
     @Override

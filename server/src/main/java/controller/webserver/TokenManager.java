@@ -26,6 +26,12 @@ public class TokenManager {
         return token;
     }
 
+    public void logoutUser(String token) {
+        synchronized (users) {
+            users.remove(token);
+        }
+    }
+
     public User getUser(String token) {
         synchronized (users) {
             return users.get(token);

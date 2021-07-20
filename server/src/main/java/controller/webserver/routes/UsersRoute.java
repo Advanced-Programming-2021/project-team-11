@@ -2,10 +2,8 @@ package controller.webserver.routes;
 
 import controller.menucontrollers.LoginMenuController;
 import controller.menucontrollers.ProfileMenuController;
-import controller.menucontrollers.ScoreboardMenuController;
 import controller.webserver.TokenManager;
 import controller.webserver.Types;
-import controller.webserver.Webserver;
 import io.javalin.http.Context;
 import model.User;
 import model.exceptions.*;
@@ -35,6 +33,15 @@ public class UsersRoute {
         Types.LoginResponse response = new Types.LoginResponse();
         response.setToken(token);
         context.json(response);
+    }
+
+    public static void logout(Context context) {
+        String token = context.header(TokenManager.TOKEN_HEADER);
+        if (TokenManager.getInstance().getUser(token) == null) {
+            context.status(401);
+            return;
+        }
+        TokenManager.getInstance().logoutUser(token);
     }
 
     public static void updateProfileNickname(Context context) {

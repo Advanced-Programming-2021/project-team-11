@@ -1,5 +1,6 @@
 package view.menus;
 
+import controller.menucontrollers.LoginMenuController;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.input.MouseEvent;
@@ -38,6 +39,7 @@ public class MainMenu implements Initializable {
     public void clickedLogoutButton(MouseEvent mouseEvent) {
         SoundEffects.playMedia(SoundEffects.CLICK);
         MainMenu.loggedInUser = null;
+        LoginMenuController.logout();
         SceneChanger.changeScene(MenuNames.LOGIN);
     }
 

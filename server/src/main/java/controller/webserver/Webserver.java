@@ -20,6 +20,7 @@ public class Webserver {
                 post("register", UsersRoute::register);
                 ws("scoreboard", ScoreboardWebsockets::registerWebsocket);
                 post("login", UsersRoute::login);
+                delete("logout", UsersRoute::logout);
                 path("profile", () -> {
                     post("nickname", UsersRoute::updateProfileNickname);
                     post("password", UsersRoute::updateProfilePassword);
