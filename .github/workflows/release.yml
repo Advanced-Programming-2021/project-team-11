@@ -34,3 +34,13 @@ jobs:
           args: YuGiOh-Server.tar.xz application/x-tar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build Admin Panel
+        run: mvn clean compile assembly:single --file admin_panel/pom.xml
+      - name: Pack Admin Panel
+        run: tar cfJ YuGiOh-Admin-Panel.tar.xz -C admin_panel/target YuGiOh-Admin-Panel.jar -C ../config $(ls config)
+      - name: Upload to release
+        uses: JasonEtco/upload-to-release@master
+        with:
+          args: YuGiOh-Admin-Panel.tar.xz application/x-tar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
