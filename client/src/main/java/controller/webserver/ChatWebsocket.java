@@ -25,7 +25,7 @@ public class ChatWebsocket extends WebSocketClient {
     private final MessageReceivedCallback messageReceivedCallback;
 
     public ChatWebsocket(MessageReceivedCallback onMessageReceived) {
-        super(URI.create("ws://127.0.0.1:8888/chat"), LoginMenuController.getHeaders());
+        super(URI.create(WebserverAddresses.WEB_SERVER_WEBSOCKET_ADDRESS + "/chat"), LoginMenuController.getHeaders());
         this.messageReceivedCallback = onMessageReceived;
     }
 

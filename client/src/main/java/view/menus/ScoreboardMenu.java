@@ -9,7 +9,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import model.results.DeckListTableResult;
 import model.results.UserForScoreboard;
 import view.global.SoundEffects;
 
@@ -60,7 +59,7 @@ public class ScoreboardMenu implements Initializable {
         table.setPrefSize(600, 600);
         tableContainer.getChildren().add(0, table);
         // Websocket
-        websocket = new ScoreboardWebsocket("ws://127.0.0.1:8888/users/scoreboard", this::onMessage);
+        websocket = new ScoreboardWebsocket(this::onMessage);
         websocket.connect();
     }
 

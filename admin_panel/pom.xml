@@ -6,7 +6,7 @@
 
     <groupId>ir.sharif.ap2021</groupId>
     <artifactId>project-team-11-admin-panel</artifactId>
-    <version>3.0.0</version>>
+    <version>3.0.0</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

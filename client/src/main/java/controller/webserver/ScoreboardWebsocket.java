@@ -19,8 +19,8 @@ public class ScoreboardWebsocket extends WebSocketClient {
 
     private final Receiver onMessageCallback;
 
-    public ScoreboardWebsocket(String serverUri, Receiver onMessageCallback) {
-        super(URI.create(serverUri), LoginMenuController.getHeaders());
+    public ScoreboardWebsocket(Receiver onMessageCallback) {
+        super(URI.create(WebserverAddresses.WEB_SERVER_WEBSOCKET_ADDRESS + "/users/scoreboard"), LoginMenuController.getHeaders());
         this.onMessageCallback = onMessageCallback;
     }
 
