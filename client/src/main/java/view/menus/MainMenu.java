@@ -62,4 +62,9 @@ public class MainMenu implements Initializable {
         SoundEffects.playMedia(SoundEffects.CLICK);
         SceneChanger.changeScene(MenuNames.DUEL_START);
     }
+
+    public void clickedChatButton(MouseEvent mouseEvent) {
+        SoundEffects.playMedia(SoundEffects.CLICK);
+        SceneChanger.changeScene(MenuNames.CHAT_ROOM);
+    }
 }

@@ -14,6 +14,7 @@ enum MenuNames {
     SHOP("shop"),
     IMPORT_EXPORT("import_export"),
     DUEL_SIDE_DECK_CHANGER("duel_side_deck_changer"),
+    CHAT_ROOM("chat_room"),
     CARD_CREATOR("card_creator");
 
     private final String fxmlName;

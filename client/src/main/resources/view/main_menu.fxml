@@ -29,4 +29,6 @@
         </center>
     </BorderPane>
     <UserBadge fx:id="userBadge" layoutX="10" layoutY="10"/>
+    <HoverButton layoutX="30" layoutY="60" initialHeight="50" initialWidth="100" hoverHeight="50" hoverWidth="100"
+                 text="Chat" fontSize="18" onMouseClicked="#clickedChatButton"/>
 </AnchorPane>

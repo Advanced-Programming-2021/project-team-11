@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.*?>
+<?import view.components.JfxCursorButton?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="view.menus.ChatRoom"
+            prefHeight="600" prefWidth="800">
+    <ScrollPane AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0"
+                AnchorPane.bottomAnchor="40" hbarPolicy="NEVER" fx:id="scrollPane">
+        <VBox fx:id="messages" minWidth="800">
+
+        </VBox>
+    </ScrollPane>
+    <HBox AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.bottomAnchor="0" alignment="CENTER">
+        <padding>
+            <Insets left="10" right="10"/>
+        </padding>
+        <JFXTextField HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                      fx:id="messageBox" labelFloat="true" promptText="Your Message"/>
+        <JfxCursorButton text="Send" onMouseClicked="#sendClicked" styleClass="jfx-button-blue"/>
+    </HBox>
+</AnchorPane>
