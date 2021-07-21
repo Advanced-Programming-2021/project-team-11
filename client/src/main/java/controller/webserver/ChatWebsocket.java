@@ -3,6 +3,8 @@ package controller.webserver;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import controller.menucontrollers.LoginMenuController;
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
@@ -50,5 +52,14 @@ public class ChatWebsocket extends WebSocketClient {
     @Override
     public void onError(Exception e) {
         e.printStackTrace();
+    }
+
+    public static int getOnlineUsers() {
+        try {
+            HttpResponse<String> response = Unirest.get("/users/presence").asString();
+            return Integer.parseInt(response.getBody());
+        } catch (Exception ex) {
+            return 0;
+        }
     }
 }

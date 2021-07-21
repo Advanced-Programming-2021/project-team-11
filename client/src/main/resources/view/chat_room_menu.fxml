@@ -5,11 +5,22 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.*?>
 <?import view.components.JfxCursorButton?>
+<?import view.components.UserBadge?>
+<?import view.components.HoverButton?>
+<?import javafx.scene.control.Label?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="view.menus.ChatRoom"
             prefHeight="600" prefWidth="800">
-    <ScrollPane AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0"
+    <AnchorPane minHeight="60" maxHeight="60" minWidth="-Infinity" styleClass="dark-background">
+        <UserBadge fx:id="userBadge" layoutX="10" layoutY="10" />
+        <Label fx:id="onlineUsersCount" layoutX="450" layoutY="20" textFill="white" />
+        <HoverButton initialWidth="110" initialHeight="55" hoverWidth="110" hoverHeight="55" fontSize="13"
+                     onMouseClicked="#clickedPinnedButton" text="Pinned Message" layoutX="560" layoutY="13"/>
+        <HoverButton initialWidth="110" initialHeight="55" hoverWidth="110" hoverHeight="55" fontSize="25"
+                     onMouseClicked="#clickedBackButton" text="Back" layoutX="680" layoutY="13"/>
+    </AnchorPane>
+    <ScrollPane AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="60"
                 AnchorPane.bottomAnchor="40" hbarPolicy="NEVER" fx:id="scrollPane">
         <VBox fx:id="messages" minWidth="800">
 

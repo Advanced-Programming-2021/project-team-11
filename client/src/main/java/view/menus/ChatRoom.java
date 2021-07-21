@@ -5,27 +5,34 @@ import com.jfoenix.controls.JFXTextField;
 import controller.webserver.ChatMessage;
 import controller.webserver.ChatWebsocket;
 import controller.webserver.MessageUpdate;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+import view.components.AlertsUtil;
 import view.components.ChatMessageView;
+import view.components.UserBadge;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class ChatRoom implements Initializable {
+    @FXML
+    private Label onlineUsersCount;
+    @FXML
+    private UserBadge userBadge;
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -34,6 +41,7 @@ public class ChatRoom implements Initializable {
     private VBox messages;
     private final ArrayList<ChatMessageView> messagesData = new ArrayList<>();
     private ChatWebsocket websocket;
+    private Timeline onlineUserUpdater;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -49,6 +57,15 @@ public class ChatRoom implements Initializable {
             }
         });
         websocket.connect();
+        userBadge.setUser(MainMenu.loggedInUser);
+        onlineUserUpdater = new Timeline(
+                new KeyFrame(Duration.seconds(1),
+                        event -> new Thread(() -> {
+                            int onlineUsers = ChatWebsocket.getOnlineUsers();
+                            Platform.runLater(() -> onlineUsersCount.setText("Online users: " + onlineUsers));
+                        }).start()));
+        onlineUserUpdater.setCycleCount(Timeline.INDEFINITE);
+        onlineUserUpdater.play();
     }
 
     private void onInitializeMessages(List<ChatMessage> messages) {
@@ -64,12 +81,41 @@ public class ChatRoom implements Initializable {
             case DELETE:
                 deleteMessage(update.getMessage().getMessageId());
                 break;
+            case PIN:
+                messagesData.forEach(msg -> msg.setPinned(update.getMessage().getMessageId() == msg.getMessageId()));
+                break;
+            case EDIT:
+                messagesData.stream().filter(msg -> msg.getMessageId() == update.getMessage().getMessageId()).forEach(msg -> msg.setText(update.getMessage().getMessage()));
+                break;
         }
         scrollPane.setVvalue(1);
     }
 
     private void addMessage(ChatMessage msg) {
-        ChatMessageView messageView = new ChatMessageView(msg.getMessageId(), msg.getUsername(), msg.getMessage(), this::viewUserInfo);
+        ChatMessageView messageView = new ChatMessageView(msg.getMessageId(), msg.getUsername(), msg.getMessage(), this::viewUserInfo, new ChatMessageView.ActionClickedCallback() {
+            @Override
+            public void delete(int id) {
+                ChatMessage message = new ChatMessage();
+                message.setMessageId(id);
+                websocket.send(new Gson().toJson(new MessageUpdate(message, MessageUpdate.MessageUpdateType.DELETE)));
+            }
+
+            @Override
+            public void edit(int id) {
+                String edit = AlertsUtil.getTextAlert("Your edit:");
+                ChatMessage message = new ChatMessage();
+                message.setMessageId(id);
+                message.setMessage(edit);
+                websocket.send(new Gson().toJson(new MessageUpdate(message, MessageUpdate.MessageUpdateType.EDIT)));
+            }
+
+            @Override
+            public void pin(int id) {
+                ChatMessage message = new ChatMessage();
+                message.setMessageId(id);
+                websocket.send(new Gson().toJson(new MessageUpdate(message, MessageUpdate.MessageUpdateType.PIN)));
+            }
+        });
         messagesData.add(messageView);
         VBox.setMargin(messageView, new Insets(5, 25, 5, 5)); // 25 for right because of scrollbar
         Platform.runLater(() -> messages.getChildren().add(messageView));
@@ -108,5 +154,16 @@ public class ChatRoom implements Initializable {
         MessageUpdate update = new MessageUpdate(message);
         websocket.send(new Gson().toJson(update));
         messageBox.setText("");
+    }
+
+    public void clickedBackButton(MouseEvent mouseEvent) {
+        onlineUserUpdater.stop();
+        websocket.close();
+        SceneChanger.changeScene(MenuNames.MAIN);
+    }
+
+    public void clickedPinnedButton(MouseEvent mouseEvent) {
+        Optional<ChatMessageView> message = messagesData.stream().findFirst().filter(ChatMessageView::isPinned);
+        AlertsUtil.showSuccess(message.isPresent() ? message.get().toString() : "No pinned message");
     }
 }
